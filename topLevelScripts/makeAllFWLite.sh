@@ -1,11 +1,10 @@
 #!/bin/bash
 
 # set the input version
-EDNTUPLE_VERSION='2'
 
-run='v2'
+run=$SUSHYFT_EDNTUPLE_VERSION
 # Looks like we were successful. Party hard and fire off the processing
-CRAB_BASE=/scratch/meloam/auto_fwlite
+CRAB_BASE=$SUSHYFT_FWLITE_PATH
 SUSHYFT_BASE="/home/meloam/analysis/AnalysisTools/cmssw/shyft_edntuple_53xv2/CMSSW_5_3_11/src/Analysis/EDSHyFT/test/SUSHyFT"
 cp $SUSHYFT_BASE/*.py $CRAB_BASE
 
@@ -17,13 +16,14 @@ CHANGES_FOUND=0
 
 DATASETS_TO_RUN=(  )
 
-if [[ ! -d /scratch/meloam/auto_fwlite ]]; then
-    mkdir -p /scratch/meloam/auto_fwlite
+if [[ ! -d $SUSHYFT_FWLITE_PATH ]]; then
+    mkdir -p $SUSHYFT_FWLITE_PATH
 fi
 
 # loop over all the samples
-for DIR in /scratch/meloam/auto_edntuple/crab_v${EDNTUPLE_VERSION}_{T_,Tbar_,TTJets_Massive,WJetsToLNu_Tune,WJetsToLNu_scale,WJetsToLNu_matching,SingleMuRun,MET,DYJetsToLL_M-50_Tune,QCD_*star_8TeV}*/; do
-#for DIR in /scratch/meloam/auto_edntuple/crab_v${EDNTUPLE_VERSION}_T_*/; do
+while read DATASET; do
+    SHORTNAME=getDatasetShortname $DATASET
+    DIR=$SUSHYFT_SCRATCH_PATH/edntuple/crab_${run}_${SHORTNAME}
     echo "Processing $DIR"
     BASEDIR=$(basename $DIR)
     case $BASEDIR in
@@ -39,17 +39,17 @@ for DIR in /scratch/meloam/auto_edntuple/crab_v${EDNTUPLE_VERSION}_{T_,Tbar_,TTJ
     esac
 
     THIS_DATASET_CHANGED=0
-    if [[ ! -d /scratch/meloam/auto_fwlite/$BASEDIR || ! "$(ls -A /scratch/meloam/auto_fwlite/$BASEDIR)" || ! -e /scratch/meloam/auto_fwlite/$BASEDIR/processed.txt ]]; then
-        mkdir -p /scratch/meloam/auto_fwlite/$BASEDIR
-        touch /scratch/meloam/auto_fwlite/$BAEDIR/processed.txt
+    if [[ ! -d $SUSHYFT_FWLITE_PATH/$BASEDIR || ! "$(ls -A $SUSHYFT_FWLITE_PATH/$BASEDIR)" || ! -e $SUSHYFT_FWLITE_PATH/$BASEDIR/processed.txt ]]; then
+        mkdir -p $SUSHYFT_FWLITE_PATH/$BASEDIR
+        touch $SUSHYFT_FWLITE_PATH/$BAEDIR/processed.txt
         CHANGES_FOUND=1
         THIS_DATASET_CHANGED=1
     else
         # if the target dir already exists, see if the job's already running
         # we should be able to tell because we marked down the list of processed files
         COUNTS_MATCH=1
-        PROCESSED_FILES=$(wc -l /scratch/meloam/auto_fwlite/$BASEDIR/processed.txt | awk '{ print $1 }')
-        for SYSTEMATIC in /scratch/meloam/auto_fwlite/$BASEDIR/*/; do
+        PROCESSED_FILES=$(wc -l $SUSHYFT_FWLITE_PATH/$BASEDIR/processed.txt | awk '{ print $1 }')
+        for SYSTEMATIC in $SUSHYFT_FWLITE_PATH/$BASEDIR/*/; do
             INPUT_COUNT=0
             for SYSTEMATIC_INPUT in $SYSTEMATIC/input_*.txt; do
                 ONE_COUNT=$(wc -l $SYSTEMATIC_INPUT | awk '{print $1}')
@@ -78,7 +78,7 @@ for DIR in /scratch/meloam/auto_edntuple/crab_v${EDNTUPLE_VERSION}_{T_,Tbar_,TTJ
             echo "--Doesn't match the regex"
             continue
         fi
-        if [[ ! -d /scratch/meloam/auto_fwlite/$BASEDIR/$OUTNAME ]]; then
+        if [[ ! -d $SUSHYFT_FWLITE_PATH/$BASEDIR/$OUTNAME ]]; then
             echo "--Missing a systematic!"
             MISSING_SYSTEMATIC=1
             break
@@ -89,7 +89,7 @@ for DIR in /scratch/meloam/auto_edntuple/crab_v${EDNTUPLE_VERSION}_{T_,Tbar_,TTJ
     # and we've checked for any missing systematics. See if the upstream stuff
     # has changed
     echo "Extracting CRAB info"
-    OLDCRAB_HASH=$(cat /scratch/meloam/auto_fwlite/$BASEDIR/crabhash.txt)
+    OLDCRAB_HASH=$(cat $SUSHYFT_FWLITE_PATH/$BASEDIR/crabhash.txt)
     NEWCRAB_HASH=$(ls -lah $DIR/res/crab_fjr*.xml | sort | md5sum | awk '{ print $1 }')
     INPUT_MISSING=""
     MISSING_COUNT=0
@@ -97,14 +97,14 @@ for DIR in /scratch/meloam/auto_edntuple/crab_v${EDNTUPLE_VERSION}_{T_,Tbar_,TTJ
         echo "Hashes don't match, scanning crab dir for info"
         CURRENT_INPUT=$( ( for XML in $DIR/res/crab_*.xml;do if [[ $(grep '<FrameworkJobReport Status=\"Success\">' $XML) ]]; then
                             grep '<LFN>' -A 1 $XML | head -n 2 | tail -n 1 | awk '{ print $1 }'
-                        fi; done ) | sort | tee /scratch/meloam/auto_fwlite/$BASEDIR/processed.txt )
+                        fi; done ) | sort | tee $SUSHYFT_FWLITE_PATH/$BASEDIR/processed.txt )
         # blergh, fuck me, I don't know how to make this work
-        CURRENT_SUM=$( echo "$CURRENT_INPUT" | md5sum | awk '{ print $1 }' | tee /scratch/meloam/auto_fwlite/$BASEDIR/crabhash.txt)
-        INPUT_MISSING=$( echo "$CURRENT_INPUT" | diff -- /scratch/meloam/auto_fwlite/$BASEDIR/processed.txt -  | egrep '^<' | perl -pe 's/^[<>] //' | egrep -v '^$')
-        OUTPUT_INVALID=$( echo "$CURRENT_INPUT" | diff -- /scratch/meloam/auto_fwlite/$BASEDIR/processed.txt -  | egrep '^>' | perl -pe 's/^[<>] //' | egrep -v '^$')
+        CURRENT_SUM=$( echo "$CURRENT_INPUT" | md5sum | awk '{ print $1 }' | tee $SUSHYFT_FWLITE_PATH/$BASEDIR/crabhash.txt)
+        INPUT_MISSING=$( echo "$CURRENT_INPUT" | diff -- $SUSHYFT_FWLITE_PATH/$BASEDIR/processed.txt -  | egrep '^<' | perl -pe 's/^[<>] //' | egrep -v '^$')
+        OUTPUT_INVALID=$( echo "$CURRENT_INPUT" | diff -- $SUSHYFT_FWLITE_PATH/$BASEDIR/processed.txt -  | egrep '^>' | perl -pe 's/^[<>] //' | egrep -v '^$')
         if [[ ! -z $OUTPUT_INVALID ]]; then
             echo "Got an invalid file in the output, blow it all away"
-            echo rm -rf /scratch/meloam/auto_fwlite/$BASEDIR
+            echo rm -rf $SUSHYFT_FWLITE_PATH/$BASEDIR
             INPUT_MISSING=$CURRENT_INPUT
             THIS_DATASET_CHANGED=1
         fi
@@ -112,7 +112,7 @@ for DIR in /scratch/meloam/auto_edntuple/crab_v${EDNTUPLE_VERSION}_{T_,Tbar_,TTJ
         if [[ $MISSING_COUNT -ne 0 ]]; then
             echo "Missing $MISSING_COUNT files"
         fi
-        echo "$NEWCRAB_HASH" > /scratch/meloam/auto_fwlite/$BASEDIR/crabhash.txt
+        echo "$NEWCRAB_HASH" > $SUSHYFT_FWLITE_PATH/$BASEDIR/crabhash.txt
     fi
     # At this point, we've figured out what needs to be reprocessed
     if [[ ! -z $INPUT_MISSING || $THIS_DATASET_CHANGED -eq 1 ]]; then
@@ -185,21 +185,21 @@ for DIR in /scratch/meloam/auto_edntuple/crab_v${EDNTUPLE_VERSION}_{T_,Tbar_,TTJ
         if [[ ! $DIR =~ "$TESTREGEX" ]]; then
             continue
         fi
-        if [[ ! -d /scratch/meloam/auto_fwlite/$DIR/$OUTNAME ]]; then
-            mkdir -p /scratch/meloam/auto_fwlite/$DIR/$OUTNAME
+        if [[ ! -d $SUSHYFT_FWLITE_PATH/$DIR/$OUTNAME ]]; then
+            mkdir -p $SUSHYFT_FWLITE_PATH/$DIR/$OUTNAME
         fi
-        CURRENT_INPUT=$( cat /scratch/meloam/auto_fwlite/$DIR/$OUTNAME/input_*.txt | sort )
-        INPUT_MISSING=$( echo "$CURRENT_INPUT" | diff -- /scratch/meloam/auto_fwlite/$BASEDIR/processed.txt -  | egrep '^<' | perl -pe 's/^[<>] //' | egrep -v '^$')
-        OUTPUT_INVALID=$( echo "$CURRENT_INPUT" | diff -- /scratch/meloam/auto_fwlite/$BASEDIR/processed.txt -  | egrep '^>' | perl -pe 's/^[<>] //' | egrep -v '^$')
+        CURRENT_INPUT=$( cat $SUSHYFT_FWLITE_PATH/$DIR/$OUTNAME/input_*.txt | sort )
+        INPUT_MISSING=$( echo "$CURRENT_INPUT" | diff -- $SUSHYFT_FWLITE_PATH/$BASEDIR/processed.txt -  | egrep '^<' | perl -pe 's/^[<>] //' | egrep -v '^$')
+        OUTPUT_INVALID=$( echo "$CURRENT_INPUT" | diff -- $SUSHYFT_FWLITE_PATH/$BASEDIR/processed.txt -  | egrep '^>' | perl -pe 's/^[<>] //' | egrep -v '^$')
         if [[ ! -z $OUTPUT_INVALID ]]; then
             echo "Got an invalid file in the output, blow it all away"
-            echo rm -rf /scratch/meloam/auto_fwlite/$BASEDIR/$OUTNAME
+            echo rm -rf $SUSHYFT_FWLITE_PATH/$BASEDIR/$OUTNAME
             INPUT_MISSING=$CURRENT_INPUT
         fi
         if [[ -z $INPUT_MISSING ]]; then
             continue
         fi
-        echo "$INPUT_MISSING" > /scratch/meloam/auto_fwlite/$DIR/tempinput.txt
-        ./submit_fwlite_dataset.sh /scratch/meloam/auto_fwlite/$DIR/tempinput.txt /scratch/meloam/auto_fwlite/$DIR/$OUTNAME $IS_DATA $SAMPLENAME $SYSTDIR
+        echo "$INPUT_MISSING" > $SUSHYFT_FWLITE_PATH/$DIR/tempinput.txt
+        ./submit_fwlite_dataset.sh $SUSHYFT_FWLITE_PATH/$DIR/tempinput.txt $SUSHYFT_FWLITE_PATH/$DIR/$OUTNAME $IS_DATA $SAMPLENAME $SYSTDIR
     done < <( cat fwliteSystematicsList.txt $SYSTEMATICS_SELECTOR )
 done
