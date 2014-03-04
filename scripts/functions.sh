@@ -18,12 +18,12 @@ function getDatasetEventsFromDAS {
     echo 0
 }
 
-function getDatasetShortname {
+function getDatasetShortname () {
     # takes a dataset name and returns something compact with slashes
     # removed
     if [[ $1 =~ "MET" || $1 =~ "SingleMu" ]]; then
-        echo ${LINE} | tr '/' ' ' | tr '_' ' ' | awk '{ print $1 $5 $6 }'
+        echo $1 | tr '/' ' ' | tr '_' ' ' | awk '{ print $1 $5 $6 }'
     else
-        echo ${LINE} | tr '/' ' ' | awk '{ print $1 "_" $2 }'
+        echo $1 | tr '/' ' ' | awk '{ print $1 "_" $2 }'
     fi
 }
