@@ -28,3 +28,8 @@ export SUSHYFT_EDNTUPLE_CMSSW_BASE="FIXME123"
 # Where to put CRAB scratch stuff
 export SUSHYFT_SCRATCH_PATH=$SUSHYFT_BASE/scratch
 
+# Export some path variables
+EXTRA_PATH="$SUSHYFT_BASE/scripts"
+if [[ $PATH != *$EXTRA_PATH* ]]; then
+    export PATH=$PATH:$EXTRA_PATH
+fi
