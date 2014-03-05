@@ -24,9 +24,37 @@ fi
 # loop over all the samples
 while read DATASET; do
     SHORTNAME=$(getDatasetShortname $DATASET)
+    case $SHORTNAME in
+        DY?Je*)
+            continue
+            ;;
+    esac
     echo "Processing $SHORTNAME"
     DIR=$SUSHYFT_EDNTUPLE_PATH/crab_${run}_${SHORTNAME}
+    DIR_OUT=$DIR
+    # I named some directories with a different system, for some dumb reason
+    SHORTNAME_BAK=$SHORTNAME
+    SHORTNAME_OUT=$SHORTNAME
+    for PATTERN in 's/\(.*\)_meloam.*/\1/' 's/\(.*\)_Summer12.*/\1/' 's/\(.*\)_StoreResults.*/\1/' 's/\(.*\)_None.*/\1/' 's/\(.*\)_jdamgov.*/\1/'; do
+        if [[ -d $DIR/res ]]; then
+            break
+        fi
+        SHORTNAME=$(echo $SHORTNAME_BAK | sed $PATTERN)
+        DIR=$SUSHYFT_EDNTUPLE_PATH/crab_${run}_${SHORTNAME}
+        if [[ -d $DIR/res ]]; then
+            echo " - processing with $SHORTNAME"
+            break
+        fi
+    done
+    if [[ ! -d $DIR/res ]]; then
+        echo "CAN'T FIND $SHORTNAME"
+        exit 1
+    fi
     BASEDIR=$(basename $DIR)
+    BASEDIR_OUT=$(basename $DIR_OUT)
+    BASEDIR_IN=$(basename $DIR)
+    SHORTNAME_IN=$SHORTNAME
+    TARGET_DIR=$SUSHYFT_FWLITE_PATH/$BASEDIR_OUT
     case $SHORTNAME in
         Single*)
             IS_DATA=1
@@ -74,9 +102,9 @@ while read DATASET; do
 
     # First, get the list of files to process from CRAB
     # TODO: refactor this so it's a separate script
-    echo "Extracting CRAB info"
     # crabhash.txt keeps the hash of the FJR. the file list is in hash-crabhash.txt
-    CRAB_HASH_POINTER=$SUSHYFT_FWLITE_PATH/$BASEDIR/crabhash.txt
+    [[ -d $TARGET_DIR ]] && mkdir -p $TARGET_DIR
+    CRAB_HASH_POINTER=$TARGET_DIR/crabhash.txt
     OLDCRAB_HASH=$(cat $CRAB_HASH_POINTER)
     NEWCRAB_HASH=$(ls -lah $DIR/res/crab_fjr*.xml 2>/dev/null | sort | md5sum | awk '{ print $1 }')
     INPUT_MISSING=""
@@ -87,59 +115,59 @@ while read DATASET; do
         # this monstrosity gets the output files from successful FJRs
         CURRENT_INPUT=$( ( for XML in $DIR/res/crab_*.xml;do if [[ $(grep '<FrameworkJobReport Status=\"Success\">' $XML) ]]; then
                             grep '<LFN>' -A 1 $XML | head -n 2 | tail -n 1 | awk '{ print $1 }'
-                        fi; done ) | sort | tee $SUSHYFT_FWLITE_PATH/$BASEDIR/${NEWCRAB_HASH}-crabhash.txt)
+                        fi; done ) | sort | tee $TARGET_DIR/${NEWCRAB_HASH}-crabhash.txt)
         [[ -e $DIR/failed-autofwlite.txt ]] && rm $DIR/failed-autofwlite.txt
         for XML in $DIR/res/crab_*.xml; do
             if [[ ! $(grep '<FrameworkJobReport Status=\"Success\">' $XML) ]]; then
                 echo "Failed FJR: $XML" | tee -a $DIR/failed-autofwlite.txt 
             fi
         done
-        CURRENT_INPUT_SOURCE=$SUSHYFT_FWLITE_PATH/$BASEDIR/${OLDCRAB_HASH}-crabhash.txt
+        CURRENT_INPUT_SOURCE=$TARGET_DIR/${OLDCRAB_HASH}-crabhash.txt
         echo ${NEWCRAB_HASH} > $CRAB_HASH_POINTER
     else
         # it was already cached
-        CURRENT_INPUT_SOURCE=$SUSHYFT_FWLITE_PATH/$BASEDIR/${OLDCRAB_HASH}-crabhash.txt
+        CURRENT_INPUT_SOURCE=$TARGET_DIR/${OLDCRAB_HASH}-crabhash.txt
         if [[ ! -e $CURRENT_INPUT_SOURCE ]]; then
             rm $CRAB_HASH_POINTER
             echo "Warning: cache was ruined for $CRAB_HASH_POINTER (${OLDCRAB_HASH}). Try again"
             exit 1
         fi
-        CURRENT_INPUT=$(cat $CURRENT_INPUT_SOURCE)
+        CURRENT_INPUT=$(cat $CURRENT_INPUT_SOURCE 2>/dev/null)
     fi
 
     if [[ -z $CURRENT_INPUT ]]; then
         echo "No EDNTuples found for $DIR"
+        mkdir -p $DIR
+        echo "$DATASET" > $DIR/failed-no-ntuple.txt
         continue
     fi
 
     # Have the input files, compare against what we allegedly processed over
-    echo "Testing for systematics"
     while read  OUTNAME TESTREGEX SYSTDATA SYSTLINE; do
         if [[ $IS_DATA -eq 1 && $SYSTDATA -eq 0 ]]; then
-            echo "--Doesn't match because of it needing to be data"
             continue
         fi
         if [[ ! $BASEDIR =~ "$TESTREGEX" ]]; then
-            echo "--Doesn't match the regex"
             continue
         fi
-        SYSTEMATIC_PATH=$SUSHYFT_FWLITE_PATH/$BASEDIR/$OUTNAME
+        SYSTEMATIC_PATH=$TARGET_DIR/$OUTNAME
         if [[ ! -d $SYSTEMATIC_PATH ]]; then
-            echo "--Missing a systematic ($SYSTEMATIC_PATH)!"
+            echo "--Missing a systematic ($BASEDIR_OUT/$OUTNAME)!"
             mkdir -p $SYSTEMATIC_PATH
-            echo "" > $SYSTEMATIC_PATH/processed.txt
-        elif [[ -z "ls $SYSTEMATIC_PATH/input_*.txt" ]]; then
-            echo "--No input files ($SYSTEMATIC_PATH)"
-            echo "" > $SYSTEMATIC_PATH/processed.txt
+            echo -n "" > $SYSTEMATIC_PATH/processed.txt
+        elif [[ -z $(ls $SYSTEMATIC_PATH/input_*.txt 2>/dev/null ) ]]; then
+            echo "--No input files ($BASEDIR_OUT/$OUTNAME)"
+            echo -n "" > $SYSTEMATIC_PATH/processed.txt
         else
             # Attempt to clean out files that have failed
             for SYSTEMATIC_INPUT in $SYSTEMATIC_PATH/input_*.txt; do
-                SYSTEMATIC_COUNTER=$(echo $SYSTEMATIC_INPUT | sed 's/.*input_\(.*\).txt$/\1/')
+                SYSTEMATIC_COUNTER=$(echo -n $SYSTEMATIC_INPUT | sed 's/.*input_\(.*\).txt$/\1/')
                 SYSTEMATIC_OUTPUT=$SYSTEMATIC_PATH/output_${SYSTEMATIC_COUNTER}.root
                 SYSTEMATIC_STDOUT=$SYSTEMATIC_PATH/stdout_${SYSTEMATIC_COUNTER}.txt
                 SYSTEMATIC_MARKER=$SYSTEMATIC_PATH/marker_${SYSTEMATIC_COUNTER}.txt
+                SYSTEMATIC_FAILED=$SYSTEMATIC_PATH/FAILED.${SYSTEMATIC_COUNTER}
                 # if there's a root file there, we did a good job
-                if [[ -e $SYSTEMATIC_OUTPUT ]]; then
+                if [[ -e $SYSTEMATIC_OUTPUT && ! -e $SYSTEMATIC_FAILED ]]; then
                     [ -e $SYSTEMATIC_MARKER ] && rm $SYSTEMATIC_MARKER
                     continue
                 fi
@@ -149,20 +177,21 @@ while read DATASET; do
                     continue
                 fi
                 # beats me, we can probably delete something
-                rm -f $SYSTEMATIC_INPUT $SYSTEMATIC_MARKER $SYSTEMATIC_STDOUT $SYSTEMATIC_OUTPUT
+                rm -f $SYSTEMATIC_INPUT $SYSTEMATIC_MARKER $SYSTEMATIC_STDOUT $SYSTEMATIC_OUTPUT $SYSTEMATIC_FAILED
             done
             cat $SYSTEMATIC_PATH/input_*.txt | sort > $SYSTEMATIC_PATH/processed.txt
         fi
 
         # compare input and output files to see if we need to either add to fwlite or
         # blow away everything and start over
-        INPUT_MISSING=$( diff -- $SYSTEMATIC_PATH/processed.txt $CURRENT_INPUT_SOURCE  | egrep '^<' | perl -pe 's/^[<>] //' | egrep -v '^$')
-        OUTPUT_INVALID=$( diff -- $SYSTEMATIC_PATH/processed.txt $CURRENT_INPUT_SOURCE  | egrep '^>' | perl -pe 's/^[<>] //' | egrep -v '^$')
+        INPUT_MISSING=$( diff -- $SYSTEMATIC_PATH/processed.txt $CURRENT_INPUT_SOURCE  | egrep '^>' | perl -pe 's/^[<>] //' | egrep -v '^$')
+        OUTPUT_INVALID=$( diff -- $SYSTEMATIC_PATH/processed.txt $CURRENT_INPUT_SOURCE  | egrep '^<' | perl -pe 's/^[<>] //' | egrep -v '^$')
 
         if [[ ! -z $OUTPUT_INVALID ]]; then
             echo "Got an invalid file in the output, blow it all away"
             echo "Resetting $SYSTEMATIC_PATH"
             echo "compare $SYSTEMATIC_PATH/processed.txt $CURRENT_INPUT_SOURCE"
+            exit
             rm -rf $SYSTEMATIC_PATH
             mkdir -p $SYSTEMATIC_PATH
             INPUT_MISSING=$CURRENT_INPUT
@@ -174,8 +203,8 @@ while read DATASET; do
             continue
         fi
         # We have no choice but to process some extra things
-        echo "$INPUT_MISSING" > $SUSHYFT_FWLITE_PATH/$BASEDIR/tempinput.txt
+        echo "$INPUT_MISSING" > $SUSHYFT_FWLITE_PATH/$BASEDIR_OUT/tempinput.txt
         # This script hardcodes set-analysis.sh to find the python files. fix that.
-        submit_fwlite_dataset.sh $SUSHYFT_FWLITE_PATH/$BASEDIR/tempinput.txt $SYSTEMATIC_PATH $IS_DATA $SAMPLENAME $SYSTLINE
+        submit_fwlite_dataset.sh $SUSHYFT_FWLITE_PATH/$BASEDIR_OUT/tempinput.txt $SYSTEMATIC_PATH $IS_DATA $SAMPLENAME $SYSTLINE
     done < $SUSHYFT_BASE/config/$SUSHYFT_MODE/fwliteSystematicsList.txt
 done < $SUSHYFT_BASE/config/$SUSHYFT_MODE/input_pat.txt

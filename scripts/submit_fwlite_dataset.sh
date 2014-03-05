@@ -78,11 +78,12 @@ if [[ ! \$RETVAL -eq 0 || ! -e $WORKDIR/$COUNT.root ]]; then
     echo "Failed" >> $WORKDIR/FAILED.$COUNT
     cat \$INPUTLIST >> $WORKDIR/FAILED.$COUNT
     # make later hadds bomb
-    echo "FAILED" > $WORKDIR/$COUNT.root
+    rm $WORKDIR/$COUNT.root
 else
+    mv $WORKDIR/$COUNT.root $WORKDIR/output_$COUNT.root
     rm $WORKDIR/FAILED.$COUNT
 fi
-mv $WORKDIR/$COUNT.root $WORKDIR/output_$COUNT.root
+rm $WORKDIR/marker_$COUNT.txt
 EOF
     qsub tempscript.pbs | tee $WORKDIR/marker_$COUNT.txt
     COUNT=$(( $COUNT + 1 ))
