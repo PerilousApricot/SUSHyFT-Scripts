@@ -17,10 +17,11 @@ while [[ $1 != "--" ]]; do
 done
 shift # jump past the --
 
-CURRSTATE=$(ls -l $INPUTS | sort | md5sum | awk '{ print $1 }')
+ARGHASH=$(echo "$@" | md5sum | awk '{ print $1 }')
+CURRSTATE="$(ls -l $INPUTS | sort | md5sum | awk '{ print $1 }')-$ARGHASH"
 if [[ -e $STATEFILE && -e $OUTPUTFILE ]]; then
     # don't jump past the "--", we need it for below
-    OLDSTATE=$(cat $STATEFILE)
+    OLDSTATE=$(cat $STATEFILE 2>/dev/null)
     if [[ "$CURRSTATE" == "$OLDSTATE" ]]; then
         exit 0
     else
@@ -37,7 +38,7 @@ else
     ls -lah $STATEFILE $OUTPUTFILE
 fi
 [[ -e $OUTPUTFILE ]] && rm $OUTPUTFILE
-ls -l $INPUTS | sort | md5sum | awk '{ print $1 }' > $STATEFILE.temp 
+echo -n $CURRSTATE > $STATEFILE.temp 
 echo "Executing $@"
 touch $OUTPUTFILE.FAIL
 $@  > $COMMANDOUTPUT 2>&1
