@@ -4,3 +4,5 @@ tempscript.pbs
 *.png
 *.pyc
 .*.swp
+src/shlib/*
+bin/*
