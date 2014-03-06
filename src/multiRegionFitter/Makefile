@@ -72,6 +72,11 @@ echo:
 clean:
 	@rm -f core* $(EXECNAME) ${DEPS} ${OBJS} multiRunRangeFitter.exe multiRunRangeFitter.o runMultipleFits.exe runMultipleFits.o
 
+# copy things somewhere sensible
+install:
+	cp multiRunRangeFitter.exe runMultipleFits.exe ../../bin
+    :q
+
 # If we aren't doing a 'gmake clean' then make the dependencies
 ifneq ($(MAKECMDGOALS),clean)
 include $(DEPS)
