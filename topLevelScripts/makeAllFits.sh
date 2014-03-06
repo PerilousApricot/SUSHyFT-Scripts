@@ -59,6 +59,6 @@ runIfChanged.sh  ${SUSHYFT_BASE}/state/${SUSHYFT_MODE}/Q2.mrf  \
         --combineSamples=WJets:Wbx+Wcx+Wqq \
         --onlyCombinedGroups \
         ${SUSHYFT_COPYHIST_PATH}/central_nominal.root:0 \
-        ${SUSHYFT_COPYHIST_PATH}/central_wjetsmatchdown.root:-1 \
-        ${SUSHYFT_COPYHIST_PATH}/central_wjetsmatchup.root:1 \
+        ${SUSHYFT_COPYHIST_PATH}/central_wjetsscaledown.root:-1 \
+        ${SUSHYFT_COPYHIST_PATH}/central_wjetsscaleup.root:1 \
 
