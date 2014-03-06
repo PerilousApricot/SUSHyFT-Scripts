@@ -1,0 +1,56 @@
+// -*- C++ -*-
+
+#if !defined(dumpSTL_ICC)
+#define dumpSTL_ICC
+
+
+#include <iostream>
+#include <iterator>
+#include <string>
+
+template <class T>
+void dumpSTL (const T &cont, std::ostream& stream = std::cout)
+{
+   std::ostream_iterator< typename T::value_type > output(stream, " ");
+   std::copy(cont.begin(), cont.end(), output);
+}
+
+template <class T>
+void dumpSTLendl (const T &cont, std::ostream& stream = std::cout)
+{
+   std::ostream_iterator< typename T::value_type > output(stream, " ");
+   std::copy(cont.begin(), cont.end(), output);
+   stream << std::endl;
+}
+
+template <class T>
+void dumpNamedSTLendl (const std::string &name, const T &cont, 
+                       std::ostream& stream = std::cout)
+{
+   stream << name << " ";
+   std::ostream_iterator< typename T::value_type > output(stream, " ");
+   std::copy(cont.begin(), cont.end(), output);
+   stream << std::endl;
+}
+
+
+template <class T>
+void dumpSTLeachEndl (const T &cont, int offset = 0,
+                      std::ostream& stream = std::cout)
+{
+   std::string padding= "\n";
+   if (offset)
+   {
+      for (int loop = 0; loop < offset; ++loop)
+      {
+         padding += " ";         
+         stream << " ";
+      } // for loop
+   }
+   std::ostream_iterator< typename T::value_type > output(stream, 
+                                                          padding.c_str());
+   std::copy(cont.begin(), cont.end(), output);
+   stream << std::endl;
+ 
+}
+#endif // dumpSTL_ICC
