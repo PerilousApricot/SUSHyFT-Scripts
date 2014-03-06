@@ -29,6 +29,10 @@ SRCS =  $(shell selectCCfiles.pl -src $(BASE))
 DEPS =  $(patsubst %.cc, %.d, $(SRCS)) 
 OBJS =  $(patsubst %.cc, %.o, $(SRCS))
 
+# copy things somewhere sensible
+install: $(EXECNAME)
+	cp multiRunRangeFitter.exe runMultipleFits.exe $(EXECNAME) ../../bin
+
 # Make the executable
 $(EXECNAME): $(OBJS)
 	@echo "making stuff with $(OBJS) : $(SRCS)!"
@@ -71,10 +75,6 @@ echo:
 # Clean everythingg
 clean:
 	@rm -f core* $(EXECNAME) ${DEPS} ${OBJS} multiRunRangeFitter.exe multiRunRangeFitter.o runMultipleFits.exe runMultipleFits.o
-
-# copy things somewhere sensible
-install:
-	cp multiRunRangeFitter.exe runMultipleFits.exe ../../bin
 
 # If we aren't doing a 'gmake clean' then make the dependencies
 ifneq ($(MAKECMDGOALS),clean)
