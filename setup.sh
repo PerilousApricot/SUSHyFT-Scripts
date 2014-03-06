@@ -15,7 +15,7 @@ export SUSHYFT_FWLITE_PATH=$SUSHYFT_DATA_BASE/auto_fwlite
 export SUSHYFT_HADD_PATH=$SUSHYFT_DATA_BASE/auto_hadd
 export SUSHYFT_REBIN_PATH=$SUSHYFT_DATA_BASE/auto_rebin
 export SUSHYFT_STITCHED_PATH=$SUSHYFT_DATA_BASE/auto_stitched
-
+export SUSHYFT_COPYHIST_PATH=$SUSHYFT_DATA_BASE/auto_copyhist
 
 # What are the input datasets (starting from PAT)
 export SUSHYFT_DATASET_INPUT=$SUSHYFT_BASE/config/$SUSHYFT_MODE/input_pat.txt
@@ -34,4 +34,9 @@ export SUSHYFT_SCRATCH_PATH=$SUSHYFT_BASE/scratch
 EXTRA_PATH="$SUSHYFT_BASE/scripts"
 if [[ $PATH != *$EXTRA_PATH* ]]; then
     export PATH=$PATH:$EXTRA_PATH
+fi
+
+EXTRA_PYTHONPATH="$SUSHYFT_BASE/python"
+if [[ $PYTHONPATH != *$EXTRA_PYTHONPATH* ]]; then
+    export PYTHONPATH=$PYTHONPATH:$EXTRA_PYTHONPATH
 fi

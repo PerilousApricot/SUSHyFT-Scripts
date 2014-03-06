@@ -1,12 +1,12 @@
 #!/bin/bash
-# need to extract this into a format the fitter can eat
+
 for TAG in 1 2; do 
     for JET in 5 4 3 2 1; do 
         if [[ $TAG -gt $JET ]]; then
             continue
         fi
         ( set -x
-        python2.6 handleQCDShapeAndNormalization.py --stitched-input=/scratch/meloam/auto_copyhist/central_noMET.root --var=MET --minTags=$TAG --maxTags=$TAG --minJets=$JET --maxJets=$JET --fit --verbose --pretagMinTags=0 --pretagMaxTags=9 > fit_output_${JET}j_${TAG}t.txt 2>&1 )
+        runIfChanged.sh ${SUSHYFT_BASE}/state/${SUSHYFT_MODE}_fit_output_${JET}j_${TAG}t.txt ${SUSHYFT_COPYHIST_PATH}/metfit.root `which handleQCDShapeAndNormalization.py` -- handleQCDShapeAndNormalization.py --stitched-input=${SUSHYFT_COPYHIST_PATH}/metfit.root --var=MET --minTags=$TAG --maxTags=$TAG --minJets=$JET --maxJets=$JET --fit --verbose --pretagMinTags=0 --pretagMaxTags=9 > ${SUSHYFT_BASE}/state/${SUSHYFT_MODE}_fit_output_${JET}j_${TAG}t.txt )
         echo "one fit"
     done
 done
@@ -23,7 +23,7 @@ for TAG in 1 2;do
             continue
         fi
         echo "#Results for QCD jet bin ${JET} tag ${TAG}"; 
-        TAGVAL=`grep -A 9 'INFO:Minization -- RooMinuit::optimizeConst: deactivating const optimization' fit_output_${JET}j_${TAG}t.txt | grep qcdSF` 
+        TAGVAL=`grep -A 9 'INFO:Minization -- RooMinuit::optimizeConst: deactivating const optimization' ${SUSHYFT_BASE}/state/${SUSHYFT_MODE}_fit_output_${JET}j_${TAG}t.txt | grep qcdSF` 
         SF=`echo $TAGVAL | awk '{print \$6}'`
         echo "#$TAGVAL"
         echo "#$SF"
@@ -31,4 +31,4 @@ for TAG in 1 2;do
         echo "-- _svm_${JET}j_${TAG}t           :  QCD: $SF 1.00"
     done
 done
-) > /scratch/meloam/analysis/SHyFTFitter/multiRegionFitter/polynoids_ttbar_notau/qcd.mrf
+) > ${SUSHYFT_BASE}/state/${SUSHYFT_MODE}_qcd.mrf
