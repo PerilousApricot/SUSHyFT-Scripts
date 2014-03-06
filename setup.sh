@@ -14,6 +14,8 @@ export SUSHYFT_EDNTUPLE_PATH=$SUSHYFT_DATA_BASE/auto_edntuple
 export SUSHYFT_FWLITE_PATH=$SUSHYFT_DATA_BASE/auto_fwlite
 export SUSHYFT_HADD_PATH=$SUSHYFT_DATA_BASE/auto_hadd
 export SUSHYFT_REBIN_PATH=$SUSHYFT_DATA_BASE/auto_rebin
+export SUSHYFT_STITCHED_PATH=$SUSHYFT_DATA_BASE/auto_stitched
+
 
 # What are the input datasets (starting from PAT)
 export SUSHYFT_DATASET_INPUT=$SUSHYFT_BASE/config/$SUSHYFT_MODE/input_pat.txt
