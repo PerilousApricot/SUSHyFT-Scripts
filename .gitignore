@@ -2,3 +2,5 @@ data/*
 import/*
 tempscript.pbs
 *.png
+*.pyc
+.*.swp
