@@ -1,0 +1,18 @@
+SUSHyFT
+=======
+
+Scripts used for wrangling results out of 2012 CMS data. There are a few
+processing steps involved between the CMS-provided data and the needed
+input for the final fitting/plotting steps. Most of this code is made to
+handle that.
+
+Directory structure
+===================
+
+* bin/ - Compiled binaries. Added to $PATH by sourcing environment
+* checkouts/ - CMSSW checkout locations
+* config/ - Input configuration files
+* data/ - Generated data
+* python/ - Added to $PYTHONPATH by sourcing the environment
+* scripts/ - Added to $PATH by sourcing the environment
+* topLevelScripts - Metascripts to run whole steps at once. Shouldn't accept any parameters
