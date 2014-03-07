@@ -31,7 +31,7 @@ export SUSHYFT_EDNTUPLE_CMSSW_BASE="FIXME123"
 export SUSHYFT_SCRATCH_PATH=$SUSHYFT_BASE/scratch
 
 # Export some path variables
-EXTRA_PATH="$SUSHYFT_BASE/scripts"
+EXTRA_PATH="$SUSHYFT_BASE/scripts:$SUSHYFT_BASE/bin"
 if [[ $PATH != *$EXTRA_PATH* ]]; then
     export PATH=$PATH:$EXTRA_PATH
 fi
