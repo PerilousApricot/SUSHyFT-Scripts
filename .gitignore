@@ -6,3 +6,4 @@ tempscript.pbs
 .*.swp
 src/shlib/*
 bin/*
+/*.root
