@@ -6,19 +6,19 @@ source $SUSHYFT_BASE/scripts/functions.sh
 toProcess=( )
 echo "Gathering jobs to process"
 while read DATASET; do
-    SHORTNAME=$(getDatasetShortname $DATASET)                                      
+    SHORTNAME=$(getDatasetShortname $DATASET)
     FWLITE_DIR=$SUSHYFT_EDNTUPLE_PATH/crab_${SUSHYFT_EDNTUPLE_VERSION}_${SHORTNAME}
-    BASEDIR=$(basename $FWLITE_DIR)                                                       
-    case $SHORTNAME in                                                             
-        Single*)                                                                   
-            IS_DATA=1                                                              
-            ;;                                                                     
-        MET*)                                                                      
-            IS_DATA=1                                                              
-            ;;                                                                     
-        *)                                                                         
-            IS_DATA=0                                                              
-            ;;                                                                     
+    BASEDIR=$(basename $FWLITE_DIR)
+    case $SHORTNAME in
+        Single*)
+            IS_DATA=1
+            ;;
+        MET*)
+            IS_DATA=1
+            ;;
+        *)
+            IS_DATA=0
+            ;;
     esac
     while read OUTNAME TESTREGEX SYSTDATA SYSTLINE; do
         if [[ $IS_DATA -eq 1 && $SYSTDATA -eq 0 ]]; then
