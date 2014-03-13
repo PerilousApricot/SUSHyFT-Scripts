@@ -9,7 +9,6 @@
 
     Author: Andrew Melo, based on magic_fit.py from Andrew Ivanov
 """
-print "butt"
 import sys
 oldarg = sys.argv[:]
 sys.argv = [oldarg[0], '-b']

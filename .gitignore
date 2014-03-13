@@ -6,3 +6,5 @@ tempscript.pbs
 .*.swp
 src/shlib/*
 bin/*
+*.root
+crab.history
