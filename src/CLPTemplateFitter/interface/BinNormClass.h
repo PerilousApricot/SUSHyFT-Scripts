@@ -11,6 +11,7 @@
 #include "CLPTemplateFitter/interface/BinNormFunctoid.h"
 #include "CLPTemplateFitter/interface/StartStopStep.h"
 
+class BinNormClass;
 class BinNormClass
 {
    public:
@@ -38,7 +39,7 @@ class BinNormClass
       // friends //
       /////////////
       // tells particle data how to print itself out
-      friend std::ostream& operator<< (std::ostream& o_stream, 
+      friend std::ostream& operator<< (std::ostream& o_stream,
                                        const BinNormClass &rhs);
 
       //////////////////////////
@@ -53,12 +54,12 @@ class BinNormClass
       /////////////////////////////////
       BinNormClass ();
       BinNormClass (double startingValue);
-      BinNormClass (double startingValue, 
+      BinNormClass (double startingValue,
                     double start, double stop, double step);
-      BinNormClass (const ISet &tempSet, const ISet &binSet, 
+      BinNormClass (const ISet &tempSet, const ISet &binSet,
                     double startingValue);
-      BinNormClass (const ISet &tempSet, const ISet &binSet, 
-                    double startingValue, 
+      BinNormClass (const ISet &tempSet, const ISet &binSet,
+                    double startingValue,
                     double start, double stop, double step);
 
        ////////////////
@@ -99,17 +100,17 @@ class BinNormClass
       int index (int tempIndex, int binIndex) const;
 
       // returns the factor by which this bin should be multiplied
-      double factor (int tempIndex, int binIndex, 
+      double factor (int tempIndex, int binIndex,
                      double value, const double *paramArray) const;
 
       // adds tempSet
       void setTempSet (const ISet &tempSet);
 
       // set one functoid for all templates
-      void setFunctoid (BinNormFunctoid &functoid);    
+      void setFunctoid (BinNormFunctoid &functoid);
 
       // set a functoid for only one template
-      void setFunctoid (int tempIndex, BinNormFunctoid &functoid);    
+      void setFunctoid (int tempIndex, BinNormFunctoid &functoid);
 
       /////////////////////////////
       // Static Member Functions //
@@ -119,7 +120,7 @@ class BinNormClass
       static void insertRangeIntoSet (ISet &theset, int lower, int upper);
 
       // prints contents of ISet to STDOUT
-      static void outputISet (const ISet &theset, 
+      static void outputISet (const ISet &theset,
                               std::ostream& o_stream = std::cout);
 
       // // returns true if the set containts the element
@@ -133,12 +134,12 @@ class BinNormClass
       ISet   m_templateSet;
       ISet   m_binSet;
       double m_value;
-      int    m_paramIndex;      
+      int    m_paramIndex;
       StartStopStep          m_startStopStep;
       mutable bool           m_verbose;
 
       BinNormFunctoid       *m_functoidPtr;
-      BinNormFunctoid::IFMap m_functoidMap;
+      std::map< int, BinNormFunctoid * > m_functoidMap;
 };
 
 #endif // BinNormClass_HH

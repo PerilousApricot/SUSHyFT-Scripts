@@ -26,7 +26,7 @@ INCS = 	$(wildcard interface/*.h)
 DEPS =  $(patsubst src/%, objects/%, \
 		  $(patsubst %.cc, %.d, $(wildcard src/*.cc)) )
 
-EXPLLINKLIBS += -L${ROOTSYS}/lib -lMinuit -L../shlib  -lCLPTemplateMorph
+EXPLLINKLIBS += -L${ROOTSYS}/lib -lMinuit -L../shlib -lCLPTemplateMorph
 
 # We want dictionaries only for classes that have _linkdef.h files
 DICTOBS =  $(patsubst %_linkdef.h, %.o, \

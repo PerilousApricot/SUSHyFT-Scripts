@@ -54,18 +54,18 @@ namespace mrf
    typedef std::map< std::string, SDPairVec >   SSDPairVecMap;
    typedef std::vector< BlurStruct >            BlurStructVec;
    typedef std::vector< ScanStruct >            ScanStructVec;
-   typedef std::map< std::string,               
+   typedef std::map< std::string,
                      BlurStruct >               BlurStructMap;
    typedef std::map< std::string, TH1F* >       STH1FPtrMap;
    typedef std::map< std::string, double >      SDMap;
    typedef std::map< std::string, int >         SIMap;
    typedef std::map< std::string, std::string > SSMap;
-   typedef std::map< std::string,               
-                     std::pair < double,        
+   typedef std::map< std::string,
+                     std::pair < double,
                                  double > >     SPDMap;
    typedef std::map< int, int >                 IIMap;
    typedef std::set< std::string >              SSet;
-   // Iterators                                 
+   // Iterators
    typedef TH1FPtrVec::const_iterator           TH1FPtrVecConstIter;
    typedef SVec::const_iterator                 SVecConstIter;
    typedef STH1FPtrPairVec::const_iterator      STH1FPtrPairVecConstIter;
@@ -87,6 +87,7 @@ namespace mrf
 
    struct TemplateMorphInfo
    {
+        TemplateMorphInfo() {};
          std::string    m_defaultName;
          SDMap          m_defaultValuesMap;
          SSDPairVecMap  m_additionalTemplatesVecMap;
@@ -144,7 +145,7 @@ namespace mrf
    void setDataName();
 
    // Assumes that outputPtr goes from 0.5 to N + 0.5
-   void addToHistogram (TH1F *outputPtr, TH1F *inputPtr,  
+   void addToHistogram (TH1F *outputPtr, TH1F *inputPtr,
                         int offset, int rebin, float scale = 1.);
 
 
@@ -157,7 +158,7 @@ namespace mrf
                      SSMap &valueMap);
 
    void _svecToSDMap (const SVec &nameAndValueVec, SDMap &valueMap);
-   
+
    void _makeEverythingPretty();
 
    int  _initializeMRF();
@@ -179,9 +180,9 @@ namespace mrf
       public:
 
          // constructor
-         MRFitter (const std::string &configFilename, 
+         MRFitter (const std::string &configFilename,
                    const std::string &prefix = "");
-                      
+
          // Fit the branching fraction.
          void fit (bool verbose = true);
 
@@ -226,9 +227,9 @@ namespace mrf
 
          // Using fitter and user-supplied inputs, decides which variables
          // will be varied for PE throwing.
-         void setupBlurStruct (BlurStructVec &blurVec, 
+         void setupBlurStruct (BlurStructVec &blurVec,
                                const BlurStructMap &blurMap);
-         void setupBlurStruct (BlurStructVec &blurVec, const SVec &names, 
+         void setupBlurStruct (BlurStructVec &blurVec, const SVec &names,
                                const DVec &means, const DVec &sigmas);
 
          BinsSumCont &binsSumCont() { return m_fitter.binsSumCont(); }
@@ -239,7 +240,7 @@ namespace mrf
          void getDataFromOtherFitter (const MRFitter &otherFitter);
          // Sometimes, we'll want to add data from two run ranges together
          void getDataFromOtherFitter (const MRFitter &otherFitter1, const MRFitter &otherFitter2);
-         
+
 
          ////////////////////////
          // One line functions //
@@ -249,7 +250,7 @@ namespace mrf
          { return m_toFillNames; }
 
          int numToFill() const
-         { return m_numToFill; }       
+         { return m_numToFill; }
 
          const ScanStructVec &scanStructVec() const
          { return m_scanStructVec; }
@@ -261,16 +262,16 @@ namespace mrf
          // At some point, it probably makes sense to have MRFitter
          // derive from CLPTemplateFitter.  In the mean time...
 
-         void fillParamVec (DVec &paramVec) 
+         void fillParamVec (DVec &paramVec)
          { m_fitter.fillParamVec (paramVec); }
 
-         void fillErrorVec (DVec &errorVec) 
+         void fillErrorVec (DVec &errorVec)
          { m_fitter.fillErrorVec (errorVec); }
 
-         void fillPosErrorVec (DVec &errorVec) 
+         void fillPosErrorVec (DVec &errorVec)
          { m_fitter.fillPosErrorVec (errorVec); }
 
-         void fillNegErrorVec (DVec &errorVec) 
+         void fillNegErrorVec (DVec &errorVec)
          { m_fitter.fillNegErrorVec (errorVec); }
 
          void storeSqrtMatrix()
@@ -282,7 +283,7 @@ namespace mrf
          void generateRandomParams (DVec &paramVec) const
          { m_fitter.generateRandomParams (paramVec); }
 
-         void scanVariable (CLPTrapezoid::Vec &retval, 
+         void scanVariable (CLPTrapezoid::Vec &retval,
                             const std::string &name,
                             double lower, double upper, int numPoints = 1000)
          { m_fitter.scanVariable (retval, name, lower, upper, numPoints); }
@@ -307,27 +308,27 @@ namespace mrf
          //////////////////////
          // Access Functions //
          //////////////////////
-         const std::string &configFilename() const 
-         { return m_configFilename; } 
-         const std::string &templateFilename() const 
+         const std::string &configFilename() const
+         { return m_configFilename; }
+         const std::string &templateFilename() const
          { return m_templateFilename; }
-         const std::string &prefix() const 
+         const std::string &prefix() const
          { return m_prefix; }
-         
 
-         int         &integerValue  (std::string key) 
+
+         int         &integerValue  (std::string key)
          { return m_parser.integerValue (key); }
-         double      &doubleValue   (std::string key) 
+         double      &doubleValue   (std::string key)
          { return m_parser.doubleValue  (key); }
-         std::string &stringValue   (std::string key) 
+         std::string &stringValue   (std::string key)
          { return m_parser.stringValue  (key); }
-         bool        &boolValue     (std::string key) 
+         bool        &boolValue     (std::string key)
          { return m_parser.boolValue    (key); }
-         IVec        &integerVector (std::string key) 
+         IVec        &integerVector (std::string key)
          { return m_parser.integerVector(key); }
-         DVec        &doubleVector  (std::string key) 
+         DVec        &doubleVector  (std::string key)
          { return m_parser.doubleVector (key); }
-         SVec        &stringVector  (std::string key) 
+         SVec        &stringVector  (std::string key)
          { return m_parser.stringVector (key); }
 
 
@@ -335,7 +336,7 @@ namespace mrf
       private:
 
          // load configuration file
-         bool _loadConfigFile (const std::string &configFilename, 
+         bool _loadConfigFile (const std::string &configFilename,
                               bool mainLoop = true);
 
          // initialize the fitter according to the mode flag
@@ -350,7 +351,7 @@ namespace mrf
          void _loadTemplates (const std::string &filename);
          void _hookupFitter ();
          void _createBinsSums ();
-   
+
          // Converts '_'s to ' 's
          void _fixGroupStrings();
 
@@ -408,7 +409,7 @@ namespace mrf
          bool          m_canAddToPolyMap;
          IIMap         m_polyTemplate2indexMap;
          SSet          m_usesTemplateMorphing;
-         STemplateMorphInfoMap m_morphMap;         
+         STemplateMorphInfoMap m_morphMap;
    };
 
 };

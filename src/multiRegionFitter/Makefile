@@ -31,7 +31,11 @@ OBJS =  $(patsubst %.cc, %.o, $(SRCS))
 
 # copy things somewhere sensible
 install: $(EXECNAME)
-	cp multiRunRangeFitter.exe runMultipleFits.exe $(EXECNAME) ../../bin
+#	cp multiRunRangeFitter.exe runMultipleFits.exe $(EXECNAME) ../../bin
+	cp $(EXECNAME) ../../bin
+
+# make installing the default
+all: install
 
 # Make the executable
 $(EXECNAME): $(OBJS)

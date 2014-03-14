@@ -7,55 +7,54 @@
 
 class CLPFunctionoid2
 {
-   public:
-      //////////////////////
-      // Public Constants //
-      //////////////////////
+    public:
+        //////////////////////
+        // Public Constants //
+        //////////////////////
 
-      /////////////
-      // friends //
-      /////////////
-      // tells particle data how to print itself out
-      friend std::ostream& operator<< (std::ostream& o_stream, 
-                                       const CLPFunctionoid2 &rhs);
+        /////////////
+        // friends //
+        /////////////
+        // tells particle data how to print itself out
+        friend std::ostream& operator<< (std::ostream& o_stream,
+                const CLPFunctionoid2 &rhs);
 
-      //////////////////////////
-      //            _         //
-      // |\/|      |_         //
-      // |  |EMBER | UNCTIONS //
-      //                      //
-      //////////////////////////
+        //////////////////////////
+        //            _         //
+        // |\/|      |_         //
+        // |  |EMBER | UNCTIONS //
+        //                      //
+        //////////////////////////
 
-      /////////////////////////////////
-      // Constructors and Destructor //
-      /////////////////////////////////
-      CLPFunctionoid2();
+        /////////////////////////////////
+        // Constructors and Destructor //
+        /////////////////////////////////
+        CLPFunctionoid2();
 
-      virtual ~CLPFunctionoid2() {};
+        virtual ~CLPFunctionoid2() {};
 
-       ////////////////
-      // One Liners //
-      ////////////////
+        ////////////////
+        // One Liners //
+        ////////////////
 
-      //////////////////////////////
-      // Regular Member Functions //
-      //////////////////////////////
+        //////////////////////////////
+        // Regular Member Functions //
+        //////////////////////////////
 
-      virtual double operator() (double alpha, double beta) const
-      { return beta - alpha; }
+        virtual double operator() (double alpha, double beta) const { return beta - alpha; };
 
-      /////////////////////////////
-      // Static Member Functions //
-      /////////////////////////////
+        /////////////////////////////
+        // Static Member Functions //
+        /////////////////////////////
 
-  private:
-      ///////////////////////
-      // Private Constants //
-      ///////////////////////
+    private:
+        ///////////////////////
+        // Private Constants //
+        ///////////////////////
 
-      /////////////////////////
-      // Private Member Data //
-      /////////////////////////
+        /////////////////////////
+        // Private Member Data //
+        /////////////////////////
 
 };
 

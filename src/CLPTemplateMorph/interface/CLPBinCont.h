@@ -28,7 +28,7 @@ class CLPBinCont : public TObject
       // friends //
       /////////////
       // tells particle data how to print itself out
-      friend std::ostream& operator<< (std::ostream& o_stream, 
+      friend std::ostream& operator<< (std::ostream& o_stream,
                                        const CLPBinCont &rhs);
 
       //////////////////////////
@@ -43,14 +43,14 @@ class CLPBinCont : public TObject
       /////////////////////////////////
       CLPBinCont();
       CLPBinCont (TH1F *histPtr);
-
+      virtual ~CLPBinCont() {};
        ////////////////
       // One Liners //
       ////////////////
 
       // clears vector
       void clear() { m_vec.clear(); }
-      
+
       // integral
       double integral() const { return m_integral; }
 
@@ -59,7 +59,7 @@ class CLPBinCont : public TObject
 
       // sets and returns the value of dontRemovePoints
       bool dontRemovePoints() const { return m_dontRemovePoints; }
-      void setDontRemovePoints (bool dontRemovePoints) 
+      void setDontRemovePoints (bool dontRemovePoints)
       { m_dontRemovePoints = dontRemovePoints; }
       static void setDontRemovePointsDefault (bool dontRemoveDefault)
       { sm_dontRemovePointsDefault = dontRemoveDefault; }
@@ -96,24 +96,24 @@ class CLPBinCont : public TObject
       // sets this object as the horizontal morph between two other
       // BinConts.  'param' = 0 means all alpha, 'param' = 1 means all
       // beta.
-      void horizontalMorph (const CLPBinCont &alpha, const CLPBinCont &beta, 
+      void horizontalMorph (const CLPBinCont &alpha, const CLPBinCont &beta,
                             double param);
 
       // sets this object as the difference between two BinCounts.
-      void horizontalSubtract (const CLPBinCont &alpha, 
+      void horizontalSubtract (const CLPBinCont &alpha,
                                const CLPBinCont &beta);
 
       void horizontalDeltaMorph (const CLPBinCont &alpha,
                                  const CLPBinCont &beta,
                                  double percentage);
 
-      void horizontalFunction (const CLPBinCont &alpha, 
+      void horizontalFunction (const CLPBinCont &alpha,
                                const CLPBinCont &beta,
                                const CLPFunctionoid2 &functionoid);
 
       // sets this object as the sum between a default BinCount and a
       // subtracted one.
-      void horizontalAdd (const CLPBinCont &alpha, 
+      void horizontalAdd (const CLPBinCont &alpha,
                           const CLPBinCont &delta,
                           double percentage = 1.);
 

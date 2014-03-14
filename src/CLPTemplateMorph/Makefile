@@ -9,7 +9,8 @@ ROOTCFLAGS   := $(shell root-config --cflags)
 ROOTLIBS     := $(shell root-config --libs)
 ROOTGLIBS    := $(shell root-config --glibs)
 
-# Include Root's architecture file that has options for all of it's
+
+# Inclmoude Root's architecture file that has options for all of it's
 # supported compilers
 include ${ROOTSYS}/etc/Makefile.arch
 
@@ -18,20 +19,22 @@ SHARED = ../shlib/lib$(MAIN).$(DllSuf)
 INCFLAGS = -I.. -I$(MAIN) -I../$(MAIN) -Iinterface
 CXXFLAGS += $(shell root-config --cflags) $(INCFLAGS)
 
-SRCS =  $(wildcard src/*.cc) 
+SRCS =  $(wildcard src/*.cc)
 
-INCS = 	$(wildcard interface/*.h)
+INCS =  $(wildcard interface/*.h)
 
 DEPS =  $(patsubst src/%, objects/%, \
-		  $(patsubst %.cc, %.d, $(wildcard src/*.cc)) )
+			$(patsubst %.cc, %.d, $(wildcard src/*.cc)) )
+
+EXPLLINKLIBS += -L${ROOTSYS}/lib -lMinuit -L../shlib
 
 # We want dictionaries only for classes that have _linkdef.h files
 DICTOBS =  $(patsubst %_linkdef.h, %.o, \
-		      $(patsubst dict/%, objects/dict_%, \
-			  $(wildcard dict/*_linkdef.h) ) )
+			$(patsubst dict/%, objects/dict_%, \
+			$(wildcard dict/*_linkdef.h) ) )
 
 OBJS =   $(patsubst src/%, objects/%, \
-		    $(patsubst %.cc, %.o, $(SRCS)) )
+			$(patsubst %.cc, %.o, $(SRCS)) )
 
 OBJS += $(DICTOBS)
 

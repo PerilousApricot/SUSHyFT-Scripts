@@ -3,7 +3,8 @@
 # ››› SUSHyFT - Andrew Melo, on the shoulders of others
 
 # Where are we? (Get right bash magic to autodetect)
-export SUSHYFT_BASE=$(dirname $(readlink -f "$BASH_SOURCE"))
+SCRIPTPATH="${BASH_SOURCE[0]}"
+export SUSHYFT_BASE="$(cd "$(dirname "${SCRIPTPATH}")" ; pwd)"
 
 # Which analysis are we doing? Determines input datasets, binning procedure
 export SUSHYFT_MODE="ttbar_notau"
@@ -39,4 +40,9 @@ fi
 EXTRA_PYTHONPATH="$SUSHYFT_BASE/python"
 if [[ $PYTHONPATH != *$EXTRA_PYTHONPATH* ]]; then
     export PYTHONPATH=$PYTHONPATH:$EXTRA_PYTHONPATH
+fi
+
+if [[ -z ${CMSSW_BASE} ]]; then
+    echo "WARNING: No CMSSW installation was sourced, many things may"
+    echo "         fail to function."
 fi

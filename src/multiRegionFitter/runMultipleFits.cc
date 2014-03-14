@@ -31,7 +31,7 @@ int main(int argc, char** argv)
    localInitialize();     // hook up local options
    mrf::ns_parser.parseArguments (argc, argv, true);
    mrf::setDataName();
-   const optutl::CommandLineParser::SVec arguments = 
+   const optutl::CommandLineParser::SVec arguments =
       mrf::ns_parser.nonOptionArgsVec();
 
    if (arguments.size() != 3)
@@ -40,12 +40,12 @@ int main(int argc, char** argv)
       mrf::ns_parser.help();
    }
    int nfits = arguments.size();
-   string fitterConfigNames[nfits]; 
+   string fitterConfigNames[nfits];
    for (int i = 0; i<nfits; i++){
      fitterConfigNames[i] =  arguments.at(i);
    }
    string peFitterConfigName ( arguments.at(0) );
- 
+
    mrf::MRFitter fitters[3] = {
      mrf::MRFitter( fitterConfigNames[0] ),
      mrf::MRFitter( fitterConfigNames[1] ),
@@ -55,7 +55,7 @@ int main(int argc, char** argv)
 
    gRandom->SetSeed (peFitter.integerValue ("randomSeed"));
    mrf::DVec paramVec[nfits];
-   mrf::DVec peParamVec;   
+   mrf::DVec peParamVec;
    BinsSumCont &binsSumCont = peFitter.binsSumCont();
    // setup parameter vectors to fitter initial values
    for (int i = 0; i<nfits; i++){
@@ -68,14 +68,14 @@ int main(int argc, char** argv)
     ///////////////////////
     string tag;
     mrf::processOptions (tag);
-    fitters[0].stringValue ("output") = 
+    fitters[0].stringValue ("output") =
        optutl::CommandLineParser::removeEnding (fitters[0].
-                                                stringValue ("output"), 
+                                                stringValue ("output"),
                                                 ".root");
     fitters[0].stringValue ("output") += tag;
     if (fitters[0].integerValue ("randomSeed"))
     {
-       fitters[0].stringValue ("output") += 
+       fitters[0].stringValue ("output") +=
           Form ("_seed%03d", fitters[0].integerValue ("randomSeed"));
     }
     if (! fitters[0].doubleValue ("intLumi") )
@@ -84,23 +84,23 @@ int main(int argc, char** argv)
     } else if (fitters[0].doubleValue ("intLumi") < 0.0001 ||
         fitters[0].doubleValue ("intLumi") > 1e4)
     {
-       fitters[0].stringValue ("output") += 
+       fitters[0].stringValue ("output") +=
           Form ("_lum%f", fitters[0].doubleValue ("intLumi"));
     } else if (fitters[0].doubleValue ("intLumi") >= 0.0001 &&
                fitters[0].doubleValue ("intLumi") < 1.0)
     {
-       fitters[0].stringValue ("output") += 
+       fitters[0].stringValue ("output") +=
           Form ("_lum%.4f", fitters[0].doubleValue ("intLumi"));
     } else if (fitters[0].doubleValue ("intLumi") >= 1.0 &&
                fitters[0].doubleValue ("intLumi") < 1e3)
     {
-       fitters[0].stringValue ("output") += 
+       fitters[0].stringValue ("output") +=
           Form ("_lum%.1f", fitters[0].doubleValue ("intLumi"));
     } else {
-       fitters[0].stringValue ("output") += 
+       fitters[0].stringValue ("output") +=
           Form ("_lum%.0f", fitters[0].doubleValue ("intLumi"));
     }
- 
+
 //    //////////////////////////////////////////////
 //    // Save templates with specified parameters //
 //    //////////////////////////////////////////////
@@ -128,7 +128,7 @@ int main(int argc, char** argv)
 //       fitter.saveCanvasResult (fitter.stringValue ("output") + "_params",
 //                                 tempParamVec);
 //    }
-// 
+//
     //////////////
     // Fit Data //
     //////////////
@@ -150,8 +150,8 @@ int main(int argc, char** argv)
 //          binsSumCont.setParamVec (resultVec);
 //          binsSumCont.getValues (centerVec);
 //          fitters[fitterConfigNumber].storeSqrtMatrix();
-//          for (int loop = 0; 
-//               loop < fitters[fitterConfigNumber].integerValue ("covarPEs"); 
+//          for (int loop = 0;
+//               loop < fitters[fitterConfigNumber].integerValue ("covarPEs");
 //               ++loop)
 //          {
 //             mrf::DVec randomVec (resultVec);
@@ -278,14 +278,14 @@ int main(int argc, char** argv)
 //      treePtr->Branch ("errBsc",  "vector<double>", &bscErrVecPtr);
 //      mrf::SVec bscNamesVec;
 //      binsSumCont.getAllNames (bscNamesVec);
-//      outputFilePtr->WriteObject (&bscNamesVec, "bscNames");      
+//      outputFilePtr->WriteObject (&bscNamesVec, "bscNames");
 //   } // if we are using binsSumContainers
 
    ////////////////////////
    // Final Preparations //
    ////////////////////////
    int everyN = 1000;
-   if (fitters[0].integerValue ("numPEs") % 20 < everyN && 
+   if (fitters[0].integerValue ("numPEs") % 20 < everyN &&
        fitters[0].integerValue ("numPEs") > 20)
    {
       everyN = fitters[0].integerValue ("numPEs") / 20;
@@ -297,9 +297,9 @@ int main(int argc, char** argv)
    // setup vector, initializing it
    // dumpNamedSTLendl ("names", peFitter.stringVector ("PEnames"));
    mrf::BlurStructVec blurVec;
-   peFitter.setupBlurStruct (blurVec, 
-                             peFitter.stringVector ("PEnames"), 
-                             peFitter.doubleVector ("PEmeans"), 
+   peFitter.setupBlurStruct (blurVec,
+                             peFitter.stringVector ("PEnames"),
+                             peFitter.doubleVector ("PEmeans"),
                              peFitter.doubleVector ("PEsigmas"));
    mrf::SVec peParamNamesVec;
    peFitter.fillNameVec (peParamNamesVec);
@@ -341,33 +341,33 @@ int main(int argc, char** argv)
 	// generated values is from peFitter; results from fitter
 	peFitter.convertFitterToTreeOrder (peParamVec,   *genVecPtr[i]);
 	fitters[i].convertFitterToTreeOrder   (fitterValues, *measVecPtr[i]);
-	fitters[i].convertFitterToTreeOrder   (fitterErrors, *errVecPtr[i]);      
+	fitters[i].convertFitterToTreeOrder   (fitterErrors, *errVecPtr[i]);
       }
       if (fitters[0].boolValue ("doMinos"))
       {
          mrf::DVec posErrors, negErrors;
          fitters[0].fillPosErrorVec (posErrors);
          fitters[0].fillNegErrorVec (negErrors);
-         fitters[0].convertFitterToTreeOrder   (posErrors, *posErrVecPtr);      
-         fitters[0].convertFitterToTreeOrder   (negErrors, *negErrVecPtr);      
+         fitters[0].convertFitterToTreeOrder   (posErrors, *posErrVecPtr);
+         fitters[0].convertFitterToTreeOrder   (negErrors, *negErrVecPtr);
       }
       if (scanVecSize)
       {
          for (int loop = 0; loop < scanVecSize; ++loop)
          {
-            scanPosErrVecPtr->at(loop) = 
+            scanPosErrVecPtr->at(loop) =
                fitters[0].scanStructVec().at(loop).m_upperError;
-            scanNegErrVecPtr->at(loop) = 
+            scanNegErrVecPtr->at(loop) =
                fitters[0].scanStructVec().at(loop).m_lowerError;
          } // for loop
       } // if scanning variables
 //       if (fitters[0].boolValue ("savePlots"))
 //       {
-//          fitters[0].saveCanvasResult( Form ("%s_pe%d", 
-//                                         fitters[0].stringValue("output").c_str(), 
+//          fitters[0].saveCanvasResult( Form ("%s_pe%d",
+//                                         fitters[0].stringValue("output").c_str(),
 //                                         loop) );
-//          fitters[0].saveCanvasResult( Form ("%s_pe%d_should", 
-//                                         fitters[0].stringValue("output").c_str(), 
+//          fitters[0].saveCanvasResult( Form ("%s_pe%d_should",
+//                                         fitters[0].stringValue("output").c_str(),
 //                                         loop),
 //                                   paramVec );
 //       }
@@ -377,7 +377,7 @@ int main(int argc, char** argv)
 //          fitters[0].storeSqrtMatrix();
 //          binsSumCont.setParamVec (fitterValues);
 //          binsSumCont.getValues (*bscCentVecPtr);
-//          for (int loop = 0; loop < fitters[0].integerValue ("covarPEs"); 
+//          for (int loop = 0; loop < fitters[0].integerValue ("covarPEs");
 //               ++loop)
 //          {
 //             mrf::DVec randomVec (fitterValues);
@@ -393,7 +393,7 @@ int main(int argc, char** argv)
 //             // dumpNamedSTLendl ("meas   ", *bscMeasVecPtr);
 //             // dumpNamedSTLendl ("center ", *bscCentVecPtr);
 //             // dumpNamedSTLendl ("rms    ", *bscErrVecPtr);
-//             // dumpNamedSTLendl ("gen    ", *bscGenVecPtr); 
+//             // dumpNamedSTLendl ("gen    ", *bscGenVecPtr);
 //             cout << endl << endl << endl << endl;
 //          } // if print results
 //       } // if running covariance PEs

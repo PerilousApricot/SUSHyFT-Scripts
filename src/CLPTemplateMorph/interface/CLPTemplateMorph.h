@@ -37,7 +37,7 @@ class CLPTemplateMorph : public TH1F
       // friends //
       /////////////
       // tells particle data how to print itself out
-      friend std::ostream& operator<< (std::ostream& o_stream, 
+      friend std::ostream& operator<< (std::ostream& o_stream,
                                        const CLPTemplateMorph &rhs);
 
       //////////////////////////
@@ -50,11 +50,11 @@ class CLPTemplateMorph : public TH1F
       /////////////////////////////////
       // Constructors and Destructor //
       /////////////////////////////////
-      CLPTemplateMorph ();
-      CLPTemplateMorph (const char* name, const char *title);
-      CLPTemplateMorph (const char* name, const char *title,
+      CLPTemplateMorph();
+      CLPTemplateMorph(const char* name, const char *title);
+      CLPTemplateMorph(const char* name, const char *title,
                         Int_t numBins, Axis_t xlow, Axis_t xhigh);
-
+      virtual ~CLPTemplateMorph();
       ////////////////
       // One Liners //
       ////////////////
@@ -62,12 +62,12 @@ class CLPTemplateMorph : public TH1F
 
       // sets and returns the value of dontRemovePoints
       bool dontRemovePoints() const { return m_dontRemovePoints; }
-      void setDontRemovePoints (bool dontRemovePoints) 
+      void setDontRemovePoints(bool dontRemovePoints)
       { m_dontRemovePoints = dontRemovePoints; }
 
       // if set true, will smooth the beginning of the delta CDFs
       bool smoothDeltas() const { return m_smoothDeltas; }
-      void setSmoothDeltas (bool smoothDeltas) 
+      void setSmoothDeltas(bool smoothDeltas)
       { m_smoothDeltas = smoothDeltas; }
 
       // turns on full output
@@ -78,7 +78,7 @@ class CLPTemplateMorph : public TH1F
 
       // setting and checking noUnderOverflow
       bool noUnderOverflow() const { return m_noUnderOverflow; }
-      void setNoUnderOverflow (bool noUnderOverflow = true) 
+      void setNoUnderOverflow (bool noUnderOverflow = true)
       { m_noUnderOverflow = noUnderOverflow; }
 
 
@@ -96,11 +96,11 @@ class CLPTemplateMorph : public TH1F
       int addMorphVariable (const std::string &name, double center = 0.);
 
       // adds a new template and variable  to a morphing variable.
-      void addMorphTemplate (const std::string &name, double value, 
+      void addMorphTemplate (const std::string &name, double value,
                              TH1F *histPtr);
       void addMorphTemplate (int index, double value, TH1F *histPtr);
 
-      // set the paramVec and recalculates the histogram.  
+      // set the paramVec and recalculates the histogram.
       void setParamVec (const DVec &paramVec);
 
       // this function works as the above, except that you must have
@@ -129,7 +129,7 @@ class CLPTemplateMorph : public TH1F
                               const std::string &name);
 
       // Adds a Morph to the ptrVec.  This should only be done after
-      // the morph being passed in is fully configured.  
+      // the morph being passed in is fully configured.
       // NOTE: As this only keeps pointers, changes to the morphs that
       // are added will affect this morph.
       void addMorph (CLPTemplateMorph *morphPtr);
@@ -163,7 +163,6 @@ class CLPTemplateMorph : public TH1F
       /////////////////////////
       // Private Member Data //
       /////////////////////////
-      
       bool       m_dontRemovePoints;
       bool       m_smoothDeltas;
       bool       m_outputAll;
@@ -176,7 +175,6 @@ class CLPTemplateMorph : public TH1F
       PtrVec     m_ptrVec;
       CLPBinCont m_defaultBC;
       CLPBinCont::DMapVec m_deltaMorphMapVec;
-      
 
       ClassDef (CLPTemplateMorph, 1) // CLPTemplateMorph Class
 };
