@@ -29,7 +29,6 @@ while read DATASET; do
             continue
             ;;
     esac
-    echo "Processing $SHORTNAME"
     DIR=$SUSHYFT_EDNTUPLE_PATH/crab_${run}_${SHORTNAME}
     DIR_OUT=$DIR
     # I named some directories with a different system, for some dumb reason
@@ -42,7 +41,6 @@ while read DATASET; do
         SHORTNAME=$(echo $SHORTNAME_BAK | sed $PATTERN)
         DIR=$SUSHYFT_EDNTUPLE_PATH/crab_${run}_${SHORTNAME}
         if [[ -d $DIR/res ]]; then
-            echo " - processing with $SHORTNAME"
             break
         fi
     done
@@ -106,12 +104,13 @@ while read DATASET; do
     [[ -d $TARGET_DIR ]] && mkdir -p $TARGET_DIR
     CRAB_HASH_POINTER=$TARGET_DIR/crabhash.txt
     OLDCRAB_HASH=$(cat $CRAB_HASH_POINTER)
-    NEWCRAB_HASH=$(ls -lah $DIR/res/crab_fjr*.xml 2>/dev/null | sort | md5sum | awk '{ print $1 }')
+    NEWCRAB_HASH=$(ls -l $DIR/res/crab_fjr*.xml 2>/dev/null | sort | md5sum | awk '{ print $1 }')
     INPUT_MISSING=""
     MISSING_COUNT=0
     # Possibly cache file list
     if [[ $OLDCRAB_HASH != $NEWCRAB_HASH ]]; then
         echo "Hashes don't match, scanning crab dir for info"
+        echo "    $OLDCRAB_HASH != $NEWCRAB_HASH"
         # this monstrosity gets the output files from successful FJRs
         CURRENT_INPUT=$( ( for XML in $DIR/res/crab_*.xml;do if [[ $(grep '<FrameworkJobReport Status=\"Success\">' $XML) ]]; then
                             grep '<LFN>' -A 1 $XML | head -n 2 | tail -n 1 | awk '{ print $1 }'
