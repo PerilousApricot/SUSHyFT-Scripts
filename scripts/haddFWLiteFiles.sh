@@ -15,5 +15,4 @@ if [[ $EXIT_CODE -ne 0 ]]; then
     rm $OUTPUT
     echo "$@" >> $OUTPUT.FAIL
 fi
-echo "Normal exit"
 exit $EXIT_CODE
