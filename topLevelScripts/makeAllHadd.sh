@@ -36,7 +36,6 @@ while read DATASET; do
         DATASET=$( echo $DATASET_WCRAB | perl -pe 's|crab_.*?_(.*)|\1|' )
         SYSTEMATIC=$( echo $DIR | tr '/' ' ' | awk '{ print $(NF) }' )
         toProcess+=("runIfChanged.sh $SUSHYFT_HADD_PATH/${SYSTEMATIC}_${DATASET}.root $DIR/*.root -- haddFWLiteFiles.sh $SUSHYFT_HADD_PATH/${SYSTEMATIC}_${DATASET}.root $DIR/*.root")
-
     done < $SUSHYFT_BASE/config/$SUSHYFT_MODE/fwliteSystematicsList.txt
 done < $SUSHYFT_BASE/config/$SUSHYFT_MODE/input_pat.txt
 

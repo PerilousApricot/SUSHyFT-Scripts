@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# hadds all the fwlite files together in a sensible way
+# To keep the FWLite files as broad as possible, they keep all of the bings
+# this script removes/combines unneeded bins
 source $SUSHYFT_BASE/scripts/functions.sh
-
 toProcess=( )
 echo "Gathering jobs to process"
 while read DATASET; do
@@ -24,7 +24,7 @@ while read DATASET; do
         if [[ $IS_DATA -eq 1 && $SYSTDATA -eq 0 ]]; then
             continue
         fi
-        if [[ ! $BASEDIR =~ "$TESTREGEX" ]]; then
+        if [[ ! $BASEDIR =~ ${TESTREGEX} ]]; then
             continue
         fi
         DIR=$SUSHYFT_FWLITE_PATH/$BASEDIR/$OUTNAME
