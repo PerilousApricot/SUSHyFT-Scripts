@@ -1,11 +1,12 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 """
     extract_qcd_norm_from_data.py - Given a stitched template with un-scaled
     data/QCD and with the rest normalized to their MC predictions, perform a fit
     for each jet/tag bin to extract the QCD normalization
 
-    Slam the appropriate QCD 
+    Slam the appropriate QCD. A real complicated way to end up with
+    scaleQCD = [value from minifit] * (integral(normalQCD)/integral(looseQCD))
 
     Author: Andrew Melo, based on magic_fit.py from Andrew Ivanov
 """
@@ -33,14 +34,19 @@ parser.add_option('--qcd-signal', type='string', action='append',
         dest='qcd_signal',
         default=[],
         help='QCD from signal region "nominalQCD"')
-parser.add_option('--Lumi', metavar='D', type='float', action='store',
+parser.add_option('--lumi', metavar='D', type='float', action='store',
         default=19712,
-        dest='Lumi',
+        dest='lumi',
         help='Data Luminosity')
 parser.add_option('--var', metavar='T', type='string', action='store',
         default='',
         dest='var',
         help='Variable to fit')
+parser.add_option('--shapeOutputVar', metavar='T', type='string', action='store',
+        default='',
+        dest='shapeOutputVar',
+        help='Variable to use when outputting shapes')
+
 
 # unneeded
 parser.add_option('--qcd-norm', type='string', action='append',
@@ -215,7 +221,7 @@ minJ = '{0:1.0f}'.format( options.minJets)
 maxJ = '{0:1.0f}'.format( options.maxJets)
 minT = '{0:1.0f}'.format( options.minTags)
 maxT = '{0:1.0f}'.format( options.maxTags)
-lum  = '{0:1.0f}'.format( options.Lumi)
+lum  = '{0:1.0f}'.format( options.lumi)
 
 #provide explanatory title for each variable name
 ##if options.var == "secvtxMass" :
@@ -349,6 +355,8 @@ if not options.qcd_signal:
     options.qcd_signal = options.stitched_input
 if not options.qcd_shape:
     options.qcd_shape = options.stitched_input
+if not options.qcd_norm:
+    options.qcd_norm = options.stitched_input
 qcd = TDistribution("qcd", var, *options.qcd_norm,**hists)
 qcd_signal = TDistribution("qcd", var, *options.qcd_signal,**hists_tagged)
 qcd_shape  = TDistribution("qcd", var, *options.qcd_shape,**hists)
