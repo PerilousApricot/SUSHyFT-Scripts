@@ -2,6 +2,13 @@
 # runIfChanged outputFile input1 [input 2] .. -- command <args>
 # only executes the command if the input files have changed or if outputFile
 # doesn't exist
+
+command -v md5sum &>/dev/null
+if [[ $? -ne 0 ]]; then
+    echo "ERROR: 'md5sum' not found in \$PATH. $0 requires this tool"
+    exit 99
+fi
+
 OUTPUTFILE=$1
 [[ -d `dirname $OUTPUTFILE`/state ]] || mkdir -p `dirname $OUTPUTFILE`/state
 [[ -d `dirname $OUTPUTFILE`/output ]] || mkdir -p `dirname $OUTPUTFILE`/output
