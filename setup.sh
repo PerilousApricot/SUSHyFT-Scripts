@@ -46,3 +46,9 @@ if [[ -z ${CMSSW_BASE} ]]; then
     echo "WARNING: No CMSSW installation was sourced, many things may"
     echo "         fail to function."
 fi
+
+command -v md5sum &>/dev/null
+if [[ $? -ne 0 ]]; then
+    echo "WARNING: 'md5sum' was not found in $PATH, many things will not"
+    echo "         function."
+fi
