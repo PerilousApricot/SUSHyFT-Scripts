@@ -31,6 +31,12 @@ export SUSHYFT_EDNTUPLE_CMSSW_BASE="FIXME123"
 # Where to put CRAB scratch stuff
 export SUSHYFT_SCRATCH_PATH=$SUSHYFT_BASE/scratch
 
+# Set some variables for the number of cores
+# this works in linux and OSX
+export SUSHYFT_CORE_COUNT=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || sysctl -n hw.ncpu)
+# We know some things will be very I/O bound
+export SUSHYFT_DOUBLE_CORE_COUNT=$(echo "${SUSHYFT_CORE_COUNT}*2" | bc)
+
 # Export some path variables
 EXTRA_PATH="$SUSHYFT_BASE/scripts:$SUSHYFT_BASE/bin:$SUSHYFT_BASE/topLevelScripts"
 if [[ -d $SUSHYFT_BASE/src/parallel/local/bin ]];then
@@ -53,4 +59,10 @@ fi
 if [[ -z ${CRABDIR} ]]; then
     echo "WARNING: No CRAB installation was sourced, many things may"
     echo "         fail to function."
+fi
+
+command -v md5sum &>/dev/null
+if [[ $? -ne 0 ]]; then
+    echo "WARNING: 'md5sum' was not found in $PATH, many things will not"
+    echo "         function."
 fi

@@ -1,8 +1,14 @@
 #!/bin/bash
-
 # runIfChanged outputFile input1 [input 2] .. -- command <args>
 # only executes the command if the input files have changed or if outputFile
 # doesn't exist
+
+command -v md5sum &>/dev/null
+if [[ $? -ne 0 ]]; then
+    echo "ERROR: 'md5sum' not found in \$PATH. $0 requires this tool"
+    exit 99
+fi
+
 OUTPUTFILE=$1
 [[ -d `dirname $OUTPUTFILE`/state ]] || mkdir -p `dirname $OUTPUTFILE`/state
 [[ -d `dirname $OUTPUTFILE`/output ]] || mkdir -p `dirname $OUTPUTFILE`/output
@@ -17,7 +23,7 @@ while [[ $1 != "--" ]]; do
 done
 shift # jump past the --
 
-ARGHASH=$(echo "$@" | md5sum | awk '{ print $1 }')
+ARGHASH=$(echo "$@" | sed "s#${SUSHYFT_BASE}##g" | md5sum | awk '{ print $1 }')
 CURRSTATE="$(ls -l $INPUTS | sort | md5sum | awk '{ print $1 }')-$ARGHASH"
 if [[ -e $STATEFILE && -e $OUTPUTFILE ]]; then
     # don't jump past the "--", we need it for below
@@ -35,7 +41,6 @@ if [[ -e $STATEFILE && -e $OUTPUTFILE ]]; then
     fi
 else
     echo "Couldnt find $STATEFILE or $OUTPUTFILE"
-    ls -lah $STATEFILE $OUTPUTFILE
 fi
 [[ -e $OUTPUTFILE ]] && rm $OUTPUTFILE
 echo -n $CURRSTATE > $STATEFILE.temp 
