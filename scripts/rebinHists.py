@@ -10,12 +10,12 @@ sys.argv = oldArgv[:]
 
 from optparse import OptionParser
 parser = OptionParser()
-parser.add_option('--tagMode', metavar='F', type='string', action='store',    
-              dest='tagMode',                                             
-              help='Which rebinning pattern should we use') 
-parser.add_option('--outDir', metavar='F', type='string', action='store',    
-              dest='outDir',                                             
-              help='What output directory should we use') 
+parser.add_option('--tagMode', metavar='F', type='string', action='store',
+              dest='tagMode',
+              help='Which rebinning pattern should we use')
+parser.add_option('--outDir', metavar='F', type='string', action='store',
+              dest='outDir',
+              help='What output directory should we use')
 (options, args) = parser.parse_args()
 
 def bin_ttbar_notau(inputTitle):
@@ -44,12 +44,12 @@ for oneFile in args:
     additionDict = {}
     print "Processing %s" % oneFile
     inFile = ROOT.TFile(oneFile)
-    outFileName = os.path.join(options.outDir, 
+    outFileName = os.path.join(options.outDir,
                                       "%s_%s" % (options.tagMode,
                                                     os.path.basename(oneFile)))
 
     outFile = ROOT.TFile(outFileName, "RECREATE")
-    print "  Outputting to %s" % outFile
+    print "  Outputting to %s" % outFileName
     outDir = outFile.GetDirectory('')
     missingHists = []
     histList     = []
@@ -98,6 +98,6 @@ for oneFile in args:
     for k in additionDict:
         if not k in keyList:
             raise RuntimeError, "We wanted this hist (%s) but it didn't show up" % k
-    
+
     if missingHists:
         print "  Missing these histograms :(\n%s" % "\n  ".join(missingHists)
