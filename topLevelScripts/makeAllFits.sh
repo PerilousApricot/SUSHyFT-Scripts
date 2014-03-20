@@ -2,7 +2,6 @@
 
 # The big kahoona - runs the fits
 mkdir -p ${SUSHYFT_BASE}/state/${SUSHYFT_MODE}
-
 # First, get the systematic variations
 runIfChanged.sh  ${SUSHYFT_BASE}/state/${SUSHYFT_MODE}/btag_sf.mrf  \
                  `which configFitVariations.py` \
@@ -65,6 +64,7 @@ runIfChanged.sh  ${SUSHYFT_BASE}/state/${SUSHYFT_MODE}/Q2.mrf  \
 # This really really depends on having the proper data lumi set
 if [[ ! -e ${SUSHYFT_BASE}/state/lumisum_${SUSHYFT_EDNTUPLE_VERSION}_SingleMu.txt ]];then
     echo "You need to run makeAllLumiCalc.sh to get an accurate lumi calculation!"
+    exit 1
 fi
 
 multiRegionFitter.exe ${SUSHYFT_BASE}/config/${SUSHYFT_MODE}/fitConfigs/floatall.mrf templateFile=data/auto_copyhist/central_nominal.root fitData=1 output=tagged_both savePlots=1 saveTemplates=1 showCorrelations=1 dominos=1 intlumi=$(cat ${SUSHYFT_BASE}/state/lumisum_${SUSHYFT_EDNTUPLE_VERSION}_SingleMu.txt)

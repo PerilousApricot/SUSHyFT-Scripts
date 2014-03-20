@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# This really really depends on having the proper data lumi set
+if [[ ! -e ${SUSHYFT_BASE}/state/lumisum_${SUSHYFT_EDNTUPLE_VERSION}_SingleMu.txt ]];then
+    echo "You need to run makeAllLumiCalc.sh to get an accurate lumi calculation!"
+    exit 1
+fi
+
 for TAG in 1 2; do 
     for JET in 5 4 3 2 1; do 
         if [[ $TAG -gt $JET ]]; then
