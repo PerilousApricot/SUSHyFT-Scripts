@@ -39,5 +39,5 @@ done < $SUSHYFT_BASE/config/$SUSHYFT_MODE/input_pat.txt
 echo "Executing ${#toProcess[@]} jobs"
 ( for ((i = 0; i < ${#toProcess[@]}; i++)); do
     echo "${toProcess[$i]}"
-done; ) | parallel -j 16 --eta --progress
+done; ) | parallel -j $SUSHYFT_DOUBLE_CORE_COUNT --eta --progress
 
