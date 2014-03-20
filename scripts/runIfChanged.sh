@@ -10,12 +10,12 @@ if [[ $? -ne 0 ]]; then
 fi
 
 OUTPUTFILE=$1
-[[ -d `dirname $OUTPUTFILE`/state ]] || mkdir -p `dirname $OUTPUTFILE`/state
-[[ -d `dirname $OUTPUTFILE`/output ]] || mkdir -p `dirname $OUTPUTFILE`/output
+[[ -d `dirname $OUTPUTFILE`/.sushyft-state ]] || mkdir -p `dirname $OUTPUTFILE`/.sushyft-state
+[[ -d `dirname $OUTPUTFILE`/.sushyft-output ]] || mkdir -p `dirname $OUTPUTFILE`/.sushyft-output
 #echo "args are $@"
 shift
-STATEFILE=`dirname $OUTPUTFILE`/state/`basename $OUTPUTFILE`.state
-COMMANDOUTPUT=`dirname $OUTPUTFILE`/output/`basename $OUTPUTFILE`.txt
+STATEFILE=`dirname $OUTPUTFILE`/.sushyft-state/`basename $OUTPUTFILE`.state
+COMMANDOUTPUT=`dirname $OUTPUTFILE`/.sushyft-output/`basename $OUTPUTFILE`.txt
 INPUTS=""
 while [[ $1 != "--" ]]; do
     INPUTS="$1 $INPUTS"
@@ -37,8 +37,6 @@ if [[ -e $STATEFILE && -e $OUTPUTFILE ]]; then
         [[ -e $STATEFILE ]] && rm $STATEFILE
         [[ -e $COMMANDOUTPUT ]] && rm $COMMANDOUTPUT
     fi
-else
-    echo "Couldnt find $STATEFILE or $OUTPUTFILE"
 fi
 [[ -e $OUTPUTFILE ]] && rm $OUTPUTFILE
 echo -n $CURRSTATE > $STATEFILE.temp 
