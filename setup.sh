@@ -39,6 +39,9 @@ export SUSHYFT_DOUBLE_CORE_COUNT=$(echo "${SUSHYFT_CORE_COUNT}*2" | bc)
 
 # Export some path variables
 EXTRA_PATH="$SUSHYFT_BASE/scripts:$SUSHYFT_BASE/bin:$SUSHYFT_BASE/topLevelScripts"
+if [[ -d $SUSHYFT_BASE/src/parallel/local/bin ]];then
+    EXTRA_PATH="$EXTRA_PATH:$SUSHYFT_BASE/src/parallel/local/bin"
+fi
 if [[ $PATH != *$EXTRA_PATH* ]]; then
     export PATH=$PATH:$EXTRA_PATH
 fi
@@ -50,6 +53,11 @@ fi
 
 if [[ -z ${CMSSW_BASE} ]]; then
     echo "WARNING: No CMSSW installation was sourced, many things may"
+    echo "         fail to function."
+fi
+
+if [[ -z ${CRABDIR} ]]; then
+    echo "WARNING: No CRAB installation was sourced, many things may"
     echo "         fail to function."
 fi
 
