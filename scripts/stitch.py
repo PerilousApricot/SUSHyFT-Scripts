@@ -5,6 +5,8 @@
 # usage: python stich.py input_dir output_dir yourConfigFile1.cfg [yourConfigFile2.cfg] ...
 #
 # Applies each config in order to allow overriding variables
+# Adding the option --getInputFiles dumps thelist of input files to stdout, but doesn't run the actual
+# stitching
 
 import ConfigParser, re, sys
 
@@ -14,6 +16,10 @@ sys.argv = ['-b']
 import ROOT
 sys.argv = oldArgs[:]
 
+inputFileMode = False
+if '--getInputFiles' in sys.argv:
+    sys.argv.remove('--getInputFiles')
+    inputFileMode = True
 input_dir = sys.argv[1]
 output_dir = sys.argv[2]
 config = ConfigParser.ConfigParser()
@@ -22,6 +28,38 @@ config.set('DEFAULT', 'input_folder', input_dir)
 config.set('DEFAULT', 'output_folder', output_dir)
 if len(sys.argv) > 4:
     config.read(sys.argv[4:])
+
+if inputFileMode:
+    inputFiles = []
+    outputFiles = []
+    for section in config.sections():
+        toOpen = config.get(section,'input_folder')+'/'+config.get(section,'input_file')
+        inputFiles.append(toOpen)
+
+        # open a subfolder in the root file if needed
+        root_dir=''
+        if config.has_option(section,'root_dir'):
+            root_dir = config.get(section,'root_dir')
+
+        suffix=''
+        if config.has_option(section,'suffix'):
+            suffix = config.get(section,'suffix')
+
+        prefix=section
+        if config.has_option(section,'prefix'):
+            prefix = config.get(section,'prefix')
+
+        # add this to the output file names (like pfShyftAna in old format)
+        outfile_suffix=''
+        if config.has_option(section,'outfile_suffix'):
+            outfile_suffix = config.get(section,'outfile_suffix')
+
+        outfname = config.get(section,'output_folder') + '/' + 'stitched_' + root_dir + outfile_suffix + '.root'
+        outputFiles.append(outfname)
+    print outputFiles[0]
+    print "\n".join(inputFiles)
+    sys.exit(0)
+
 # ----------------------
 # function definitions
 # ----------------------
@@ -39,7 +77,7 @@ def listDirsNames(tfile, rootdir):
         keylist = tdir.GetListOfKeys()
     else:
         keylist = tfile.GetListOfKeys()
-    
+
     for key in keylist:
         if key.GetClassName()=='TH1F':
             th1s.append(key.GetName())
@@ -137,7 +175,7 @@ def getTemplate(infile, config, section):
             extrafile.Close()
         else:
              # read the template from input_file
-             template = getClone(infile, '', '', config.get(section,'template_hist')) 
+             template = getClone(infile, '', '', config.get(section,'template_hist'))
         template.Scale(1.0/template.Integral())
         return template
     else:
@@ -145,7 +183,7 @@ def getTemplate(infile, config, section):
 
 
 # ------------
-# main part 
+# main part
 # ------------
 
 # loop over sections (samples)
@@ -163,25 +201,25 @@ for section in config.sections():
     root_dir=''
     if config.has_option(section,'root_dir'):
         root_dir = config.get(section,'root_dir')
-    
+
     (dirs,th1s) = listDirsNames(infile, root_dir)
-    
+
     suffix=''
     if config.has_option(section,'suffix'):
         suffix = config.get(section,'suffix')
-    
+
     prefix=section
     if config.has_option(section,'prefix'):
         prefix = config.get(section,'prefix')
-    
+
     # add this to the output file names (like pfShyftAna in old format)
     outfile_suffix=''
     if config.has_option(section,'outfile_suffix'):
         outfile_suffix = config.get(section,'outfile_suffix')
-    
+
     # if we want to use template shape
     template = getTemplate(infile, config, section)
-    
+
     good_names = selectDirNames(th1s, config.get(section,'hist_to_read'), suffix)
     # loop over histograms, read them, scale, save to the output file
     dirs.insert(0,'') # also work with root_dir
@@ -203,7 +241,7 @@ for section in config.sections():
             scale = getScaleHistogram(hclone, config, section)
             #print 'scale ', scale
             outhname = recombineName(hname, prefix, suffix)
-                
+
             hclone.Scale(scale)
             #print 'scaled integral ', hclone.Integral()
             # here we should be able to use templates if needed
@@ -211,7 +249,7 @@ for section in config.sections():
                 new_clone = template.Clone()
                 new_clone.Scale(hclone.Integral())
                 hclone = new_clone
-            
+
             if outhname in existing_names:
                 if config.has_option(section,'prefix') or True:
                     # FIXME: do we need this block?
