@@ -6,8 +6,7 @@ for TAG in 1 2; do
             continue
         fi
         ( set -x
-        runIfChanged.sh ${SUSHYFT_BASE}/state/${SUSHYFT_MODE}_fit_output_${JET}j_${TAG}t.txt ${SUSHYFT_COPYHIST_PATH}/metfit.root `which handleQCDShapeAndNormalization.py` -- handleQCDShapeAndNormalization.py --stitched-input=${SUSHYFT_COPYHIST_PATH}/metfit.root --var=MET --minTags=$TAG --maxTags=$TAG --minJets=$JET --maxJets=$JET --fit --verbose --pretagMinTags=0 --pretagMaxTags=9 > ${SUSHYFT_BASE}/state/${SUSHYFT_MODE}_fit_output_${JET}j_${TAG}t.txt )
-        echo "one fit"
+        runIfChanged.sh ${SUSHYFT_BASE}/state/${SUSHYFT_MODE}_fit_output_${JET}j_${TAG}t.txt ${SUSHYFT_COPYHIST_PATH}/metfit.root `which handleQCDShapeAndNormalization.py` -- stdoutWrapper.sh ${SUSHYFT_BASE}/state/${SUSHYFT_MODE}_fit_output_${JET}j_${TAG}t.txt handleQCDShapeAndNormalization.py --stitched-input=${SUSHYFT_COPYHIST_PATH}/metfit.root --var=MET --minTags=$TAG --maxTags=$TAG --minJets=$JET --maxJets=$JET --fit --verbose --pretagMinTags=${TAG} --pretagMaxTags=${TAG} --shapeOutputVar=svm --lumi=$(cat ${SUSHYFT_BASE}/state/lumisum_${SUSHYFT_EDNTUPLE_VERSION}_SingleMu.txt) )
     done
 done
 
