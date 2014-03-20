@@ -24,17 +24,15 @@ done
 shift # jump past the --
 
 ARGHASH=$(echo "$@" | sed "s#${SUSHYFT_BASE}##g" | md5sum | awk '{ print $1 }')
-CURRSTATE="$(ls -l $INPUTS | sort | md5sum | awk '{ print $1 }')-$ARGHASH"
+CURRSTATE="$(ls -l $INPUTS 2>/dev/null | sort | md5sum | awk '{ print $1 }')-$ARGHASH"
 if [[ -e $STATEFILE && -e $OUTPUTFILE ]]; then
     # don't jump past the "--", we need it for below
     OLDSTATE=$(cat $STATEFILE 2>/dev/null)
     if [[ "$CURRSTATE" == "$OLDSTATE" ]]; then
         exit 0
     else
-        echo "State changed, gonna reprocess"
-        echo $OLDSTATE
-        echo $CURRSTATE
-        diff -u <(echo "$OLDSTATE") <(echo "$CURRSTATE")
+        echo "State changed, gonna reprocess."
+        echo "${OLDSTATE} != ${CURRSTATE}"
         [[ -e $OUTPUTFILE ]] && rm $OUTPUTFILE
         [[ -e $STATEFILE ]] && rm $STATEFILE
         [[ -e $COMMANDOUTPUT ]] && rm $COMMANDOUTPUT
