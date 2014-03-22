@@ -11,28 +11,25 @@
 + groupStrings = 1_Jet__1_Tag,  2_Jets_1_Tag,  3_Jets_1_Tag,  4_Jets_1_Tag, 5_Jets_1_Tag
 + groupStrings = 2_Jets_2_Tags, 3_Jets_2_Tags, 4_Jets_2_Tags, 5_Jets_2_Tags
 
-# integrated luminosity factor
-+ intLumi       = 1
-
 # binning of templates
 + binsPerGroup = 10, 10, 10, 10, 10, 10, 10, 10, 10 
 
 # How to throw PEs
 + peNames  =    Top,   SingleTop,   Wbx,   Wcx,   Wqq,    QCD
-+ peMeans  = 0.1575,         1.0,   1.0,   1.0,   1.0,    1.0
++ peMeans  = 1.0,         1.0,   1.0,   1.0,   1.0,    1.0
 + peSigmas =  0.020,         0.1,   0.1,   0.1,   0.1,    0.2
 
 # defaults
 + defaultNames     =   Top,   ZJets,   QCD
-+ defaultValues    =   0.234,  1.00,      1.0
++ defaultValues    =   1.00,  1.00,      1.0
 
 # colors
 + colorNames  = Data, Top, SingleTop, Wbx, Wcx, Wqq, QCD, ZJets
 + colorValues =    1, 633,       616, 413, 411, 407, 400,     9
 
 # constraints
-+ constraintNames  =    Top, ZJets,  SingleTop#, Wbx,  Wcx,  Wqq
-+ constraintValues =    0.2,  0.3,       0.30#, 4.0,  2.0,  2.0
++ constraintNames  =    ZJets,  SingleTop#, Wbx,  Wcx,  Wqq
++ constraintValues =    0.3,       0.30, 4.0,  2.0,  2.0
 
 # Ranges
 + rangeNames =   Wcx,     Wbx,   SingleTop,    Wqq
@@ -45,9 +42,9 @@
 + legendCoordinates = 0.285, 0.55, 0.365, 0.88
 
 # output file name
-+ output = output/combined_
++ output = output/nominal_
 
 # turn on data error bars
 + dataErrorBars = 1
 
-+ fixParameters=QCD
+#+ fixParameters=QCD
