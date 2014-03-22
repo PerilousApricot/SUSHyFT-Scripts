@@ -37,11 +37,15 @@ export SUSHYFT_CORE_COUNT=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || sysc
 # We know some things will be very I/O bound
 export SUSHYFT_DOUBLE_CORE_COUNT=$(echo "${SUSHYFT_CORE_COUNT}*2" | bc)
 
+# Convenient for syncing
+export SUSHYFT_REMOTE_PATH="vmplogin.accre.vanderbilt.edu:/scratch/meloam/SUSHyFT-Scripts"
+
 # Export some path variables
 EXTRA_PATH="$SUSHYFT_BASE/scripts:$SUSHYFT_BASE/bin:$SUSHYFT_BASE/topLevelScripts"
 if [[ -d $SUSHYFT_BASE/src/parallel/local/bin ]];then
     EXTRA_PATH="$EXTRA_PATH:$SUSHYFT_BASE/src/parallel/local/bin"
 fi
+
 if [[ $PATH != *$EXTRA_PATH* ]]; then
     export PATH=$PATH:$EXTRA_PATH
 fi
@@ -50,6 +54,15 @@ EXTRA_PYTHONPATH="$SUSHYFT_BASE/python"
 if [[ $PYTHONPATH != *$EXTRA_PYTHONPATH* ]]; then
     export PYTHONPATH=$PYTHONPATH:$EXTRA_PYTHONPATH
 fi
+
+EXTRA_LD_LIBRARY_PATH="$SUSHYFT_BASE/src/shlib"
+if [[ $LD_LIBRARY_PATH != *$EXTRA_LD_LIBRARY_PATH* ]]; then
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$EXTRA_LD_LIBRARY_PATH
+fi
+if [[ $DYLD_LIBRARY_PATH != *$EXTRA_LD_LIBRARY_PATH* ]]; then
+    export DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:$EXTRA_LD_LIBRARY_PATH
+fi
+
 
 if [[ -z ${CMSSW_BASE} ]]; then
     echo "WARNING: No CMSSW installation was sourced, many things may"
