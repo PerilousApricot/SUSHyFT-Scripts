@@ -53,8 +53,12 @@ if inputFileMode:
         outfile_suffix=''
         if config.has_option(section,'outfile_suffix'):
             outfile_suffix = config.get(section,'outfile_suffix')
+        
+        outfile_prefix='stitched_'
+        if config.has_option(section, 'outfile_prefix'):
+            outfile_prefix = config.get(section, 'outfile_prefix')
 
-        outfname = config.get(section,'output_folder') + '/' + 'stitched_' + root_dir + outfile_suffix + '.root'
+        outfname = config.get(section,'output_folder') + '/' + outfile_prefix + root_dir + outfile_suffix + '.root'
         outputFiles.append(outfname)
     print outputFiles[0]
     print "\n".join(inputFiles)
@@ -217,6 +221,10 @@ for section in config.sections():
     if config.has_option(section,'outfile_suffix'):
         outfile_suffix = config.get(section,'outfile_suffix')
 
+    outfile_prefix='stitched_'
+    if config.has_option(section, 'outfile_prefix'):
+        outfile_prefix = config.get(section, 'outfile_prefix')
+
     # if we want to use template shape
     template = getTemplate(infile, config, section)
 
@@ -227,7 +235,7 @@ for section in config.sections():
         # ==== do not go into subfolders for now ====
         if d!='': continue
         # ===========================================
-        outfname = config.get(section,'output_folder') + '/' + 'stitched_' + root_dir + outfile_suffix + d + '.root'
+        outfname = config.get(section,'output_folder') + '/' + outfile_prefix + root_dir + outfile_suffix + d + '.root'
         outfile = ROOT.TFile(outfname, 'UPDATE')
         outdir = outfile.GetDirectory('')
         (existing_dirs,existing_names) = listDirsNames(outfile, '')
