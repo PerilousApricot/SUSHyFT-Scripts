@@ -44,15 +44,20 @@ for oneFile in args:
     additionDict = {}
     print "Processing %s" % oneFile
     inFile = ROOT.TFile(oneFile)
+    if not inFile or inFile.IsZombie():
+        raise RuntimeError, "missing file"
     outFileName = os.path.join(options.outDir,
                                       "%s_%s" % (options.tagMode,
                                                     os.path.basename(oneFile)))
-
     outFile = ROOT.TFile(outFileName, "RECREATE")
+    if not outFile:
+        raise RuntimeError, "Missing file"
     print "  Outputting to %s" % outFileName
     outDir = outFile.GetDirectory('')
     missingHists = []
     histList     = []
+    if options.tagMode.startswith('test_'):
+        options.tagMode = options.tagMode[len('test_'):]
     for key in inFile.GetListOfKeys():
         keyString = key.GetName()
         if options.tagMode == 'ttbar_notau':
@@ -91,6 +96,8 @@ for oneFile in args:
         for val in additionDict[k]:
             print "    * %s" % val
     testFile = ROOT.TFile(outFileName)
+    if not testFile:
+        raise RuntimeError, "couldn't open output"
     keyList = {}
     for k in testFile.GetListOfKeys():
         keyList[k.GetName()] = 1
