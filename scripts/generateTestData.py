@@ -4,6 +4,7 @@
 
 # Keep ROOT from gobbling command line arguments
 import sys
+from SUSHyFT.HistogramDumper import HistogramDumper
 oldarg = sys.argv[:]
 sys.argv = [oldarg[0], '-b']
 import ROOT
@@ -55,8 +56,10 @@ def fillHist(hist, sample, jet, tag, subSample, kinematic):
     sampleIndex.extend([x[0] for x in subSampleList])
     # set the peaks of the poissons
     simpleFunc.SetParameter(0,10.0 * sampleIndex.index(sample) + jet + tag)
+    # set the scaling of the poissons
     simpleFunc.SetParameter(1,1.0)
     hist.Eval(simpleFunc)
+    hist.Scale(max(1, 8 - jet - tag))
 
 # generator to collapse these loops
 def forAllBinsInSample(sample):
@@ -97,9 +100,11 @@ for sample in sampleList:
         fillHist(hist, sample, jet, tag, subSample, kinematic)
         allHists[histName] = hist
         hist.SetDirectory(sampleFile)
-        sampleSums[sample] = sampleSums.setdefault(sample, 0) + hist.Integral()
+        sampleSums[sample] = sampleSums.setdefault(sample, 0) + \
+                             hist.Integral()
 
-# now that we have the shapes, we need to normalize everything to ngen
+# now that we have the shapes, we need to normalize everything to ngen and 
+# add it to the various data bins
 for sample, jet, tag, subSample, suffix, kinematic in forAllBins():
     histName = generateHistName(sample, kinematic, jet, tag, suffix)
     allHists[histName].Scale(cheat[sample]['ngen']/sampleSums[sample])
@@ -111,6 +116,10 @@ for sample, jet, tag, subSample, suffix, kinematic in forAllBins():
         allHists[dataHistName].SetDirectory(allFiles['data'])
     allHists[dataHistName].Add(allHists[histName])
 
+dump = HistogramDumper()
+for k, v in allHists.iteritems():
+    dump.addHistogram(k,v)
+dump.dump()
 for sampleFile in allFiles.values():
     sampleFile.Write()
     sampleFile.Close()

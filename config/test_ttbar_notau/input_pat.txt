@@ -1,0 +1,6 @@
+/QCD/test1/USER
+/SingleTop/test1/USER
+/Top/test1/USER
+/WJets/test1/USER
+/MET/this_name_counts_test1/USER
+/ZJets/test1/USER
