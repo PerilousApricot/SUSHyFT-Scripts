@@ -52,6 +52,7 @@ if [[ $EXIT_CODE -eq 0 ]]; then
 fi
 # rut roh
 echo "Command exited with code $EXIT_CODE"
+cat $COMMANDOUTPUT
 touch $OUTPUTFILE.FAIL
 echo "FAIL" >> $STATEFILE
 exit $EXIT_CODE
