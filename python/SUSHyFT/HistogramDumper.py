@@ -84,12 +84,12 @@ class HistogramDumper:
     def printTable(self):
         for sheetIdx in range(len(self.sheetBuffer)):
             sheet = self.sheetBuffer[sheetIdx]
-            for row in range(max(sheet.keys())):
+            for row in range(max(sheet.keys()) + 1):
                 rowBuffer = []
                 if not row in sheet:
                     print ""
                     continue
-                for col in range(max(sheet[row].keys())):
+                for col in range(max(sheet[row].keys()) + 1):
                     value = sheet[row].get(col, "")
                     # pad and right justify
                     padding = self.maxColumnLength[sheetIdx].get(col, 0) - len(value)
