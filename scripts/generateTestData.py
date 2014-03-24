@@ -16,6 +16,9 @@ parser = OptionParser()
 parser.add_option('--targetPrefix', help='Outputs to write', default='test')
 opts, args = parser.parse_args()
 
+# needed for having multiple of these
+testMode = "test1"
+
 # cheatsheat for computed values (keep in sync with stitch cfg)
 # stitch scaliing is xs * globalSF*lum/n_gen
 cheat = { 'lftag' : 1.01,
@@ -81,13 +84,14 @@ def forAllBins():
 allHists = {}
 allFiles = {}
 sampleSums = {}
-dataFile = ROOT.TFile(opts.targetPrefix + '_data.root', 'recreate')
+dataFile = ROOT.TFile('%sMET%sUSER.root' % (opts.targetPrefix, testMode), 'recreate')
 allFiles['data'] = dataFile
 
 # first put the shapes into all the different files
 for sample in sampleList:
-    sampleFile = ROOT.TFile("%s_test%s.root" % (opts.targetPrefix,
-                                                sample),
+    sampleFile = ROOT.TFile("%s%s_%s.root" % (opts.targetPrefix,
+                                                sample,
+                                                testMode),
                             'recreate')
     allFiles[sample] = sampleFile
     for jet, tag, subSample, suffix, kinematic in forAllBinsInSample(sample):
