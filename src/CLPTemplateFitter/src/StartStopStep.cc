@@ -22,8 +22,8 @@ StartStopStep::StartStopStep (double start, double stop, double step) :
 // friends
 ostream& operator<< (ostream& o_stream, const StartStopStep &rhs)
 {
-   o_stream << Form ("[%6.2f, %6.2f] - %5.3f", 
+   o_stream << Form ("[%6.2f, %6.2f] - %5.3f",
                      rhs.start(), rhs.stop(), rhs.step());
-                     
+
    return o_stream;
-} 
+}

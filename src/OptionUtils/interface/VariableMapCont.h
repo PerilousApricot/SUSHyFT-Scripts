@@ -50,7 +50,7 @@ class VariableMapCont
       typedef SIVecMap::const_iterator  SIVecMapConstIter;
       typedef SDVecMap::const_iterator  SDVecMapConstIter;
       typedef SSVecMap::const_iterator  SSVecMapConstIter;
-   
+
 
       // constants
       static const int         kDefaultInteger;
@@ -78,7 +78,7 @@ class VariableMapCont
       // friends //
       /////////////
       // tells particle data how to print itself out
-      friend std::ostream& operator<< (std::ostream& o_stream, 
+      friend std::ostream& operator<< (std::ostream& o_stream,
                                        const VariableMapCont &rhs);
 
       //////////////////////////
@@ -100,7 +100,7 @@ class VariableMapCont
       // prints out '--help' screen, then exits.
       void help();
 
-      // returns OptionType (or kNone (0)) of a given option.  
+      // returns OptionType (or kNone (0)) of a given option.
       OptionType hasVariable (std::string key);
       OptionType hasOption (std::string key)
       { return hasVariable (key); }
@@ -111,19 +111,19 @@ class VariableMapCont
       void addOption (std::string key, OptionType type,
                       const std::string &description = "");
       void addOption (std::string key, OptionType type,
-                      const std::string &description, 
+                      const std::string &description,
                       int defaultValue);
       void addOption (std::string key, OptionType type,
-                      const std::string &description, 
+                      const std::string &description,
                       double defaultValue);
       void addOption (std::string key, OptionType type,
-                      const std::string &description, 
+                      const std::string &description,
                       const std::string &defaultValue);
       void addOption (std::string key, OptionType type,
-                      const std::string &description, 
+                      const std::string &description,
                       const char *defaultValue);
       void addOption (std::string key, OptionType type,
-                      const std::string &description, 
+                      const std::string &description,
                       bool defaultValue);
       //   addVariable works just like addOption, but has no description.
       void addVariable (std::string key, OptionType type)
@@ -132,10 +132,10 @@ class VariableMapCont
       { addOption (key, type, "", defaultValue); }
       void addVariable (std::string key, OptionType type, double defaultValue)
       { addOption (key, type, "", defaultValue); }
-      void addVariable (std::string key, OptionType type, 
+      void addVariable (std::string key, OptionType type,
                         const std::string &defaultValue)
       { addOption (key, type, "", defaultValue); }
-      void addVariable (std::string key, OptionType type, 
+      void addVariable (std::string key, OptionType type,
                         const char *defaultValue)
       { addOption (key, type, "", defaultValue); }
       void addVariable (std::string key, OptionType type, bool defaultValue)
@@ -158,7 +158,7 @@ class VariableMapCont
       /////////////////////////////
 
       // converts a string to lower case characters
-      static void lowercaseString(std::string &arg); 
+      static void lowercaseString(std::string &arg);
 
       // converts a single character to lower case
       static char toLower (char &ch);

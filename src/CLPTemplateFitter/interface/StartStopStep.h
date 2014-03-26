@@ -16,7 +16,7 @@ class StartStopStep
       // friends //
       /////////////
       // tells particle data how to print itself out
-      friend std::ostream& operator<< (std::ostream& o_stream, 
+      friend std::ostream& operator<< (std::ostream& o_stream,
                                        const StartStopStep &rhs);
 
       typedef std::vector< StartStopStep > Vec;

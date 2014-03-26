@@ -46,8 +46,8 @@ namespace OptionUtils
    void help();
 
    // remove an ending (e.g., '.root') from a string
-   std::string removeEnding (const std::string &input, 
-                                    const std::string &ending);   
+   std::string removeEnding (const std::string &input,
+                                    const std::string &ending);
 
    // splits a line into words
    void split (SVec &retval, std::string line, std::string match = " \t",
@@ -68,25 +68,25 @@ namespace OptionUtils
    void printOptionValues();
 
    // converts a string to lower case characters
-   void lowercaseString(std::string &arg); 
+   void lowercaseString(std::string &arg);
 
    // converts a single character to lower case
    char toLower (char &ch);
 
    // add variable to option maps
-   void addOptionKey (std::string key, int         &variable, 
+   void addOptionKey (std::string key, int         &variable,
                       const std::string &description = "");
-   void addOptionKey (std::string key, double      &variable, 
+   void addOptionKey (std::string key, double      &variable,
                       const std::string &description = "");
-   void addOptionKey (std::string key, bool        &variable, 
+   void addOptionKey (std::string key, bool        &variable,
                       const std::string &description = "");
-   void addOptionKey (std::string key, std::string &variable, 
+   void addOptionKey (std::string key, std::string &variable,
                       const std::string &description = "");
-   void addOptionKey (std::string key, SVec        &variable, 
+   void addOptionKey (std::string key, SVec        &variable,
                       const std::string &description = "");
-   void addOptionKey (std::string key, IVec        &variable, 
+   void addOptionKey (std::string key, IVec        &variable,
                       const std::string &description = "");
-   void addOptionKey (std::string key, DVec        &variable, 
+   void addOptionKey (std::string key, DVec        &variable,
                       const std::string &description = "");
 
    // returns true if a variable has been modified from the command
@@ -122,8 +122,8 @@ namespace OptionUtils
    extern OptionMap    ns_boolMap;
    extern StrBoolMap   ns_variableModifiedMap;
    extern StrStrMap    ns_variableDescriptionMap;
-   extern std::string  ns_usageString;  
-   extern std::string  ns_argv0;  
+   extern std::string  ns_usageString;
+   extern std::string  ns_argv0;
 
 };
 

@@ -14,7 +14,7 @@ class CLPTrapezoid : public TObject
       //////////////////////
       // Public Constants //
       //////////////////////
-      
+
       typedef std::vector< CLPTrapezoid >  Vec;
       typedef Vec::iterator                VecIter;
       typedef Vec::const_iterator          VecConstIter;
@@ -33,7 +33,7 @@ class CLPTrapezoid : public TObject
       // friends //
       /////////////
       // tells particle data how to print itself out
-      friend std::ostream& operator<< (std::ostream& o_stream, 
+      friend std::ostream& operator<< (std::ostream& o_stream,
                                        const CLPTrapezoid &rhs);
 
       //////////////////////////
@@ -67,7 +67,7 @@ class CLPTrapezoid : public TObject
       void setUpperX (double upperX) { m_upperX = upperX; }
       void setLowerY (double lowerY) { m_lowerY = lowerY; }
       void setUpperY (double upperY) { m_upperY = upperY; }
-      void setTotalIntegral (double totalIntegral) 
+      void setTotalIntegral (double totalIntegral)
       { m_totalIntegral = totalIntegral; }
       void setPosition (int position) { m_position = position; }
 
@@ -97,7 +97,7 @@ class CLPTrapezoid : public TObject
       /////////////////////////////
 
       static void limits (Vec &curve,
-                          double &upperLimit, double &lowerLimit, 
+                          double &upperLimit, double &lowerLimit,
                           double percent = 0.95);
 
       // returns the minimum and maximum areas that are allowed if we
@@ -109,7 +109,7 @@ class CLPTrapezoid : public TObject
 
 
       // A very rough and inefficient method for finding an Y intersect
-      static double findYintersect (const Vec &curve, double signedStep, 
+      static double findYintersect (const Vec &curve, double signedStep,
                                     double yDelta, double epsilon = 0.00001);
 
 

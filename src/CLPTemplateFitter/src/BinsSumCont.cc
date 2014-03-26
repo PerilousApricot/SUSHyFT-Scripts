@@ -27,14 +27,14 @@ BinsSumCont::cleanHistMap()
    m_histMap.clear();
 }
 
-void 
+void
 BinsSumCont::setParamVec (BinsSum::DVec &paramVec)
 {
    cleanHistMap();
    m_paramVec = paramVec;
 }
 
-int 
+int
 BinsSumCont::add (const BinsSum &obj)
 {
    int size = (int) m_binsSumVec.size();
@@ -42,7 +42,7 @@ BinsSumCont::add (const BinsSum &obj)
    return size;
 }
 
-void  
+void
 BinsSumCont::recordTrials()
 {
    for (BinsSum::VecIter iter = m_binsSumVec.begin();
@@ -53,7 +53,7 @@ BinsSumCont::recordTrials()
    } // for iter
 }
 
-void  
+void
 BinsSumCont::reset()
 {
    for (BinsSum::VecIter iter = m_binsSumVec.begin();
@@ -64,7 +64,7 @@ BinsSumCont::reset()
    } // for iter
 }
 
-void  
+void
 BinsSumCont::getValues (DVec &valuesVec)
 {
    valuesVec.clear();
@@ -76,7 +76,7 @@ BinsSumCont::getValues (DVec &valuesVec)
    } // for iter
 }
 
-void  
+void
 BinsSumCont::fillMeansAndRMSs (DVec &meanVec, DVec &rmsVec)
 {
    meanVec.clear();
@@ -92,9 +92,9 @@ BinsSumCont::fillMeansAndRMSs (DVec &meanVec, DVec &rmsVec)
    } // for iter
 }
 
-void  
+void
 BinsSumCont::getAllNames (SVec &nameVec)
-{   
+{
    nameVec.clear();
    for (BinsSum::VecIter iter = m_binsSumVec.begin();
         m_binsSumVec.end() != iter;
@@ -104,7 +104,7 @@ BinsSumCont::getAllNames (SVec &nameVec)
    } // for iter
 }
 
-BinsSum & 
+BinsSum &
 BinsSumCont::createNew (const std::string &name)
 {
    BinsSum object (name, this);
@@ -113,7 +113,7 @@ BinsSumCont::createNew (const std::string &name)
    return m_binsSumVec.at( index );
 }
 
-TH1F* 
+TH1F*
 BinsSumCont::getTemplate (int index) const
 {
    if (index < 0) index = kAllTemplates;
@@ -153,4 +153,4 @@ ostream& operator<< (ostream& o_stream, const BinsSumCont &rhs)
       o_stream << *iter << endl;
    }
    return o_stream;
-} 
+}

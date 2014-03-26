@@ -19,7 +19,7 @@ const std::string CommandLineParser::kSpaces = " \t";
 
 CommandLineParser::CommandLineParser (const string &usage,
                                       unsigned int optionsType) :
-   m_argv0(""), m_usageString (usage), 
+   m_argv0(""), m_usageString (usage),
    m_printOptions (false), m_optionsType (optionsType)
 {
    if (kNoDefaultArgs == m_optionsType)
@@ -31,23 +31,23 @@ CommandLineParser::CommandLineParser (const string &usage,
    {
       // Integer options
       addOption ("totalSections", kInteger,
-                 "Total number of sections", 
+                 "Total number of sections",
                  0);
       addOption ("section",       kInteger,
-                 "This section (from 1..totalSections inclusive)", 
+                 "This section (from 1..totalSections inclusive)",
                  0);
       addOption ("maxEvents",     kInteger,
-                 "Maximum number of events to run over (0 for whole file)", 
+                 "Maximum number of events to run over (0 for whole file)",
                  0);
       addOption ("jobID",         kInteger,
-                 "jobID given by CRAB,etc. (-1 means append nothing)", 
+                 "jobID given by CRAB,etc. (-1 means append nothing)",
                  -1);
       addOption ("outputEvery",   kInteger,
-                 "Output something once every N events (0 for never)", 
+                 "Output something once every N events (0 for never)",
                  0);
       // String options
       addOption ("outputFile",    kString,
-                 "Output filename", 
+                 "Output filename",
                  "output.root");
       addOption ("storePrepend",  kString,
                  "Prepend location on files starting with '/store/'");
@@ -67,15 +67,15 @@ CommandLineParser::CommandLineParser (const string &usage,
       return;
    }
    // If we're still here, we have a type I don't understand.
-   cerr << "CommandLineParser() Error: type '" << optionsType 
+   cerr << "CommandLineParser() Error: type '" << optionsType
         << "' is not understood.  Aborting." << endl;
-   assert (0);   
+   assert (0);
 }
 
 void
-CommandLineParser::parseArguments (int argc, char** argv, 
+CommandLineParser::parseArguments (int argc, char** argv,
                                    bool parseNonOptionArgs)
-{   
+{
    bool callHelp = false;
    m_argv0 = argv[0];
    m_fullArgVec.push_back (argv[0]);
@@ -156,15 +156,15 @@ CommandLineParser::help()
       cout << m_argv0 << " - " << m_usageString << endl;
    }
    cout << "--help    - This screen" << endl
-        << "--noPrint - Do not print out all settings" << endl 
+        << "--noPrint - Do not print out all settings" << endl
         << "--print   - Print out all settings" << endl;
    printOptionValues();
    exit (0);
 }
 
 
-void 
-CommandLineParser::split (SVec &retval, string line, string match, 
+void
+CommandLineParser::split (SVec &retval, string line, string match,
                     bool ignoreComments)
 {
    if (ignoreComments)
@@ -196,7 +196,7 @@ CommandLineParser::split (SVec &retval, string line, string match,
       }
       string part = line.substr( pos, current - last - 1);
       // don't bother adding 0 length strings
-      if (part.length()) 
+      if (part.length())
       {
          retval.push_back(part);
       }
@@ -237,7 +237,7 @@ CommandLineParser::removeLeadingAndTrailingSpaces (std::string &line)
       line = line.substr (0, pos + 1);
    }
 }
- 
+
 string
 CommandLineParser::removeEnding (const string &input, const string &ending)
 {
@@ -251,7 +251,7 @@ CommandLineParser::removeEnding (const string &input, const string &ending)
    return input;
 }
 
-void 
+void
 CommandLineParser::findCommand (const string &line,
                                 string &command,
                                 string &rest)
@@ -279,16 +279,16 @@ CommandLineParser::findCommand (const string &line,
 void
 CommandLineParser::printOptionValues()
 {
-   cout << "------------------------------------------------------------------" 
+   cout << "------------------------------------------------------------------"
         << left << endl;
    // Print the integers next
    if (m_integerMap.size())
    {
       cout << endl << "Integer options:" << endl;
    }
-   for (SIMapConstIter iter = m_integerMap.begin(); 
-       m_integerMap.end() != iter; 
-       ++iter) 
+   for (SIMapConstIter iter = m_integerMap.begin();
+       m_integerMap.end() != iter;
+       ++iter)
    {
       const string &description = m_variableDescriptionMap[ iter->first ];
       cout << "    " << setw(14) << iter->first << " = " << setw(14)
@@ -305,12 +305,12 @@ CommandLineParser::printOptionValues()
    {
       cout << endl << "Double options:" << endl;
    }
-   for (SDMapConstIter iter = m_doubleMap.begin(); 
-       m_doubleMap.end() != iter; 
-       ++iter) 
+   for (SDMapConstIter iter = m_doubleMap.begin();
+       m_doubleMap.end() != iter;
+       ++iter)
    {
       const string &description = m_variableDescriptionMap[ iter->first ];
-      cout << "    " << setw(14) << iter->first << " = " << setw(14) 
+      cout << "    " << setw(14) << iter->first << " = " << setw(14)
            << iter->second;
       if (description.length())
       {
@@ -324,9 +324,9 @@ CommandLineParser::printOptionValues()
    {
       cout << endl << "Bool options:" << endl;
    }
-   for (SBMapConstIter iter = m_boolMap.begin(); 
-       m_boolMap.end() != iter; 
-       ++iter) 
+   for (SBMapConstIter iter = m_boolMap.begin();
+       m_boolMap.end() != iter;
+       ++iter)
    {
       const string &description = m_variableDescriptionMap[ iter->first ];
       cout << "    " << setw(14) << iter->first << " = " << setw(14);
@@ -348,9 +348,9 @@ CommandLineParser::printOptionValues()
    {
       cout << endl << "String options:" << endl;
    }
-   for (SSMapConstIter iter = m_stringMap.begin(); 
-       m_stringMap.end() != iter; 
-       ++iter) 
+   for (SSMapConstIter iter = m_stringMap.begin();
+       m_stringMap.end() != iter;
+       ++iter)
    {
       const string &description = m_variableDescriptionMap[ iter->first ];
       cout << "    " << setw(14) << iter->first << " = ";
@@ -368,13 +368,13 @@ CommandLineParser::printOptionValues()
    {
       cout << endl << "Integer Vector options:" << endl;
    }
-   for (SIVecMapConstIter iter = m_integerVecMap.begin(); 
-       m_integerVecMap.end() != iter; 
-       ++iter) 
+   for (SIVecMapConstIter iter = m_integerVecMap.begin();
+       m_integerVecMap.end() != iter;
+       ++iter)
    {
       const string &description = m_variableDescriptionMap[ iter->first ];
       cout << "    " << setw(14) << iter->first << " = ";
-      dumpSTL (iter->second); 
+      dumpSTL (iter->second);
       cout << endl;
       if (description.length())
       {
@@ -388,13 +388,13 @@ CommandLineParser::printOptionValues()
    {
       cout << endl << "Double Vector options:" << endl;
    }
-   for (SDVecMapConstIter iter = m_doubleVecMap.begin(); 
-       m_doubleVecMap.end() != iter; 
-       ++iter) 
+   for (SDVecMapConstIter iter = m_doubleVecMap.begin();
+       m_doubleVecMap.end() != iter;
+       ++iter)
    {
       const string &description = m_variableDescriptionMap[ iter->first ];
       cout << "    " << setw(14) << iter->first << " = ";
-      dumpSTL (iter->second); 
+      dumpSTL (iter->second);
       cout << endl;
       if (description.length())
       {
@@ -410,9 +410,9 @@ CommandLineParser::printOptionValues()
    } else {
       cout << endl;
    }
-   for (SSVecMapConstIter iter = m_stringVecMap.begin(); 
-       m_stringVecMap.end() != iter; 
-       ++iter) 
+   for (SSVecMapConstIter iter = m_stringVecMap.begin();
+       m_stringVecMap.end() != iter;
+       ++iter)
    {
       const string &description = m_variableDescriptionMap[ iter->first ];
       cout << "    " << setw(14) << iter->first << " = ";
@@ -421,14 +421,14 @@ CommandLineParser::printOptionValues()
          cout << setw(14) << "" << " - " << description;
       }
       cout << endl;
-      dumpSTLeachEndl (iter->second, 8); 
+      dumpSTLeachEndl (iter->second, 8);
    } // for iter
 
-   cout << "------------------------------------------------------------------" 
+   cout << "------------------------------------------------------------------"
         << right << endl;
 }
 
-bool 
+bool
 CommandLineParser::setVariableFromString (const string &arg,
                                            bool dontOverrideChange,
                                            int offset)
@@ -569,7 +569,7 @@ CommandLineParser::setVariablesFromFile (const string &filename)
       {
          // no non-spaces
          continue;
-      } 
+      }
       char first = line.at (where);
       if ('-' != first)
       {
@@ -586,8 +586,8 @@ CommandLineParser::setVariablesFromFile (const string &filename)
       // first '#'.
       string withspaces = line.substr (where);
       string nospaces;
-      for (int position = 0; 
-           position < (int) withspaces.length(); 
+      for (int position = 0;
+           position < (int) withspaces.length();
            ++position)
       {
          char ch = withspaces[position];
@@ -628,7 +628,7 @@ CommandLineParser::_runVariableCommandFromString (const string &arg)
       return false;
    }
    string &command = commandWords.at(1);
-   lowercaseString (command);   
+   lowercaseString (command);
    if (command != "load" && command != "clear")
    {
       return false;
@@ -648,7 +648,7 @@ CommandLineParser::_runVariableCommandFromString (const string &arg)
    {
       if (kIntegerVector == type)
       {
-         integerVector(key).clear();         
+         integerVector(key).clear();
       } else if (kDoubleVector == type)
       {
          doubleVector(key).clear();
@@ -712,7 +712,7 @@ CommandLineParser::_runVariableCommandFromString (const string &arg)
       }
    } // while getline
    return true;
-   
+
 }
 
 void
@@ -746,7 +746,7 @@ CommandLineParser::_getSectionFiles (const SVec &inputList, SVec &outputList,
    {
       current += section;
       ++num;
-   } else 
+   } else
    {
       current += extra;
    }
@@ -759,7 +759,7 @@ CommandLineParser::_getSectionFiles (const SVec &inputList, SVec &outputList,
    } // for loop
 }
 
-void 
+void
 CommandLineParser::_finishDefaultOptions (std::string tag)
 {
    if (! m_optionsType & kEventContOpt)
@@ -776,11 +776,11 @@ CommandLineParser::_finishDefaultOptions (std::string tag)
       // this in the output file
       tag += Form ("_sec%03d", integerValue ("section"));
       SVec tempVec;
-      _getSectionFiles ( stringVector ("inputFiles"), 
+      _getSectionFiles ( stringVector ("inputFiles"),
                          tempVec,
                          integerValue ("section"),
                          integerValue ("totalSections") );
-      stringVector ("inputFiles") = tempVec;  
+      stringVector ("inputFiles") = tempVec;
    } // if section requested
 
    //////////////////////
@@ -851,4 +851,4 @@ CommandLineParser::_finishDefaultOptions (std::string tag)
 ostream& operator<< (ostream& o_stream, const CommandLineParser &rhs)
 {
    return o_stream;
-} 
+}

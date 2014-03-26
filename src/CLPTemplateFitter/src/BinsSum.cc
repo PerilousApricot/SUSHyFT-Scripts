@@ -38,7 +38,7 @@ BinsSum::value() const
    return total;
 }
 
-void 
+void
 BinsSum::calcMeanAndRMS (double &mean, double &rms) const
 {
    calcMeanAndRMS (mean, rms, m_trialsVec);
@@ -50,7 +50,7 @@ BinsSum::addSelfToContainer()
    return m_contPtr->add (*this);
 }
 
-void 
+void
 BinsSum::calcMeanAndRMS (double &mean, double &rms, const DVec &xvec)
 {
    double sumX = 0.;
@@ -86,4 +86,4 @@ ostream& operator<< (ostream& o_stream, const BinsSum &rhs)
    // dumpNamedSTLendl ((const string)"lower    ", rhs.m_lowerBinVec, o_stream);
    // dumpNamedSTLendl ((const string)"upper    ", rhs.m_upperBinVec, o_stream);
    return o_stream;
-} 
+}

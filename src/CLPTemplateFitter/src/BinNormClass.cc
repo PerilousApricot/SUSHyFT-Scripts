@@ -11,16 +11,16 @@ using namespace std;
 const double BinNormClass::kMinValue = 1e-10;
 
 
-BinNormClass::BinNormClass () : 
-   m_value (0.), m_paramIndex (kNegativeNumber), 
+BinNormClass::BinNormClass () :
+   m_value (0.), m_paramIndex (kNegativeNumber),
    m_startStopStep(),
    m_verbose (false),
    m_functoidPtr (0)
 {
 }
 
-BinNormClass::BinNormClass (double value) : 
-   m_value (value), m_paramIndex (kNegativeNumber),  
+BinNormClass::BinNormClass (double value) :
+   m_value (value), m_paramIndex (kNegativeNumber),
    m_startStopStep(),
    m_verbose (false),
    m_functoidPtr (0)
@@ -31,19 +31,19 @@ BinNormClass::BinNormClass (double value) :
    m_startStopStep.setStartStopStep (start, stop, step);
 }
 
-BinNormClass::BinNormClass (double value, 
-                            double start, double stop, double step) : 
-   m_value (value), m_paramIndex (kNegativeNumber),  
+BinNormClass::BinNormClass (double value,
+                            double start, double stop, double step) :
+   m_value (value), m_paramIndex (kNegativeNumber),
    m_startStopStep(start, stop, step),
    m_verbose (false),
    m_functoidPtr (0)
 {
 }
 
-BinNormClass::BinNormClass (const ISet &tempSet, const ISet &binSet, 
-                            double value) : 
-   m_binSet (binSet), 
-   m_value (value), m_paramIndex (kNegativeNumber),  
+BinNormClass::BinNormClass (const ISet &tempSet, const ISet &binSet,
+                            double value) :
+   m_binSet (binSet),
+   m_value (value), m_paramIndex (kNegativeNumber),
    m_startStopStep(),
    m_verbose (false),
    m_functoidPtr (0)
@@ -55,11 +55,11 @@ BinNormClass::BinNormClass (const ISet &tempSet, const ISet &binSet,
    setTempSet (tempSet);
 }
 
-BinNormClass::BinNormClass (const ISet &tempSet, const ISet &binSet, 
-                            double value, 
-                            double start, double stop, double step) : 
-   m_binSet (binSet), 
-   m_value (value), m_paramIndex (kNegativeNumber),  
+BinNormClass::BinNormClass (const ISet &tempSet, const ISet &binSet,
+                            double value,
+                            double start, double stop, double step) :
+   m_binSet (binSet),
+   m_value (value), m_paramIndex (kNegativeNumber),
    m_startStopStep(start, stop, step),
    m_verbose (false),
    m_functoidPtr (0)
@@ -81,8 +81,8 @@ BinNormClass::index (int tempIndex, int binIndex) const
    }
 }
 
-double 
-BinNormClass::factor (int tempIndex, int binIndex, 
+double
+BinNormClass::factor (int tempIndex, int binIndex,
                       double value, const double *paramArray) const
 {
    // Should I be looking at this BinNorm object for this bin and this
@@ -95,7 +95,7 @@ BinNormClass::factor (int tempIndex, int binIndex,
    // Is there a single functoid pointer for all of the templates?
    if (m_functoidPtr)
    {
-      return m_functoidPtr->operator() (tempIndex, binIndex, 
+      return m_functoidPtr->operator() (tempIndex, binIndex,
                                         value, paramArray);
    }
    BinNormFunctoid::IFMapConstIter iter =
@@ -108,7 +108,7 @@ BinNormClass::factor (int tempIndex, int binIndex,
    return functoidPtr->operator() (tempIndex, binIndex, value, paramArray);
 }
 
-void 
+void
 BinNormClass::insertRangeIntoSet (BinNormClass::ISet &theSet,
                                   int lower, int upper)
 {
@@ -129,19 +129,19 @@ BinNormClass::outputISet (const ISet &theset, ostream& o_stream)
    } // for iter
 }
 
-void 
-BinNormClass::setTempSet (const ISet &tempSet) 
-{ 
-   m_templateSet = tempSet; 
+void
+BinNormClass::setTempSet (const ISet &tempSet)
+{
+   m_templateSet = tempSet;
 }
 
-void 
+void
 BinNormClass::setFunctoid (BinNormFunctoid &functoid)
 {
    m_functoidPtr = &functoid;
 }
 
-void 
+void
 BinNormClass::setFunctoid (int tempIndex, BinNormFunctoid &functoid)
 {
    m_functoidMap[tempIndex] = &functoid;
@@ -157,4 +157,4 @@ ostream& operator<< (ostream& o_stream, const BinNormClass &rhs)
    o_stream << " : " << rhs.m_paramIndex
             << " : " << rhs.m_startStopStep;
    return o_stream;
-} 
+}

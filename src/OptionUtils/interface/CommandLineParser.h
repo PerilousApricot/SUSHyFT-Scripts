@@ -27,7 +27,7 @@ class CommandLineParser : public VariableMapCont
       // friends //
       /////////////
       // tells particle data how to print itself out
-      friend std::ostream& operator<< (std::ostream& o_stream, 
+      friend std::ostream& operator<< (std::ostream& o_stream,
                                        const CommandLineParser &rhs);
 
       //////////////////////////
@@ -40,7 +40,7 @@ class CommandLineParser : public VariableMapCont
       /////////////////////////////////
       // Constructors and Destructor //
       /////////////////////////////////
-      CommandLineParser (const std::string &usage, 
+      CommandLineParser (const std::string &usage,
                          unsigned int optionsType = kEventContOpt);
 
       ////////////////
@@ -61,7 +61,7 @@ class CommandLineParser : public VariableMapCont
 
       // parse the command line arguments.  If 'returnArgs' is true, then
       // any non-assignments and non-options will be returned.
-      void parseArguments (int argc, char** argv, 
+      void parseArguments (int argc, char** argv,
                            bool allowNonOptionArgs = false);
 
       // prints out '--help' screen, then exits.
@@ -81,11 +81,11 @@ class CommandLineParser : public VariableMapCont
       /////////////////////////////
 
       // remove an ending (e.g., '.root') from a string
-      static std::string removeEnding (const std::string &input, 
-                                       const std::string &ending);   
+      static std::string removeEnding (const std::string &input,
+                                       const std::string &ending);
 
       // splits a line into words
-      static void split (SVec &retval, std::string line, 
+      static void split (SVec &retval, std::string line,
                          std::string match = " \t",
                          bool ignoreComments = true);
 
@@ -113,7 +113,7 @@ class CommandLineParser : public VariableMapCont
       // sets variable options from file where lines are formatted as
       // - var=value
       bool setVariablesFromFile (const std::string &filename);
-      
+
 
   private:
       //////////////////////////////
@@ -135,7 +135,7 @@ class CommandLineParser : public VariableMapCont
       SVec         m_fullArgVec;
       SVec         m_nonOptionArgsVec;
       std::string  m_argv0;
-      std::string  m_usageString;  
+      std::string  m_usageString;
       bool         m_printOptions;
       unsigned int m_optionsType;
 

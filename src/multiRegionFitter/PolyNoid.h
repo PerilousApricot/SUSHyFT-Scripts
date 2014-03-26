@@ -36,7 +36,7 @@ class PolyNoid : public BinNormFunctoid
       /////////////
 
       // tells particle data how to print itself out
-      friend std::ostream& operator<< (std::ostream& o_stream, 
+      friend std::ostream& operator<< (std::ostream& o_stream,
                                        const PolyNoid &rhs);
 
       ////////////////////////////////
@@ -48,7 +48,7 @@ class PolyNoid : public BinNormFunctoid
 
       // operator()
       virtual double operator() (int tempIndex, int binIndex,
-                                 double value, 
+                                 double value,
                                  const double *paramArray = 0) const;
 
       //////////////////////////////
@@ -76,13 +76,13 @@ class PolyNoid : public BinNormFunctoid
       void setStep  (double step)             { m_step  = step;  }
 
 
-      
+
       // add a polynomial for a given set of group bins and templates
       // (described by enum)
       void addPolynomial (const IVec &groupVec,
                           const IVec &templateEnumVec,
                           const DVec &parameters);
-      
+
       // given information in template2indexMap and m_temporaryMap,
       // calculates m_groupTemplateParamMap
       void calculateGroupTemplateParamMap (const IIMap &template2indexmap);
@@ -93,7 +93,7 @@ class PolyNoid : public BinNormFunctoid
 
       // adds self to a fitter.  Returns index.
       int addSelfToFitter (CLPTemplateFitter &fitter);
-      
+
       // print out information about this class
       virtual void dumpToOstream (ostream& o_stream) const;
 
@@ -102,7 +102,7 @@ class PolyNoid : public BinNormFunctoid
       /////////////////////////////
       // Static Member Functions //
       /////////////////////////////
-      
+
 
       // sets jet bin widths (i.e., a vector of widths: e.g., 20 20 10
       // 10 ...)
@@ -129,10 +129,10 @@ class PolyNoid : public BinNormFunctoid
       // Enums and constants //
       /////////////////////////
 
-      enum 
+      enum
       {
          kError   = -1,
-      };      
+      };
 
 
       /////////////////

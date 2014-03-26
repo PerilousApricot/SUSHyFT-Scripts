@@ -25,7 +25,7 @@ VariableMapCont::VariableMapCont()
 VariableMapCont::OptionType
 VariableMapCont::hasVariable (string key)
 {
-   lowercaseString (key); 
+   lowercaseString (key);
    // Look through our maps to see if we've got it
    if (m_integerMap.end()    != m_integerMap.find (key))    return kInteger;
    if (m_doubleMap.end()     != m_doubleMap.find (key))     return kDouble;
@@ -38,17 +38,17 @@ VariableMapCont::hasVariable (string key)
    return kNone;
 }
 
-void 
+void
 VariableMapCont::lowercaseString(string& arg)
 {
    // assumes 'toLower(ch)' modifies ch
    std::for_each (arg.begin(), arg.end(), VariableMapCont::toLower);
    // // assumes 'toLower(ch)' returns the lower case char
-   // std::transform (arg.begin(), arg.end(), arg.begin(), 
+   // std::transform (arg.begin(), arg.end(), arg.begin(),
    //                 VariableMapCont::toLower);
 }
 
-char 
+char
 VariableMapCont::toLower (char& ch)
 {
    ch = tolower (ch);
@@ -62,7 +62,7 @@ VariableMapCont::_checkKey (string &key, const string &description)
    lowercaseString (key);
    if ( m_variableModifiedMap.end() != m_variableModifiedMap.find (key) )
    {
-      cerr << "VariableMapCont::addVariable() Error: Key '" << key 
+      cerr << "VariableMapCont::addVariable() Error: Key '" << key
            << "' has already been defined.  Aborting." << endl;
       assert (0);
    } // found a duplicate
@@ -79,17 +79,17 @@ VariableMapCont::addOption (string key, OptionType type,
    {
       m_integerMap[key]    = kDefaultInteger;
       return;
-   } 
+   }
    if (kDouble     == type)
    {
       m_doubleMap[key]    = kDefaultDouble;
       return;
-   } 
+   }
    if (kString     == type)
    {
       m_stringMap[key]    = kDefaultString;
       return;
-   } 
+   }
    if (kBool       == type)
    {
       m_boolMap[key]    = kDefaultBool;
@@ -99,17 +99,17 @@ VariableMapCont::addOption (string key, OptionType type,
    {
       m_integerVecMap[key] = kEmptyIVec;
       return;
-   } 
+   }
    if (kDoubleVector == type)
    {
       m_doubleVecMap[key] = kEmptyDVec;
       return;
-   } 
+   }
    if (kStringVector == type)
    {
       m_stringVecMap[key] = kEmptySVec;
       return;
-   } 
+   }
 }
 
 void
@@ -119,10 +119,10 @@ VariableMapCont::addOption (string key, OptionType type,
    _checkKey (key, description);
    if (kInteger != type)
    {
-      cerr << "VariableMapCont::addOption() Error: Key '" << key 
+      cerr << "VariableMapCont::addOption() Error: Key '" << key
            << "' is not defined as an integer but has an integer "
            << "default value. Aborting." << endl;
-      assert (0);      
+      assert (0);
    }
    m_integerMap[key] = defaultValue;
 }
@@ -134,33 +134,33 @@ VariableMapCont::addOption (string key, OptionType type,
    _checkKey (key, description);
    if (kDouble != type)
    {
-      cerr << "VariableMapCont::addOption() Error: Key '" << key 
+      cerr << "VariableMapCont::addOption() Error: Key '" << key
            << "' is not defined as an double but has an double "
            << "default value. Aborting." << endl;
-      assert (0);      
+      assert (0);
    }
    m_doubleMap[key] = defaultValue;
 }
 
 void
 VariableMapCont::addOption (string key, OptionType type,
-                        const string &description, 
+                        const string &description,
                         const string &defaultValue)
 {
    _checkKey (key, description);
    if (kString != type)
    {
-      cerr << "VariableMapCont::addOption() Error: Key '" << key 
+      cerr << "VariableMapCont::addOption() Error: Key '" << key
            << "' is not defined as an string but has an string "
            << "default value. Aborting." << endl;
-      assert (0);      
+      assert (0);
    }
    m_stringMap[key] = defaultValue;
 }
 
 void
 VariableMapCont::addOption (string key, OptionType type,
-                        const string &description, 
+                        const string &description,
                         const char* defaultValue)
 {
    addOption (key, type, description, (string) defaultValue);
@@ -173,10 +173,10 @@ VariableMapCont::addOption (string key, OptionType type,
    _checkKey (key, description);
    if (kBool != type)
    {
-      cerr << "VariableMapCont::addOption() Error: Key '" << key 
+      cerr << "VariableMapCont::addOption() Error: Key '" << key
            << "' is not defined as an bool but has an bool "
            << "default value. Aborting." << endl;
-      assert (0);      
+      assert (0);
    }
    m_boolMap[key] = defaultValue;
 }
@@ -287,7 +287,7 @@ VariableMapCont::_valueHasBeenModified (const string &key)
    if (m_variableModifiedMap.end() == iter)
    {
       // Not found.  Not a valid option
-      cerr << "VariableMapCont::valueHasBeenModfied () Error: '" 
+      cerr << "VariableMapCont::valueHasBeenModfied () Error: '"
            << key << "' is not a valid key." << endl;
       return false;
    }
@@ -298,4 +298,4 @@ VariableMapCont::_valueHasBeenModified (const string &key)
 ostream& operator<< (ostream& o_stream, const VariableMapCont &rhs)
 {
    return o_stream;
-} 
+}

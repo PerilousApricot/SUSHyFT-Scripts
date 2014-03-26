@@ -31,7 +31,7 @@ int main(int argc, char** argv)
    localInitialize();     // hook up local options
    mrf::ns_parser.parseArguments(argc, argv, true);
    mrf::setDataName();
-   const optutl::CommandLineParser::SVec arguments = 
+   const optutl::CommandLineParser::SVec arguments =
       mrf::ns_parser.nonOptionArgsVec();
 
    if( ! arguments.size() or arguments.size() > 2)
@@ -50,7 +50,7 @@ int main(int argc, char** argv)
 
    gRandom->SetSeed(fitter.integerValue("randomSeed"));
    mrf::DVec paramVec;
-   mrf::DVec peParamVec;   
+   mrf::DVec peParamVec;
    BinsSumCont &binsSumCont = fitter.binsSumCont();
    // setup parameter vectors to fitter initial values
    fitter.setupParamVec(paramVec,   true);
@@ -61,14 +61,14 @@ int main(int argc, char** argv)
    ///////////////////////
    string tag;
    mrf::processOptions(tag);
-   fitter.stringValue("output") = 
+   fitter.stringValue("output") =
       optutl::CommandLineParser::removeEnding(fitter.
-                                               stringValue("output"), 
+                                               stringValue("output"),
                                                ".root");
    fitter.stringValue("output") += tag;
    if(fitter.integerValue("randomSeed"))
    {
-      fitter.stringValue("output") += 
+      fitter.stringValue("output") +=
          Form("_seed%03d", fitter.integerValue("randomSeed"));
    }
    if(! fitter.doubleValue("intLumi") )
@@ -77,20 +77,20 @@ int main(int argc, char** argv)
    } else if(fitter.doubleValue("intLumi") < 0.0001 ||
        fitter.doubleValue("intLumi") > 1e4)
    {
-      fitter.stringValue("output") += 
+      fitter.stringValue("output") +=
          Form("_lum%f", fitter.doubleValue("intLumi"));
    } else if(fitter.doubleValue("intLumi") >= 0.0001 &&
               fitter.doubleValue("intLumi") < 1.0)
    {
-      fitter.stringValue("output") += 
+      fitter.stringValue("output") +=
          Form("_lum%.4f", fitter.doubleValue("intLumi"));
    } else if(fitter.doubleValue("intLumi") >= 1.0 &&
               fitter.doubleValue("intLumi") < 1e3)
    {
-      fitter.stringValue("output") += 
+      fitter.stringValue("output") +=
          Form("_lum%.1f", fitter.doubleValue("intLumi"));
    } else {
-      fitter.stringValue("output") += 
+      fitter.stringValue("output") +=
          Form("_lum%.0f", fitter.doubleValue("intLumi"));
    }
 
@@ -142,8 +142,8 @@ int main(int argc, char** argv)
          binsSumCont.setParamVec(resultVec);
          binsSumCont.getValues(centerVec);
          fitter.storeSqrtMatrix();
-         for(int loop = 0; 
-              loop < fitter.integerValue("covarPEs"); 
+         for(int loop = 0;
+              loop < fitter.integerValue("covarPEs");
               ++loop)
          {
             mrf::DVec randomVec(resultVec);
@@ -259,14 +259,14 @@ int main(int argc, char** argv)
       treePtr->Branch("errBsc",  "vector<double>", &bscErrVecPtr);
       mrf::SVec bscNamesVec;
       binsSumCont.getAllNames(bscNamesVec);
-      outputFilePtr->WriteObject(&bscNamesVec, "bscNames");      
+      outputFilePtr->WriteObject(&bscNamesVec, "bscNames");
    } // if we are using binsSumContainers
 
    ////////////////////////
    // Final Preparations //
    ////////////////////////
    int everyN = 1000;
-   if(fitter.integerValue("numPEs") % 20 < everyN && 
+   if(fitter.integerValue("numPEs") % 20 < everyN &&
        fitter.integerValue("numPEs") > 20)
    {
       everyN = fitter.integerValue("numPEs") / 20;
@@ -278,9 +278,9 @@ int main(int argc, char** argv)
    // setup vector, initializing it
    // dumpNamedSTLendl("names", peFitter.stringVector("PEnames"));
    mrf::BlurStructVec blurVec;
-   peFitter.setupBlurStruct(blurVec, 
-                             peFitter.stringVector("PEnames"), 
-                             peFitter.doubleVector("PEmeans"), 
+   peFitter.setupBlurStruct(blurVec,
+                             peFitter.stringVector("PEnames"),
+                             peFitter.doubleVector("PEmeans"),
                              peFitter.doubleVector("PEsigmas"));
    mrf::SVec peParamNamesVec;
    peFitter.fillNameVec(peParamNamesVec);
@@ -321,32 +321,32 @@ int main(int argc, char** argv)
       // generated values is from peFitter; results from fitter
       peFitter.convertFitterToTreeOrder(peParamVec,   *genVecPtr);
       fitter.convertFitterToTreeOrder(fitterValues, *measVecPtr);
-      fitter.convertFitterToTreeOrder(fitterErrors, *errVecPtr);      
+      fitter.convertFitterToTreeOrder(fitterErrors, *errVecPtr);
       if(fitter.boolValue("doMinos"))
       {
          mrf::DVec posErrors, negErrors;
          fitter.fillPosErrorVec(posErrors);
          fitter.fillNegErrorVec(negErrors);
-         fitter.convertFitterToTreeOrder(posErrors, *posErrVecPtr);      
-         fitter.convertFitterToTreeOrder(negErrors, *negErrVecPtr);      
+         fitter.convertFitterToTreeOrder(posErrors, *posErrVecPtr);
+         fitter.convertFitterToTreeOrder(negErrors, *negErrVecPtr);
       }
       if(scanVecSize)
       {
          for(int loop = 0; loop < scanVecSize; ++loop)
          {
-            scanPosErrVecPtr->at(loop) = 
+            scanPosErrVecPtr->at(loop) =
                fitter.scanStructVec().at(loop).m_upperError;
-            scanNegErrVecPtr->at(loop) = 
+            scanNegErrVecPtr->at(loop) =
                fitter.scanStructVec().at(loop).m_lowerError;
          } // for loop
       } // if scanning variables
       if(fitter.boolValue("savePlots"))
       {
-         fitter.saveCanvasResult( Form("%s_pe%d", 
-                                        fitter.stringValue("output").c_str(), 
+         fitter.saveCanvasResult( Form("%s_pe%d",
+                                        fitter.stringValue("output").c_str(),
                                         loop) );
-         fitter.saveCanvasResult( Form("%s_pe%d_should", 
-                                        fitter.stringValue("output").c_str(), 
+         fitter.saveCanvasResult( Form("%s_pe%d_should",
+                                        fitter.stringValue("output").c_str(),
                                         loop),
                                   paramVec );
       }
@@ -356,7 +356,7 @@ int main(int argc, char** argv)
          fitter.storeSqrtMatrix();
          binsSumCont.setParamVec(fitterValues);
          binsSumCont.getValues(*bscCentVecPtr);
-         for(int loop = 0; loop < fitter.integerValue("covarPEs"); 
+         for(int loop = 0; loop < fitter.integerValue("covarPEs");
               ++loop)
          {
             mrf::DVec randomVec(fitterValues);
@@ -372,7 +372,7 @@ int main(int argc, char** argv)
             // dumpNamedSTLendl("meas   ", *bscMeasVecPtr);
             // dumpNamedSTLendl("center ", *bscCentVecPtr);
             // dumpNamedSTLendl("rms    ", *bscErrVecPtr);
-            // dumpNamedSTLendl("gen    ", *bscGenVecPtr); 
+            // dumpNamedSTLendl("gen    ", *bscGenVecPtr);
             cout << endl << endl << endl << endl;
          } // if print results
       } // if running covariance PEs

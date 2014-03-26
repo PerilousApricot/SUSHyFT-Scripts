@@ -27,7 +27,7 @@ string                  OptionUtils::ns_argv0;
 
 OptionUtils::SVec
 OptionUtils::parseArguments (int argc, char** argv, bool returnArgs)
-{   
+{
    bool printOptions = false;
    SVec argsVec;
    ns_argv0 = argv[0];
@@ -86,10 +86,10 @@ OptionUtils::parseArguments (int argc, char** argv, bool returnArgs)
    return argsVec;
 }
 
-void 
-OptionUtils::setUsageString (const std::string &usage) 
-{ 
-   ns_usageString = usage; 
+void
+OptionUtils::setUsageString (const std::string &usage)
+{
+   ns_usageString = usage;
 }
 
 void
@@ -103,8 +103,8 @@ OptionUtils::help()
    exit (0);
 }
 
-void 
-OptionUtils::split (SVec &retval, string line, string match, 
+void
+OptionUtils::split (SVec &retval, string line, string match,
                     bool ignoreComments)
 {
    if (ignoreComments)
@@ -136,7 +136,7 @@ OptionUtils::split (SVec &retval, string line, string match,
       }
       string part = line.substr( pos, current - last - 1);
       // don't bother adding 0 length strings
-      if (part.length()) 
+      if (part.length())
       {
          retval.push_back(part);
       }
@@ -177,7 +177,7 @@ OptionUtils::removeLeadingAndTrailingSpaces (std::string &line)
       line = line.substr (0, pos + 1);
    }
 }
- 
+
 string
 OptionUtils::removeEnding (const string &input, const string &ending)
 {
@@ -191,7 +191,7 @@ OptionUtils::removeEnding (const string &input, const string &ending)
    return input;
 }
 
-void 
+void
 OptionUtils::findCommand (const string &line,
                           string &command,
                           string &rest)
@@ -219,16 +219,16 @@ OptionUtils::findCommand (const string &line,
 void
 OptionUtils::printOptionValues()
 {
-   cout << "------------------------------------------------------------------" 
+   cout << "------------------------------------------------------------------"
         << endl << "Option Values:" << endl;
    // Print the bools first
    if (ns_boolMap.size())
    {
       cout << "  Bool options:" << endl;
    }
-   for (OptionMapIter iter = ns_boolMap.begin(); 
-       ns_boolMap.end() != iter; 
-       ++iter) 
+   for (OptionMapIter iter = ns_boolMap.begin();
+       ns_boolMap.end() != iter;
+       ++iter)
    {
       string &description = ns_variableDescriptionMap[ iter->first ];
       bool *valuePtr = (bool *) iter->second;
@@ -251,9 +251,9 @@ OptionUtils::printOptionValues()
    {
       cout << "  Int options:" << endl;
    }
-   for (OptionMapIter iter = ns_intMap.begin(); 
-       ns_intMap.end() != iter; 
-       ++iter) 
+   for (OptionMapIter iter = ns_intMap.begin();
+       ns_intMap.end() != iter;
+       ++iter)
    {
       string &description = ns_variableDescriptionMap[ iter->first ];
       int *valuePtr = (int *)iter->second;
@@ -270,9 +270,9 @@ OptionUtils::printOptionValues()
    {
       cout << "  Double options:" << endl;
    }
-   for (OptionMapIter iter = ns_doubleMap.begin(); 
-       ns_doubleMap.end() != iter; 
-       ++iter) 
+   for (OptionMapIter iter = ns_doubleMap.begin();
+       ns_doubleMap.end() != iter;
+       ++iter)
    {
       string &description = ns_variableDescriptionMap[ iter->first ];
       double *valuePtr = (double *)iter->second;
@@ -289,9 +289,9 @@ OptionUtils::printOptionValues()
    {
       cout << "  String options:" << endl;
    }
-   for (OptionMapIter iter = ns_stringMap.begin(); 
-       ns_stringMap.end() != iter; 
-       ++iter) 
+   for (OptionMapIter iter = ns_stringMap.begin();
+       ns_stringMap.end() != iter;
+       ++iter)
    {
       string &description = ns_variableDescriptionMap[ iter->first ];
       string *valuePtr = (string *) iter->second;
@@ -307,14 +307,14 @@ OptionUtils::printOptionValues()
    {
       cout << "  SVec options:" << endl;
    }
-   for (OptionMapIter iter = ns_svecMap.begin(); 
-       ns_svecMap.end() != iter; 
-       ++iter) 
+   for (OptionMapIter iter = ns_svecMap.begin();
+       ns_svecMap.end() != iter;
+       ++iter)
    {
       string &description = ns_variableDescriptionMap[ iter->first ];
       SVec *valuePtr = (SVec *) iter->second;
       cout << "    " << iter->first << " = ";
-      dumpSTL (*valuePtr); 
+      dumpSTL (*valuePtr);
       cout << endl;
       if (description.length())
       {
@@ -327,9 +327,9 @@ OptionUtils::printOptionValues()
    {
       cout << "  IVec options:" << endl;
    }
-   for (OptionMapIter iter = ns_ivecMap.begin(); 
-       ns_ivecMap.end() != iter; 
-       ++iter) 
+   for (OptionMapIter iter = ns_ivecMap.begin();
+       ns_ivecMap.end() != iter;
+       ++iter)
    {
       string &description = ns_variableDescriptionMap[ iter->first ];
       IVec *valuePtr = (IVec *) iter->second;
@@ -347,9 +347,9 @@ OptionUtils::printOptionValues()
    {
       cout << "  DVec options:" << endl;
    }
-   for (OptionMapIter iter = ns_dvecMap.begin(); 
-       ns_dvecMap.end() != iter; 
-       ++iter) 
+   for (OptionMapIter iter = ns_dvecMap.begin();
+       ns_dvecMap.end() != iter;
+       ++iter)
    {
       string &description = ns_variableDescriptionMap[ iter->first ];
       DVec *valuePtr = (DVec *) iter->second;
@@ -362,21 +362,21 @@ OptionUtils::printOptionValues()
       }
       cout << endl;
    } // for iter
-   cout << "------------------------------------------------------------------" 
+   cout << "------------------------------------------------------------------"
         << endl;
 }
 
-void 
+void
 OptionUtils::lowercaseString(string& arg)
 {
    // assumes 'toLower(ch)' modifies ch
    std::for_each (arg.begin(), arg.end(), OptionUtils::toLower);
    // // assumes 'toLower(ch)' returns the lower case char
-   // std::transform (arg.begin(), arg.end(), arg.begin(), 
+   // std::transform (arg.begin(), arg.end(), arg.begin(),
    //                 OptionUtils::toLower);
 }
 
-char 
+char
 OptionUtils::toLower (char& ch)
 {
    ch = tolower (ch);
@@ -384,7 +384,7 @@ OptionUtils::toLower (char& ch)
 }
 
 void
-OptionUtils::addOptionKey (string key, int &variable, 
+OptionUtils::addOptionKey (string key, int &variable,
                            const string &description)
 {
    lowercaseString (key);
@@ -394,7 +394,7 @@ OptionUtils::addOptionKey (string key, int &variable,
 }
 
 void
-OptionUtils::addOptionKey (string key, double &variable, 
+OptionUtils::addOptionKey (string key, double &variable,
                            const string &description)
 {
    lowercaseString (key);
@@ -404,7 +404,7 @@ OptionUtils::addOptionKey (string key, double &variable,
 }
 
 void
-OptionUtils::addOptionKey (string key, bool &variable, 
+OptionUtils::addOptionKey (string key, bool &variable,
                            const string &description)
 {
    lowercaseString (key);
@@ -414,7 +414,7 @@ OptionUtils::addOptionKey (string key, bool &variable,
 }
 
 void
-OptionUtils::addOptionKey (string key, string &variable, 
+OptionUtils::addOptionKey (string key, string &variable,
                            const string &description)
 {
    lowercaseString (key);
@@ -424,7 +424,7 @@ OptionUtils::addOptionKey (string key, string &variable,
 }
 
 void
-OptionUtils::addOptionKey (string key, SVec &variable, 
+OptionUtils::addOptionKey (string key, SVec &variable,
                            const string &description)
 {
    lowercaseString (key);
@@ -436,7 +436,7 @@ OptionUtils::addOptionKey (string key, SVec &variable,
 }
 
 void
-OptionUtils::addOptionKey (string key, IVec &variable, 
+OptionUtils::addOptionKey (string key, IVec &variable,
                            const string &description)
 {
    lowercaseString (key);
@@ -448,7 +448,7 @@ OptionUtils::addOptionKey (string key, IVec &variable,
 }
 
 void
-OptionUtils::addOptionKey (string key, DVec &variable, 
+OptionUtils::addOptionKey (string key, DVec &variable,
                            const string &description)
 {
    lowercaseString (key);
@@ -466,14 +466,14 @@ OptionUtils::valueHasBeenModified (const string &key)
    if (ns_variableModifiedMap.end() == iter)
    {
       // Not found.  Not a valid option
-      cerr << "OptionUtils::valueHasBeenModfied () Error: '" 
+      cerr << "OptionUtils::valueHasBeenModfied () Error: '"
            << key << "' is not a valid key." << endl;
       return false;
    }
    return iter->second;
 }
 
-bool 
+bool
 OptionUtils::setVariableFromString (const string &arg,
                                     bool dontOverrideChange,
                                     int offset)
@@ -489,7 +489,7 @@ OptionUtils::setVariableFromString (const string &arg,
       // Not found.  Not a valid option
       return false;
    }
-  
+
    // if 'dontOverrideChange' is set, then we are being asked to NOT
    // change any variables that have already been changed.
    if (dontOverrideChange && valueHasBeenModified (varname) )
@@ -597,7 +597,7 @@ OptionUtils::setVariableFromString (const string &arg,
          *boolPtr = true;
       } else {
          *boolPtr = false;
-      }               
+      }
       ns_variableModifiedMap[varname] = true;
       return true;
    }
@@ -623,7 +623,7 @@ OptionUtils::setVariablesFromFile (const string &filename)
       {
          // no non-spaces
          continue;
-      } 
+      }
       char first = line.at (where);
       if ('-' != first)
       {
@@ -640,8 +640,8 @@ OptionUtils::setVariablesFromFile (const string &filename)
       // first '#'.
       string withspaces = line.substr (where);
       string nospaces;
-      for (int position = 0; 
-           position < (int) withspaces.length(); 
+      for (int position = 0;
+           position < (int) withspaces.length();
            ++position)
       {
          char ch = withspaces[position];

@@ -18,15 +18,15 @@ ClassImp (CLPBinCont)
 bool CLPBinCont::sm_dontRemovePointsDefault = true;
 
 
-CLPBinCont::CLPBinCont() : 
-   m_vec(), m_integral(0), m_noOverflow (false), 
+CLPBinCont::CLPBinCont() :
+   m_vec(), m_integral(0), m_noOverflow (false),
    m_debug (false)
 {
    m_dontRemovePoints = sm_dontRemovePointsDefault;
 }
 
-CLPBinCont::CLPBinCont (TH1F *histPtr) : 
-   m_vec(), m_integral(0), m_noOverflow (false), 
+CLPBinCont::CLPBinCont (TH1F *histPtr) :
+   m_vec(), m_integral(0), m_noOverflow (false),
    m_debug (false)
 {
    m_dontRemovePoints = sm_dontRemovePointsDefault;
@@ -150,7 +150,7 @@ CLPBinCont::fillTH1F (TH1F *histPtr, bool noUnderOverflow) const
    // the lower edge of the histogram.          //
    ///////////////////////////////////////////////
    CLPBin::VecConstIter lowerIter = m_vec.begin();
-   CLPBin::VecConstIter upperIter = lowerIter + 1;   
+   CLPBin::VecConstIter upperIter = lowerIter + 1;
    double startX = histPtr->GetBinLowEdge(1);
    double startY = 0;
    if (! moveIterators (lowerIter, upperIter, startX, startY))
@@ -190,7 +190,7 @@ CLPBinCont::fillTH1F (TH1F *histPtr, bool noUnderOverflow) const
       histPtr->SetBinContent (0, 0.);
       histPtr->SetBinContent (numBins + 1, 0.);
    }
-   
+
 }
 
 TGraph*
@@ -232,13 +232,13 @@ CLPBinCont::moveIterators (CLPBin::VecConstIter &lowerIter,
          return false;
       }
    } while (! found);
-   yValue = lowerIter->yValue() + 
+   yValue = lowerIter->yValue() +
       inBetween * (upperIter->yValue() - lowerIter->yValue());
    return true;
 }
 
 void
-CLPBinCont::horizontalMorph (const CLPBinCont &alpha, const CLPBinCont &beta, 
+CLPBinCont::horizontalMorph (const CLPBinCont &alpha, const CLPBinCont &beta,
                              double param)
 {
    clear();
@@ -254,7 +254,7 @@ CLPBinCont::horizontalMorph (const CLPBinCont &alpha, const CLPBinCont &beta,
    if (alphaXLower != betaXLower)
    {
       // now check percentage difference
-      double percent = 2 * (alphaXLower - betaXLower) / 
+      double percent = 2 * (alphaXLower - betaXLower) /
          (fabs(alphaXLower) + fabs(betaXLower));
       assert (percent < 0.0001);
    }
@@ -263,14 +263,14 @@ CLPBinCont::horizontalMorph (const CLPBinCont &alpha, const CLPBinCont &beta,
    CLPBin::VecConstIter alphaUpperIter = alphaLowerIter + 1;
    CLPBin::VecConstIter betaUpperIter  = betaLowerIter  + 1;
    // we are assuming that the two CDFs are starting at the same lower
-   // value   
-   double lower = percentInBetween (alphaLowerIter->xLower(), 
+   // value
+   double lower = percentInBetween (alphaLowerIter->xLower(),
                                     betaLowerIter->xLower(),
-                                    param);   
-   double upper = percentInBetween (alphaLowerIter->xUpper(), 
+                                    param);
+   double upper = percentInBetween (alphaLowerIter->xUpper(),
                                     betaLowerIter->xUpper(),
-                                    param);   
-   double prevY = percentInBetween (alphaLowerIter->yValue(), 
+                                    param);
+   double prevY = percentInBetween (alphaLowerIter->yValue(),
                                     betaLowerIter->yValue(),
                                     param);
    addBin (lower, upper - lower, prevY, areTheSame (0., prevY));
@@ -287,20 +287,20 @@ CLPBinCont::horizontalMorph (const CLPBinCont &alpha, const CLPBinCont &beta,
          CLPBin::VecConstIter betaNextIter = betaUpperIter + 1;
          if (alpha.m_vec.end() != alphaNextIter)
          {
-            if ( areTheSame (alphaUpperIter->yValue(), 
+            if ( areTheSame (alphaUpperIter->yValue(),
                              alphaNextIter->yValue() ) )
             {
                nextSame = true;
-               ++alphaUpperIter; ++alphaLowerIter;               
+               ++alphaUpperIter; ++alphaLowerIter;
             } // if this and next iters are the same
          } // not the last alpha iter
          if (beta.m_vec.end() != betaNextIter)
          {
-            if ( areTheSame (betaUpperIter->yValue(), 
+            if ( areTheSame (betaUpperIter->yValue(),
                              betaNextIter->yValue() ) )
             {
                nextSame = true;
-               ++betaUpperIter; ++betaLowerIter;               
+               ++betaUpperIter; ++betaLowerIter;
             } // if this and next iters are the same
          } // not the last beta iter
          if (nextSame)
@@ -308,12 +308,12 @@ CLPBinCont::horizontalMorph (const CLPBinCont &alpha, const CLPBinCont &beta,
             // let's go again
             continue;
          }
-         double upper = percentInBetween (alphaUpperIter->xUpper(), 
+         double upper = percentInBetween (alphaUpperIter->xUpper(),
                                           betaUpperIter->xUpper(),
                                           param);
          lower = oldUpper;
          double width = upper - lower;
-         double newY = std::min( alphaUpperIter->yValue(), 
+         double newY = std::min( alphaUpperIter->yValue(),
                                  betaUpperIter->yValue() );
          // make sure this is not a zero width bin
          if (width >=0)
@@ -331,7 +331,7 @@ CLPBinCont::horizontalMorph (const CLPBinCont &alpha, const CLPBinCont &beta,
       if (alphaUpperIter->yValue() < betaUpperIter->yValue())
       {
          // alpha is the small guy
- 
+
          // first check to make sure that the upper and lower iters
          // don't have the same Y value
          if (areTheSame (alphaUpperIter->yValue(), alphaLowerIter->yValue()))
@@ -348,7 +348,7 @@ CLPBinCont::horizontalMorph (const CLPBinCont &alpha, const CLPBinCont &beta,
                                         betaUpperIter->xUpper(),
                                         frac);
          // now increment alpha for next time
-         ++alphaUpperIter; ++alphaLowerIter;        
+         ++alphaUpperIter; ++alphaLowerIter;
       } else {
          // beta is the small guy
          // first check to make sure that the upper and lower iters
@@ -382,24 +382,24 @@ CLPBinCont::horizontalMorph (const CLPBinCont &alpha, const CLPBinCont &beta,
    } // while iters are valid
    // finish it off.
    lower = oldUpper;
-   upper = percentInBetween (alphaLowerIter->xUpper(), 
+   upper = percentInBetween (alphaLowerIter->xUpper(),
                              betaLowerIter->xUpper(),
                              param);
-   double yVal = percentInBetween (alphaLowerIter->yValue(), 
+   double yVal = percentInBetween (alphaLowerIter->yValue(),
                                    betaLowerIter->yValue(),
                                    param);
    addBin (lower, upper - lower, yVal, areTheSame (yVal, prevY));
 }
 
 void
-CLPBinCont::horizontalSubtract (const CLPBinCont &alpha, 
+CLPBinCont::horizontalSubtract (const CLPBinCont &alpha,
                                 const CLPBinCont &beta)
 {
    static CLPFunctionoid2 subtract;
    horizontalFunction (alpha, beta, subtract);
 }
 
-void 
+void
 CLPBinCont::horizontalDeltaMorph (const CLPBinCont &alpha,
                                   const CLPBinCont &beta,
                                   double percentage)
@@ -410,7 +410,7 @@ CLPBinCont::horizontalDeltaMorph (const CLPBinCont &alpha,
 
 
 void
-CLPBinCont::horizontalFunction (const CLPBinCont &alpha, 
+CLPBinCont::horizontalFunction (const CLPBinCont &alpha,
                                 const CLPBinCont &beta,
                                 const CLPFunctionoid2 &functionoid)
 {
@@ -422,8 +422,8 @@ CLPBinCont::horizontalFunction (const CLPBinCont &alpha,
    CLPBin::VecConstIter alphaUpperIter = alphaLowerIter + 1;
    CLPBin::VecConstIter betaUpperIter  = betaLowerIter  + 1;
    // before we add anything, they should both be at 0;
-   addBin (functionoid (alphaLowerIter->xLower(), 
-                        betaLowerIter->xLower()), 
+   addBin (functionoid (alphaLowerIter->xLower(),
+                        betaLowerIter->xLower()),
            0.);
    while (alpha.m_vec.end() != alphaUpperIter &&
           beta.m_vec.end()  != betaUpperIter)
@@ -449,7 +449,7 @@ CLPBinCont::horizontalFunction (const CLPBinCont &alpha,
                                                betaUpperIter->xUpper(),
                                                frac);
          addBin (functionoid (alphaUpperIter->xUpper(),
-                              betaXUpper),                              
+                              betaXUpper),
                  alphaUpperIter->yValue());
          // now increment alpha for next time
          ++alphaUpperIter; ++alphaLowerIter;
@@ -461,7 +461,7 @@ CLPBinCont::horizontalFunction (const CLPBinCont &alpha,
                                                 alphaUpperIter->xUpper(),
                                                 frac);
          addBin (functionoid (alphaXUpper,
-                              betaUpperIter->xUpper()), 
+                              betaUpperIter->xUpper()),
                  betaUpperIter->yValue());
          // now increment beta for next time
          ++betaUpperIter; ++betaLowerIter;
@@ -471,7 +471,7 @@ CLPBinCont::horizontalFunction (const CLPBinCont &alpha,
 }
 
 void
-CLPBinCont::horizontalAdd (const CLPBinCont &alpha, 
+CLPBinCont::horizontalAdd (const CLPBinCont &alpha,
                            const CLPBinCont &delta,
                            double param)
 {
@@ -503,20 +503,20 @@ CLPBinCont::horizontalAdd (const CLPBinCont &alpha,
          CLPBin::VecConstIter deltaNextIter = deltaUpperIter + 1;
          if (alpha.m_vec.end() != alphaNextIter)
          {
-            if ( areTheSame (alphaUpperIter->yValue(), 
+            if ( areTheSame (alphaUpperIter->yValue(),
                              alphaNextIter->yValue() ) )
             {
                nextSame = true;
-               ++alphaUpperIter; ++alphaLowerIter;               
+               ++alphaUpperIter; ++alphaLowerIter;
             } // if this and next iters are the same
          } // not the last alpha iter
          if (delta.m_vec.end() != deltaNextIter)
          {
-            if ( areTheSame (deltaUpperIter->yValue(), 
+            if ( areTheSame (deltaUpperIter->yValue(),
                              deltaNextIter->yValue() ) )
             {
                nextSame = true;
-               ++deltaUpperIter; ++deltaLowerIter;               
+               ++deltaUpperIter; ++deltaLowerIter;
             } // if this and next iters are the same
          } // not the last delta iter
          if (nextSame)
@@ -524,8 +524,8 @@ CLPBinCont::horizontalAdd (const CLPBinCont &alpha,
             // let's go again
             continue;
          }
-         double xUpper = alphaUpperIter->xUpper() + 
-            param * deltaUpperIter->xUpper();         
+         double xUpper = alphaUpperIter->xUpper() +
+            param * deltaUpperIter->xUpper();
          double newY = std::min( alphaUpperIter->yValue(),
                                  deltaUpperIter->yValue() );
          // Make sure we are not adding a negative width bin.  If we
@@ -604,7 +604,7 @@ CLPBinCont::horizontalAdd (const CLPBinCont &alpha,
       }
    } // while not at the end
    // // finish it off
-   // double xUpper = alphaLowerIter->xUpper() + 
+   // double xUpper = alphaLowerIter->xUpper() +
    //    param *  deltaLowerIter->xUpper();
    // addBin (xLower, xUpper - xLower, 1, areTheSame (1., prevY));
 }
@@ -662,7 +662,7 @@ CLPBinCont::smoothBeginningOfDelta (double percentStep)
          //    including, leftIter.
          CLPBin::VecIter nextRightIter = rightIter + 1;
          assert (m_vec.end() != nextRightIter);
-         if ( ( rightIter->xUpper() == nextRightIter->xUpper() ) || 
+         if ( ( rightIter->xUpper() == nextRightIter->xUpper() ) ||
               ( rightIter->yValue() >= nextRightIter->yValue() ))
          {
             // we have a vertical line OR no lever arm
@@ -674,14 +674,14 @@ CLPBinCont::smoothBeginningOfDelta (double percentStep)
             double numUnits = rightIter->yValue() / deltaY;
             leftIter->setXUpperWidth( rightIter->xUpper() - deltaX * numUnits,
                                       0.);
-            leftIter->setYvalue (0.);            
+            leftIter->setYvalue (0.);
          }
          m_vec.erase( m_vec.begin(), leftIter);
          return;
       } // if step too big
       --leftIter;
       --rightIter;
-   } // while     
+   } // while
    // If we're here, then there's nothing to do
 }
 
@@ -704,4 +704,4 @@ ostream& operator<< (ostream& o_stream, const CLPBinCont &rhs)
    }
    o_stream << "Integral: " << rhs.integral() << endl;
    return o_stream;
-} 
+}

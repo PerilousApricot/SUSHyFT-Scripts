@@ -30,7 +30,7 @@ class BinsSum
       /////////////
 
       // tells particle data how to print itself out
-      friend std::ostream& operator<< (std::ostream& o_stream, 
+      friend std::ostream& operator<< (std::ostream& o_stream,
                                        const BinsSum &rhs);
 
       //////////////////////////
@@ -53,7 +53,7 @@ class BinsSum
       const std::string &name() const { return m_name; }
 
       // add a template index
-      void addTemplateIndex (int index) 
+      void addTemplateIndex (int index)
       { m_templateIndiciesVec.push_back (index); }
 
       // add a bin range

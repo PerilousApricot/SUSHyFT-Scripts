@@ -15,4 +15,4 @@ CLPFunctionoid2::CLPFunctionoid2()
 ostream& operator<< (ostream& o_stream, const CLPFunctionoid2 &rhs)
 {
    return o_stream;
-} 
+}

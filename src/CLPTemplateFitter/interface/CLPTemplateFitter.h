@@ -57,7 +57,7 @@ class CLPTemplateFitter
       /////////////
 
       // tells particle data how to print itself out
-      friend std::ostream& operator<< (std::ostream& o_stream, 
+      friend std::ostream& operator<< (std::ostream& o_stream,
                                        const CLPTemplateFitter &rhs);
 
       //////////////////////////
@@ -84,20 +84,20 @@ class CLPTemplateFitter
       ~CLPTemplateFitter();
 
       // Operator=  (NOT COMPLETE)
-      CLPTemplateFitter &operator= 
+      CLPTemplateFitter &operator=
       (const CLPTemplateFitter& rhs);
 
       //////////////////////////////
       // Regular Member Functions //
       //////////////////////////////
-      
+
       // adds data template.  Returns the old TH1F pointer (if any)
       TH1F* addData (TH1F *dataHist);
       const TH1F* getData () const { return m_dataHPtr; }
       void  copyDataFromOtherFitter (const CLPTemplateFitter &otherFitter);
-      void  copyDataFromOtherFitter (const CLPTemplateFitter &otherFitter1, 
+      void  copyDataFromOtherFitter (const CLPTemplateFitter &otherFitter1,
 				     const CLPTemplateFitter &otherFitter2);
-      
+
       // adds a MC template.  Returns template index
       int addTemplate (const std::string& name, TH1F *tempHist,
                        double norm, double mean = 0., double sigma = 0.,
@@ -109,7 +109,7 @@ class CLPTemplateFitter
 
       // adds a functoid to a binNorm (either one binNorm for all
       // templates or a binNorm for only one template.
-      void setBinNormFunctoid (const std::string &name, 
+      void setBinNormFunctoid (const std::string &name,
                                BinNormFunctoid &functoid);
       void setBinNormFunctoid (const std::string &name, int tempIndex,
                                BinNormFunctoid &functoid);
@@ -163,7 +163,7 @@ class CLPTemplateFitter
       // returns a TH1F* to the new histogram.  User is responsible
       // for the memory.  If no name is passed in, then a histogram of
       // the sum of templates will be returned.
-      // NOTE: 
+      // NOTE:
       // 1) These member functions are NOT const because in order
       // to process the request, we may need to update the Morphs
       // internally.
@@ -214,9 +214,9 @@ class CLPTemplateFitter
       // the order of the variables in the covariance matrix.  By
       // default, the function only returns the subset of variables
       // that are not fixed.
-      TMatrixD getCovarianceMatrix (SVec &paramNamesVec, 
+      TMatrixD getCovarianceMatrix (SVec &paramNamesVec,
                                     bool nonZeroOnly = true) const;
-      TMatrixD getCovarianceMatrix (IVec &paramIndiciesVec, 
+      TMatrixD getCovarianceMatrix (IVec &paramIndiciesVec,
                                     bool nonZeroOnly = true) const;
 
       // calculates and stores internally square root of covariance
@@ -280,7 +280,7 @@ class CLPTemplateFitter
 
       // set and value for minExpectedBinContent
       double minExpectedBinContent() const { return m_minExpectedBinContent; }
-      void setMinExpectedBinContent (double minExpectedBinContent) 
+      void setMinExpectedBinContent (double minExpectedBinContent)
       { m_minExpectedBinContent = minExpectedBinContent; }
 
       // returns reference to binsSumCont.  Note that m_binsSumCont is
@@ -294,7 +294,7 @@ class CLPTemplateFitter
       /////////////////////////////
 
       // function that Minuit minimizes
-      static void minimizeFcn (int &npar, double *gin, double &retval, 
+      static void minimizeFcn (int &npar, double *gin, double &retval,
                                double *parameterArray, int iflag);
 
       // returns log of the probability that we see 'observed' when we
@@ -303,7 +303,7 @@ class CLPTemplateFitter
 
       // Return the index for a given name.  Returns -1 if name is not
       // found.  User must provide nameIndexMap (from 'getNameIndexMap').
-      static int indexOfName (const std::string &name, 
+      static int indexOfName (const std::string &name,
                               const SIMap &nameIndexMap);
 
       // returns square root of a matrix
@@ -327,13 +327,13 @@ class CLPTemplateFitter
                             double *arrayAddress = 0) const;
       double _getBinFactor (int tempIndex, int binNormIndex,
                             const DVec &paramVec) const;
-      
+
       // returns bin contents for a template
       double _getBinContent (int tempIndex, int binNormIndex,
                              double *arrayAddress = 0) const;
       double _getBinContent (int tempIndex, int binNormIndex,
                              const DVec &paramVec) const;
-      
+
       // returns the total bin contents for all templates
       double _getTotalBinContent (int binNormIndex,
                                   double *arrayAddress = 0) const;
@@ -348,7 +348,7 @@ class CLPTemplateFitter
 
       // returns the index of a parameter given its name.  Return -1
       // if the parameter name doesn't find any matches
-      int _paramIndex (const std::string &name, 
+      int _paramIndex (const std::string &name,
                        int &tempIndex, int &binNormIndex) const;
       int _paramIndex (const std::string &name) const
       { int temp, binNorm; return _paramIndex (name, temp, binNorm); }
@@ -364,11 +364,11 @@ class CLPTemplateFitter
       double _eventsInRange (TH1F* histPtr);
 
       // validates bin index
-      void _validateBinIndex (const std::string &function, 
+      void _validateBinIndex (const std::string &function,
                               int binNormIndex) const;
 
       // validates template index
-      void _validateTemplateIndex (const std::string &function, 
+      void _validateTemplateIndex (const std::string &function,
                                    int tempIndex) const;
 
       // validates minuit is initialized
@@ -376,12 +376,12 @@ class CLPTemplateFitter
 
       // validates that a histogram is o.k.  Also sets informations
       // about histogram sizes.
-      void _validateHistogram (const std::string &function, 
+      void _validateHistogram (const std::string &function,
                                TH1F *histPtr);
 
       // returns the ISet of parameters to use (all if nonZeroOnly is
       // false, just the non-fixed parameter indicies if true)
-      void _fillParamISet (BinNormClass::ISet &paramSet, 
+      void _fillParamISet (BinNormClass::ISet &paramSet,
                            bool nonZeroOnly) const;
 
       void _setAllMorphingParameters (const double *parameterArray);
@@ -426,7 +426,7 @@ class CLPTemplateFitter
       DVec                m_constraintSigmaVec;
       StartStopStep::Vec  m_startStopStepVec;
       DVec                m_binNormConstraintMeanVec;
-      DVec                m_binNormConstraintSigmaVec;      
+      DVec                m_binNormConstraintSigmaVec;
       SVec                m_templateNameVec;
       SVec                m_binNormNameVec;
       DVecVec             m_covarMatrixDVV;
