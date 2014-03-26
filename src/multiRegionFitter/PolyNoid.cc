@@ -25,12 +25,12 @@ PolyNoid::PolyNoid(std::string &name, double mean, double width,
    m_name(name), m_mean(mean), m_width(width),
    m_lower(lower),  m_upper(upper),  m_step(step)
 {
-   if(m_lower == m_upper)
+   if (m_lower == m_upper)
    {
       m_lower = -10. * m_mean;
       m_upper =  10. * m_mean;
       m_step  = 0.001;
-      if(0 == lower)
+      if (0 == lower)
       {
          m_lower = -10.;
          m_upper =  10.;
@@ -48,7 +48,7 @@ PolyNoid::operator() (int tempIndex, int binIndex,
    // cout << "t " << tempIndex << " b " << binIndex << " g " << groupBin
    //      << endl;
    // assert(m_groupTemplateParamMap.end() != iter);
-   if(m_groupTemplateParamMap.end() == iter)
+   if (m_groupTemplateParamMap.end() == iter)
    {
       return 1.;
    }
@@ -66,11 +66,11 @@ PolyNoid::addPolynomial(const IVec &groupVec,
 {
    int index =(int) m_parametersVec.size();
    m_parametersVec.push_back( parameters );
-   for(IVecConstIter groupIter = groupVec.begin();
+   for (IVecConstIter groupIter = groupVec.begin();
         groupVec.end() != groupIter;
         ++groupIter)
    {
-      for(IVecConstIter templateIter = templateEnumVec.begin();
+      for (IVecConstIter templateIter = templateEnumVec.begin();
            templateEnumVec.end() != templateIter;
            ++templateIter)
       {
@@ -84,14 +84,14 @@ void
 PolyNoid::calculateGroupTemplateParamMap(const IIMap &template2indexMap)
 {
    const IIMapConstIter kEndIter = template2indexMap.end();
-   for(IIPairIMapConstIter iter = m_temporaryMap.begin();
+   for (IIPairIMapConstIter iter = m_temporaryMap.begin();
         m_temporaryMap.end() != iter;
         ++iter)
    {
       int groupBin    = iter->first.first;
       int templateEnum = iter->first.second;
       IIMapConstIter findIter = template2indexMap.find(templateEnum);
-      if(kEndIter == findIter)
+      if (kEndIter == findIter)
       {
          // not found.  not good.
          cout << "groupBin     " << groupBin << endl;
@@ -107,7 +107,7 @@ int
 PolyNoid::addSelfToFitter(CLPTemplateFitter &fitter)
 {
    BinNormClass::ISet templateSet, binSet;
-   for(IIPairIMapConstIter iter = m_groupTemplateParamMap.begin();
+   for (IIPairIMapConstIter iter = m_groupTemplateParamMap.begin();
         m_groupTemplateParamMap.end() != iter;
         ++iter)
    {
@@ -148,7 +148,7 @@ PolyNoid::setGroupBinWidths(const IVec &widthVec)
    sm_groupBinBoundariesVec.clear();
    sm_groupBinBoundariesVec.push_back( 0 );
    int total = 0;
-   for(IVecConstIter iter = widthVec.begin();
+   for (IVecConstIter iter = widthVec.begin();
         widthVec.end() != iter;
         ++iter)
    {
@@ -166,7 +166,7 @@ PolyNoid::polynomial(double x, const DVec &params)
    Double_t total = 0.;
    unsigned int size = params.size();
    const DVecConstIter kEnd = params.end();
-   for(DVecConstIter iter = params.begin();
+   for (DVecConstIter iter = params.begin();
         kEnd != iter;
         ++iter)
    {
@@ -179,17 +179,17 @@ PolyNoid::polynomial(double x, const DVec &params)
 int
 PolyNoid::bin2groupBin(int bin)
 {
-   if(sm_lastBin == bin)
+   if (sm_lastBin == bin)
    {
       return sm_lastGroupBin;
    }
-   if(bin > sm_lastBin)
+   if (bin > sm_lastBin)
    {
-      for(int index = sm_lastGroupBin;
+      for (int index = sm_lastGroupBin;
            index <= sm_groupBinUpper;
            ++index)
       {
-         if(sm_groupBinBoundariesVec.at(index)     <  bin &&
+         if (sm_groupBinBoundariesVec.at(index)     <  bin &&
              sm_groupBinBoundariesVec.at(index + 1) >=   bin)
          {
             // got it
@@ -200,11 +200,11 @@ PolyNoid::bin2groupBin(int bin)
       } // for index
       assert(0);
    } else {
-      for(int index = sm_lastGroupBin;
+      for (int index = sm_lastGroupBin;
            index >= 0;
            --index)
       {
-         if(sm_groupBinBoundariesVec.at(index)     <  bin &&
+         if (sm_groupBinBoundariesVec.at(index)     <  bin &&
              sm_groupBinBoundariesVec.at(index + 1) >=   bin)
          {
             // got it
@@ -240,7 +240,7 @@ int
 PolyNoid::lastBin()
 {
    unsigned int size = sm_groupBinBoundariesVec.size();
-   if(! size)
+   if (! size)
    {
       return -1;
    }
@@ -256,7 +256,7 @@ PolyNoid::dumpToOstream(ostream& o_stream) const
                      mean(), width(),
                      lower(), upper(), step())
             << endl;
-   for(PolyNoid::IIPairIMapConstIter iter =
+   for (PolyNoid::IIPairIMapConstIter iter =
            m_groupTemplateParamMap.begin();
         m_groupTemplateParamMap.end() != iter;
         ++iter)

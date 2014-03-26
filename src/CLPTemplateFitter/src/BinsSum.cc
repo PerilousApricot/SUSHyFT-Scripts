@@ -24,12 +24,12 @@ BinsSum::value() const
    double total = 0.;
    assert(m_lowerBinVec.size() == m_upperBinVec.size());
    int size =(int) m_lowerBinVec.size();
-   for(IVecConstIter tempIter = m_templateIndiciesVec.begin();
+   for (IVecConstIter tempIter = m_templateIndiciesVec.begin();
         m_templateIndiciesVec.end() != tempIter;
         ++tempIter)
    {
       TH1F *histPtr = m_contPtr->getTemplate( *tempIter );
-      for(int loop = 0; loop < size; ++loop)
+      for (int loop = 0; loop < size; ++loop)
       {
          total += histPtr->Integral( m_lowerBinVec.at(loop),
                                      m_upperBinVec.at(loop) );
@@ -56,7 +56,7 @@ BinsSum::calcMeanAndRMS(double &mean, double &rms, const DVec &xvec)
    double sumX = 0.;
    double sumX2 = 0.;
    int num = 0;
-   for(DVecConstIter iter = xvec.begin();
+   for (DVecConstIter iter = xvec.begin();
         xvec.end() != iter;
         ++iter)
    {
@@ -64,7 +64,7 @@ BinsSum::calcMeanAndRMS(double &mean, double &rms, const DVec &xvec)
       sumX  += *iter;
       sumX2 += *iter * *iter;
    }
-   if(! num)
+   if (! num)
    {
       // we haven't summed over anything
       mean = -999.;

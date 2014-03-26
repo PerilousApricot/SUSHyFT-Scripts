@@ -22,12 +22,12 @@ CommandLineParser::CommandLineParser(const string &usage,
    m_argv0(""), m_usageString (usage),
    m_printOptions(false), m_optionsType (optionsType)
 {
-   if(kNoDefaultArgs == m_optionsType)
+   if (kNoDefaultArgs == m_optionsType)
    {
       // All done
       return;
    }
-   if(m_optionsType & kEventContOpt)
+   if (m_optionsType & kEventContOpt)
    {
       // Integer options
       addOption("totalSections", kInteger,
@@ -79,28 +79,28 @@ CommandLineParser::parseArguments(int argc, char** argv,
    bool callHelp = false;
    m_argv0 = argv[0];
    m_fullArgVec.push_back(argv[0]);
-   for(int loop = 1; loop < argc; ++loop)
+   for (int loop = 1; loop < argc; ++loop)
    {
       string arg = argv[loop];
       m_fullArgVec.push_back(arg);
       string::size_type where = arg.find_first_of("=");
-      if(string::npos != where)
+      if (string::npos != where)
       {
-         if( setVariableFromString (arg) )
+         if ( setVariableFromString (arg) )
          {
             continue;
          }
-         if( _runVariableCommandFromString (arg) )
+         if ( _runVariableCommandFromString (arg) )
          {
             continue;
          }
          cerr << "Don't understand: " << arg << endl;
          exit(0);
       } // tag=value strings
-      else if(arg.at(0) == '-')
+      else if (arg.at(0) == '-')
       {
          string::size_type where = arg.find_first_not_of("-");
-         if(string::npos == where)
+         if (string::npos == where)
          {
             // a poorly formed option
             cerr << "Don't understand: " << arg << endl;
@@ -110,18 +110,18 @@ CommandLineParser::parseArguments(int argc, char** argv,
          lowercaseString(arg);
          char first = arg.at(where);
          // Print the values
-         if('p' == first)
+         if ('p' == first)
          {
             m_printOptions = true;
             continue;
          }
-         if('n' == first)
+         if ('n' == first)
          {
             m_printOptions = false;
             continue;
          }
          // Exit after printing values
-         if('h' == first)
+         if ('h' == first)
          {
             callHelp = true;
             continue;
@@ -130,7 +130,7 @@ CommandLineParser::parseArguments(int argc, char** argv,
          cerr << "Don't understand: " << arg << endl;
          exit(0);
       } // -arg strings
-      if(parseNonOptionArgs)
+      if (parseNonOptionArgs)
       {
          m_nonOptionArgsVec.push_back(arg);
       } else {
@@ -138,11 +138,11 @@ CommandLineParser::parseArguments(int argc, char** argv,
          exit(0);
       }
    } // for loop
-   if(callHelp)
+   if (callHelp)
    {
       help();
    }
-   if(m_printOptions)
+   if (m_printOptions)
    {
       printOptionValues();
    }
@@ -151,7 +151,7 @@ CommandLineParser::parseArguments(int argc, char** argv,
 void
 CommandLineParser::help()
 {
-   if(m_usageString.length())
+   if (m_usageString.length())
    {
       cout << m_argv0 << " - " << m_usageString << endl;
    }
@@ -167,7 +167,7 @@ void
 CommandLineParser::split(SVec &retval, string line, string match,
                     bool ignoreComments)
 {
-   if(ignoreComments)
+   if (ignoreComments)
    {
       removeComment(line);
    } // if ignoreComments
@@ -176,7 +176,7 @@ CommandLineParser::split(SVec &retval, string line, string match,
    string::size_type start1 = line.find_first_not_of(kSpaces);
    // Is the first non-space character a '#'
    char firstCh = line[start1];
-   if('#' == firstCh)
+   if ('#' == firstCh)
    {
       // this line is a comment
       return;
@@ -188,7 +188,7 @@ CommandLineParser::split(SVec &retval, string line, string match,
    while(string::npos != current)
    {
       string::size_type pos;
-      if(string::npos != last)
+      if (string::npos != last)
       {
          pos = last + 1;
       } else {
@@ -196,7 +196,7 @@ CommandLineParser::split(SVec &retval, string line, string match,
       }
       string part = line.substr( pos, current - last - 1);
       // don't bother adding 0 length strings
-      if(part.length())
+      if (part.length())
       {
          retval.push_back(part);
       }
@@ -209,7 +209,7 @@ void
 CommandLineParser::removeComment(string &line)
 {
    string::size_type location = line.find("#");
-   if(string::npos != location)
+   if (string::npos != location)
    {
       // we've got a comment.  Strip it out
       line = line.substr(0, location - 1);
@@ -220,18 +220,18 @@ void
 CommandLineParser::removeLeadingAndTrailingSpaces(std::string &line)
 {
    string::size_type pos = line.find_first_not_of(kSpaces);
-   if(string::npos == pos)
+   if (string::npos == pos)
    {
       // we don't have anything here at all.  Just quit now
       return;
    }
-   if(pos)
+   if (pos)
    {
       // We have spaces at the beginning.
       line = line.substr(pos);
    }
    pos = line.find_last_not_of(kSpaces);
-   if(pos + 1 != line.length())
+   if (pos + 1 != line.length())
    {
       // we've got spaces at the end
       line = line.substr(0, pos + 1);
@@ -242,7 +242,7 @@ string
 CommandLineParser::removeEnding(const string &input, const string &ending)
 {
    string::size_type position = input.rfind(ending);
-   if(input.length() - ending.length() == position)
+   if (input.length() - ending.length() == position)
    {
       // we've got it
       return input.substr(0, position);
@@ -258,13 +258,13 @@ CommandLineParser::findCommand(const string &line,
 {
    command = rest = "";
    string::size_type nonspace = line.find_first_not_of(kSpaces);
-   if(string::npos == nonspace)
+   if (string::npos == nonspace)
    {
       // we don't have anything here at all.  Just quit now
       return;
    }
    string::size_type space = line.find_first_of(kSpaces, nonspace);
-   if(string::npos == space)
+   if (string::npos == space)
    {
       // we only have a command and nothing else
       command = line.substr(nonspace);
@@ -282,18 +282,18 @@ CommandLineParser::printOptionValues()
    cout << "------------------------------------------------------------------"
         << left << endl;
    // Print the integers next
-   if(m_integerMap.size())
+   if (m_integerMap.size())
    {
       cout << endl << "Integer options:" << endl;
    }
-   for(SIMapConstIter iter = m_integerMap.begin();
+   for (SIMapConstIter iter = m_integerMap.begin();
        m_integerMap.end() != iter;
        ++iter)
    {
       const string &description = m_variableDescriptionMap[ iter->first ];
       cout << "    " << setw(14) << iter->first << " = " << setw(14)
            << iter->second;
-      if(description.length())
+      if (description.length())
       {
          cout << " - " << description;
       }
@@ -301,18 +301,18 @@ CommandLineParser::printOptionValues()
    } // for iter
 
    // Print the doubles next
-   if(m_doubleMap.size())
+   if (m_doubleMap.size())
    {
       cout << endl << "Double options:" << endl;
    }
-   for(SDMapConstIter iter = m_doubleMap.begin();
+   for (SDMapConstIter iter = m_doubleMap.begin();
        m_doubleMap.end() != iter;
        ++iter)
    {
       const string &description = m_variableDescriptionMap[ iter->first ];
       cout << "    " << setw(14) << iter->first << " = " << setw(14)
            << iter->second;
-      if(description.length())
+      if (description.length())
       {
          cout << " - " << description;
       }
@@ -320,23 +320,23 @@ CommandLineParser::printOptionValues()
    } // for iter
 
    // Print the bools first
-   if(m_boolMap.size())
+   if (m_boolMap.size())
    {
       cout << endl << "Bool options:" << endl;
    }
-   for(SBMapConstIter iter = m_boolMap.begin();
+   for (SBMapConstIter iter = m_boolMap.begin();
        m_boolMap.end() != iter;
        ++iter)
    {
       const string &description = m_variableDescriptionMap[ iter->first ];
       cout << "    " << setw(14) << iter->first << " = " << setw(14);
-      if(iter->second)
+      if (iter->second)
       {
          cout << "true";
       } else {
          cout << "false";
       }
-      if(description.length())
+      if (description.length())
       {
          cout << " - " << description;
       }
@@ -344,11 +344,11 @@ CommandLineParser::printOptionValues()
    } // for iter
 
    // Print the strings next
-   if(m_stringMap.size())
+   if (m_stringMap.size())
    {
       cout << endl << "String options:" << endl;
    }
-   for(SSMapConstIter iter = m_stringMap.begin();
+   for (SSMapConstIter iter = m_stringMap.begin();
        m_stringMap.end() != iter;
        ++iter)
    {
@@ -356,7 +356,7 @@ CommandLineParser::printOptionValues()
       cout << "    " << setw(14) << iter->first << " = ";
       const string value = "'" + iter->second + "'";
       cout << setw(14) << "";
-      if(description.length())
+      if (description.length())
       {
          cout << " - " << description;
       }
@@ -364,11 +364,11 @@ CommandLineParser::printOptionValues()
    } // for iter
 
    // Integer Vec
-   if(m_integerVecMap.size())
+   if (m_integerVecMap.size())
    {
       cout << endl << "Integer Vector options:" << endl;
    }
-   for(SIVecMapConstIter iter = m_integerVecMap.begin();
+   for (SIVecMapConstIter iter = m_integerVecMap.begin();
        m_integerVecMap.end() != iter;
        ++iter)
    {
@@ -376,7 +376,7 @@ CommandLineParser::printOptionValues()
       cout << "    " << setw(14) << iter->first << " = ";
       dumpSTL(iter->second);
       cout << endl;
-      if(description.length())
+      if (description.length())
       {
          cout << "      - " << description;
       }
@@ -384,11 +384,11 @@ CommandLineParser::printOptionValues()
    } // for iter
 
    // Double Vec
-   if(m_doubleVecMap.size())
+   if (m_doubleVecMap.size())
    {
       cout << endl << "Double Vector options:" << endl;
    }
-   for(SDVecMapConstIter iter = m_doubleVecMap.begin();
+   for (SDVecMapConstIter iter = m_doubleVecMap.begin();
        m_doubleVecMap.end() != iter;
        ++iter)
    {
@@ -396,7 +396,7 @@ CommandLineParser::printOptionValues()
       cout << "    " << setw(14) << iter->first << " = ";
       dumpSTL(iter->second);
       cout << endl;
-      if(description.length())
+      if (description.length())
       {
          cout << "      - " << description;
       }
@@ -404,19 +404,19 @@ CommandLineParser::printOptionValues()
    } // for iter
 
    // String Vec
-   if(m_stringVecMap.size())
+   if (m_stringVecMap.size())
    {
       cout << endl << "String Vector options:" << endl;
    } else {
       cout << endl;
    }
-   for(SSVecMapConstIter iter = m_stringVecMap.begin();
+   for (SSVecMapConstIter iter = m_stringVecMap.begin();
        m_stringVecMap.end() != iter;
        ++iter)
    {
       const string &description = m_variableDescriptionMap[ iter->first ];
       cout << "    " << setw(14) << iter->first << " = ";
-      if(description.length())
+      if (description.length())
       {
          cout << setw(14) << "" << " - " << description;
       }
@@ -439,7 +439,7 @@ CommandLineParser::setVariableFromString(const string &arg,
    lowercaseString(varname);
    // check to make sure this is a valid option
    SBMapConstIter sbiter = m_variableModifiedMap.find(varname);
-   if(m_variableModifiedMap.end() == sbiter)
+   if (m_variableModifiedMap.end() == sbiter)
    {
       dout << "'" << varname << "' not found." << endl;
       // Not found.  Not a valid option
@@ -447,14 +447,14 @@ CommandLineParser::setVariableFromString(const string &arg,
    }
    // if 'dontOverrideChange' is set, then we are being asked to NOT
    // change any variables that have already been changed.
-   if(dontOverrideChange && _valueHasBeenModified (varname) )
+   if (dontOverrideChange && _valueHasBeenModified (varname) )
    {
       // don't go any further
       return true;
    }
    // integers
    SIMapIter integerIter = m_integerMap.find(varname);
-   if(m_integerMap.end() != integerIter)
+   if (m_integerMap.end() != integerIter)
    {
       // we found it
       // use 'atof' instead of 'atoi' to get scientific notation
@@ -464,7 +464,7 @@ CommandLineParser::setVariableFromString(const string &arg,
    }
    // double
    SDMapIter doubleIter = m_doubleMap.find(varname);
-   if(m_doubleMap.end() != doubleIter)
+   if (m_doubleMap.end() != doubleIter)
    {
       // we found it
       doubleIter->second = atof( value.c_str() );
@@ -473,7 +473,7 @@ CommandLineParser::setVariableFromString(const string &arg,
    }
    // string
    SSMapIter stringIter = m_stringMap.find(varname);
-   if(m_stringMap.end() != stringIter)
+   if (m_stringMap.end() != stringIter)
    {
       // we found it
       stringIter->second = value;
@@ -482,7 +482,7 @@ CommandLineParser::setVariableFromString(const string &arg,
    }
    // bool
    SBMapIter boolIter = m_boolMap.find(varname);
-   if(m_boolMap.end() != boolIter)
+   if (m_boolMap.end() != boolIter)
    {
       // we found it
       boolIter->second = 0 != atoi( value.c_str() );
@@ -491,12 +491,12 @@ CommandLineParser::setVariableFromString(const string &arg,
    }
    // IntegerVec
    SIVecMapIter integerVecIter = m_integerVecMap.find(varname);
-   if(m_integerVecMap.end() != integerVecIter)
+   if (m_integerVecMap.end() != integerVecIter)
    {
       // we found it
       SVec words;
       split(words, value, ",");
-      for(SVecConstIter wordIter = words.begin();
+      for (SVecConstIter wordIter = words.begin();
            words.end() != wordIter;
            ++wordIter)
       {
@@ -509,12 +509,12 @@ CommandLineParser::setVariableFromString(const string &arg,
    }
    // DoubleVec
    SDVecMapIter doubleVecIter = m_doubleVecMap.find(varname);
-   if(m_doubleVecMap.end() != doubleVecIter)
+   if (m_doubleVecMap.end() != doubleVecIter)
    {
       // we found it
       SVec words;
       split(words, value, ",");
-      for(SVecConstIter wordIter = words.begin();
+      for (SVecConstIter wordIter = words.begin();
            words.end() != wordIter;
            ++wordIter)
       {
@@ -527,12 +527,12 @@ CommandLineParser::setVariableFromString(const string &arg,
    }
    // StringVec
    SSVecMapIter stringVecIter = m_stringVecMap.find(varname);
-   if(m_stringVecMap.end() != stringVecIter)
+   if (m_stringVecMap.end() != stringVecIter)
    {
       // we found it
       SVec words;
       split(words, value, ",");
-      for(SVecConstIter wordIter = words.begin();
+      for (SVecConstIter wordIter = words.begin();
            words.end() != wordIter;
            ++wordIter)
       {
@@ -555,7 +555,7 @@ bool
 CommandLineParser::setVariablesFromFile(const string &filename)
 {
    ifstream source(filename.c_str(), ios::in);
-   if(! source)
+   if (! source)
    {
       cerr << "file " << filename << "could not be opened" << endl;
       return false;
@@ -565,18 +565,18 @@ CommandLineParser::setVariablesFromFile(const string &filename)
    {
       // find the first nonspace
       string::size_type where = line.find_first_not_of(kSpaces);
-      if(string::npos == where)
+      if (string::npos == where)
       {
          // no non-spaces
          continue;
       }
       char first = line.at(where);
-      if('-' != first)
+      if ('-' != first)
       {
          continue;
       }
       where = line.find_first_not_of(kSpaces, where + 1);
-      if(string::npos == where)
+      if (string::npos == where)
       {
          // no non-spaces
          continue;
@@ -586,22 +586,22 @@ CommandLineParser::setVariablesFromFile(const string &filename)
       // first '#'.
       string withspaces = line.substr(where);
       string nospaces;
-      for(int position = 0;
+      for (int position = 0;
            position <(int) withspaces.length();
            ++position)
       {
          char ch = withspaces[position];
-         if('#' == ch)
+         if ('#' == ch)
          {
             // start of a comment
             break;
-         } else if(' ' == ch || '\t' == ch)
+         } else if (' ' == ch || '\t' == ch)
          {
             continue;
          }
          nospaces += ch;
       } // for position
-      if(! setVariableFromString (nospaces, true) )
+      if (! setVariableFromString (nospaces, true) )
       {
          cerr << "Don't understand line" << endl << line << endl
               << "in options file '" << filename << "'.  Aborting."
@@ -617,25 +617,25 @@ CommandLineParser::_runVariableCommandFromString(const string &arg)
 {
    SVec equalWords;
    split(equalWords, arg, "=");
-   if(2 != equalWords.size())
+   if (2 != equalWords.size())
    {
       return false;
    }
    SVec commandWords;
    split(commandWords, equalWords.at(0), "_");
-   if(2 != commandWords.size())
+   if (2 != commandWords.size())
    {
       return false;
    }
    string &command = commandWords.at(1);
    lowercaseString(command);
-   if(command != "load" && command != "clear")
+   if (command != "load" && command != "clear")
    {
       return false;
    }
    const string &key = commandWords.at(0);
    OptionType type = hasOption(key);
-   if(type < kIntegerVector || type > kStringVector)
+   if (type < kIntegerVector || type > kStringVector)
    {
       cerr << "Command '" << command << "' only works on vectors." << endl;
       return false;
@@ -644,15 +644,15 @@ CommandLineParser::_runVariableCommandFromString(const string &arg)
    ///////////
    // Clear //
    ///////////
-   if("clear" == command)
+   if ("clear" == command)
    {
-      if(kIntegerVector == type)
+      if (kIntegerVector == type)
       {
          integerVector(key).clear();
-      } else if(kDoubleVector == type)
+      } else if (kDoubleVector == type)
       {
          doubleVector(key).clear();
-      } else if(kStringVector == type)
+      } else if (kStringVector == type)
       {
          stringVector(key).clear();
       } else {
@@ -668,7 +668,7 @@ CommandLineParser::_runVariableCommandFromString(const string &arg)
    //////////
    const string &filename = equalWords.at(1);
    ifstream source(filename.c_str(), ios::in);
-   if(! source)
+   if (! source)
    {
       cerr << "file " << filename << "could not be opened" << endl;
       return false;
@@ -678,7 +678,7 @@ CommandLineParser::_runVariableCommandFromString(const string &arg)
    {
       // find the first nonspace
       string::size_type where = line.find_first_not_of(kSpaces);
-      if(string::npos == where)
+      if (string::npos == where)
       {
          // no non-spaces
          continue;
@@ -687,22 +687,22 @@ CommandLineParser::_runVariableCommandFromString(const string &arg)
       line = line.substr(where);
       // get rid of trailing spaces
       where = line.find_last_not_of(kSpaces);
-      if(line.length() - 1 != where)
+      if (line.length() - 1 != where)
       {
          line = line.substr(0, where - 1);
       }
-      if('#' == line.at(0))
+      if ('#' == line.at(0))
       {
          // this is a comment line, ignore it
          continue;
       }
-      if(kIntegerVector == type)
+      if (kIntegerVector == type)
       {
          integerVector(key).push_back( (int) atof( line.c_str() ) );
-      } else if(kDoubleVector == type)
+      } else if (kDoubleVector == type)
       {
          doubleVector(key).push_back( atof( line.c_str() ) );
-      } else if(kStringVector == type)
+      } else if (kStringVector == type)
       {
          stringVector(key).push_back( line );
       } else {
@@ -729,7 +729,7 @@ CommandLineParser::_getSectionFiles(const SVec &inputList, SVec &outputList,
    // --$section; # we want 0..n-1 not 1..n
    // my $start = $perSection * $section;
    // my $num   = $perSection - 1;
-   // if($section < $extra) {
+   // if ($section < $extra) {
    //    $start += $section;
    //    ++$num;
    // } else {
@@ -742,7 +742,7 @@ CommandLineParser::_getSectionFiles(const SVec &inputList, SVec &outputList,
    --section; // we want 0..n-1, not 1..n.
    int current = perSection * section;
    int num = perSection - 1;
-   if(section < extra)
+   if (section < extra)
    {
       current += section;
       ++num;
@@ -753,7 +753,7 @@ CommandLineParser::_getSectionFiles(const SVec &inputList, SVec &outputList,
    outputList.clear();
    // we want to go from 0 to num inclusive, so make sure we have '<='
    // and not '='
-   for(int loop = current; loop <= current + num; ++loop)
+   for (int loop = current; loop <= current + num; ++loop)
    {
       outputList.push_back( inputList.at( loop ) );
    } // for loop
@@ -762,7 +762,7 @@ CommandLineParser::_getSectionFiles(const SVec &inputList, SVec &outputList,
 void
 CommandLineParser::_finishDefaultOptions(std::string tag)
 {
-   if(! m_optionsType & kEventContOpt)
+   if (! m_optionsType & kEventContOpt)
    {
       // nothing to see here, folks
       return;
@@ -770,7 +770,7 @@ CommandLineParser::_finishDefaultOptions(std::string tag)
    ////////////////////////
    // Deal with sections //
    ////////////////////////
-   if( integerValue ("totalSections") )
+   if ( integerValue ("totalSections") )
    {
       // we have a request to break this into sections.  First, note
       // this in the output file
@@ -787,18 +787,18 @@ CommandLineParser::_finishDefaultOptions(std::string tag)
    // Store lfn to pfn //
    //////////////////////
    const string &kStorePrepend = stringValue("storePrepend");
-   if(kStorePrepend.length())
+   if (kStorePrepend.length())
    {
       string match = "/store/";
       int matchLen = match.length();
       SVec tempVec;
       SVec &currentFiles = stringVector("inputFiles");
-      for(SVecConstIter iter = currentFiles.begin();
+      for (SVecConstIter iter = currentFiles.begin();
            currentFiles.end() != iter;
            ++iter)
       {
          const string &filename = *iter;
-         if((int) filename.length() > matchLen &&
+         if ((int) filename.length() > matchLen &&
              filename.substr(0, matchLen) == match)
          {
             tempVec.push_back( kStorePrepend + filename );
@@ -818,15 +818,15 @@ CommandLineParser::_finishDefaultOptions(std::string tag)
    bool modifyOutputFile =( outputFile.length() );
    outputFile = removeEnding(outputFile, ".root");
    outputFile += tag;
-   if( integerValue ("maxEvents") )
+   if ( integerValue ("maxEvents") )
    {
       outputFile += Form("_maxevt%03d", integerValue ("maxEvents"));
    }
-   if( integerValue ("jobID") >= 0)
+   if ( integerValue ("jobID") >= 0)
    {
       outputFile += Form("_jobID%03d", integerValue ("jobID"));
    }
-   if( stringValue ("tag").length() )
+   if ( stringValue ("tag").length() )
    {
       outputFile += "_" + stringValue("tag");
    }
@@ -834,13 +834,13 @@ CommandLineParser::_finishDefaultOptions(std::string tag)
    /////////////////////////////////
    // Log File Name, if requested //
    /////////////////////////////////
-   if( boolValue ("logName") )
+   if ( boolValue ("logName") )
    {
       cout << outputFile << ".log" << endl;
       exit(0);
    }
    outputFile += ".root";
-   if(modifyOutputFile)
+   if (modifyOutputFile)
    {
       stringValue("outputFile") = outputFile;
    }

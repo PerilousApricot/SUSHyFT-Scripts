@@ -72,7 +72,7 @@ BinNormClass::index(int tempIndex, int binIndex) const
 {
    // if either set does NOT contain their respective index, return
    // kNegativeNumber
-   if( (m_templateSet.end() == m_templateSet.find (tempIndex) ) ||
+   if ( (m_templateSet.end() == m_templateSet.find (tempIndex) ) ||
 (m_binSet.end()      == m_binSet.find      (binIndex)  ) )
    {
       return kNegativeNumber;
@@ -87,20 +87,20 @@ BinNormClass::factor(int tempIndex, int binIndex,
 {
    // Should I be looking at this BinNorm object for this bin and this
    // template?
-   if(index (tempIndex, binIndex) < 0)
+   if (index (tempIndex, binIndex) < 0)
    {
       // nothing for us here.  Return 1. since this is multiplicitive
       return 1.;
    }
    // Is there a single functoid pointer for all of the templates?
-   if(m_functoidPtr)
+   if (m_functoidPtr)
    {
       return m_functoidPtr->operator() (tempIndex, binIndex,
                                         value, paramArray);
    }
    BinNormFunctoid::IFMapConstIter iter =
       m_functoidMap.find(tempIndex);
-   if(m_functoidMap.end() == iter)
+   if (m_functoidMap.end() == iter)
    {
       return value;
    }
@@ -112,7 +112,7 @@ void
 BinNormClass::insertRangeIntoSet(BinNormClass::ISet &theSet,
                                   int lower, int upper)
 {
-   for(int loop = lower; loop <= upper; ++loop)
+   for (int loop = lower; loop <= upper; ++loop)
    {
       theSet.insert(loop);
    }
@@ -121,7 +121,7 @@ BinNormClass::insertRangeIntoSet(BinNormClass::ISet &theSet,
 void
 BinNormClass::outputISet(const ISet &theset, ostream& o_stream)
 {
-   for(BinNormClass::ISetConstIter iter = theset.begin();
+   for (BinNormClass::ISetConstIter iter = theset.begin();
         theset.end() != iter;
         ++iter)
    {

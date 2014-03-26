@@ -18,7 +18,7 @@ BinsSumCont::BinsSumCont()
 void
 BinsSumCont::cleanHistMap()
 {
-   for(ITH1FPtrMapIter iter = m_histMap.begin();
+   for (ITH1FPtrMapIter iter = m_histMap.begin();
         m_histMap.end() != iter;
         ++iter)
    {
@@ -45,7 +45,7 @@ BinsSumCont::add(const BinsSum &obj)
 void
 BinsSumCont::recordTrials()
 {
-   for(BinsSum::VecIter iter = m_binsSumVec.begin();
+   for (BinsSum::VecIter iter = m_binsSumVec.begin();
         m_binsSumVec.end() != iter;
         ++iter)
    {
@@ -56,7 +56,7 @@ BinsSumCont::recordTrials()
 void
 BinsSumCont::reset()
 {
-   for(BinsSum::VecIter iter = m_binsSumVec.begin();
+   for (BinsSum::VecIter iter = m_binsSumVec.begin();
         m_binsSumVec.end() != iter;
         ++iter)
    {
@@ -68,7 +68,7 @@ void
 BinsSumCont::getValues(DVec &valuesVec)
 {
    valuesVec.clear();
-   for(BinsSum::VecIter iter = m_binsSumVec.begin();
+   for (BinsSum::VecIter iter = m_binsSumVec.begin();
         m_binsSumVec.end() != iter;
         ++iter)
    {
@@ -81,7 +81,7 @@ BinsSumCont::fillMeansAndRMSs(DVec &meanVec, DVec &rmsVec)
 {
    meanVec.clear();
    rmsVec.clear();
-   for(BinsSum::VecIter iter = m_binsSumVec.begin();
+   for (BinsSum::VecIter iter = m_binsSumVec.begin();
         m_binsSumVec.end() != iter;
         ++iter)
    {
@@ -96,7 +96,7 @@ void
 BinsSumCont::getAllNames(SVec &nameVec)
 {
    nameVec.clear();
-   for(BinsSum::VecIter iter = m_binsSumVec.begin();
+   for (BinsSum::VecIter iter = m_binsSumVec.begin();
         m_binsSumVec.end() != iter;
         ++iter)
    {
@@ -116,16 +116,16 @@ BinsSumCont::createNew(const std::string &name)
 TH1F*
 BinsSumCont::getTemplate(int index) const
 {
-   if(index < 0) index = kAllTemplates;
+   if (index < 0) index = kAllTemplates;
    // Do we have it already?
    ITH1FPtrMapConstIter iter = m_histMap.find(index);
-   if(m_histMap.end() != iter)
+   if (m_histMap.end() != iter)
    {
       return iter->second;
    }
    // If we're here, we need to get it
    TH1F *histPtr;
-   if(kAllTemplates == index)
+   if (kAllTemplates == index)
    {
       histPtr = m_fitterPtr->updatedHistogram(m_paramVec);
    } else {
@@ -146,7 +146,7 @@ BinsSumCont::operator() (int index)
 // friends
 ostream& operator<<(ostream& o_stream, const BinsSumCont &rhs)
 {
-   for(BinsSum::VecConstIter iter = rhs.m_binsSumVec.begin();
+   for (BinsSum::VecConstIter iter = rhs.m_binsSumVec.begin();
         rhs.m_binsSumVec.end() != iter;
         ++iter)
    {

@@ -27,13 +27,13 @@ VariableMapCont::hasVariable(string key)
 {
    lowercaseString(key);
    // Look through our maps to see if we've got it
-   if(m_integerMap.end()    != m_integerMap.find (key))    return kInteger;
-   if(m_doubleMap.end()     != m_doubleMap.find (key))     return kDouble;
-   if(m_stringMap.end()     != m_stringMap.find (key))     return kString;
-   if(m_boolMap.end()       != m_boolMap.find (key))       return kBool;
-   if(m_integerVecMap.end() != m_integerVecMap.find (key)) return kIntegerVector;
-   if(m_doubleVecMap.end()  != m_doubleVecMap.find (key))  return kDoubleVector;
-   if(m_stringVecMap.end()  != m_stringVecMap.find (key))  return kStringVector;
+   if (m_integerMap.end()    != m_integerMap.find (key))    return kInteger;
+   if (m_doubleMap.end()     != m_doubleMap.find (key))     return kDouble;
+   if (m_stringMap.end()     != m_stringMap.find (key))     return kString;
+   if (m_boolMap.end()       != m_boolMap.find (key))       return kBool;
+   if (m_integerVecMap.end() != m_integerVecMap.find (key)) return kIntegerVector;
+   if (m_doubleVecMap.end()  != m_doubleVecMap.find (key))  return kDoubleVector;
+   if (m_stringVecMap.end()  != m_stringVecMap.find (key))  return kStringVector;
    // if we're here, the answer's no.
    return kNone;
 }
@@ -60,7 +60,7 @@ VariableMapCont::_checkKey(string &key, const string &description)
 {
    // Let's make sure we don't already have this key
    lowercaseString(key);
-   if( m_variableModifiedMap.end() != m_variableModifiedMap.find (key) )
+   if ( m_variableModifiedMap.end() != m_variableModifiedMap.find (key) )
    {
       cerr << "VariableMapCont::addVariable() Error: Key '" << key
            << "' has already been defined.  Aborting." << endl;
@@ -75,37 +75,37 @@ VariableMapCont::addOption(string key, OptionType type,
                         const string &description)
 {
    _checkKey(key, description);
-   if(kInteger    == type)
+   if (kInteger    == type)
    {
       m_integerMap[key]    = kDefaultInteger;
       return;
    }
-   if(kDouble     == type)
+   if (kDouble     == type)
    {
       m_doubleMap[key]    = kDefaultDouble;
       return;
    }
-   if(kString     == type)
+   if (kString     == type)
    {
       m_stringMap[key]    = kDefaultString;
       return;
    }
-   if(kBool       == type)
+   if (kBool       == type)
    {
       m_boolMap[key]    = kDefaultBool;
       return;
    }
-   if(kIntegerVector == type)
+   if (kIntegerVector == type)
    {
       m_integerVecMap[key] = kEmptyIVec;
       return;
    }
-   if(kDoubleVector == type)
+   if (kDoubleVector == type)
    {
       m_doubleVecMap[key] = kEmptyDVec;
       return;
    }
-   if(kStringVector == type)
+   if (kStringVector == type)
    {
       m_stringVecMap[key] = kEmptySVec;
       return;
@@ -117,7 +117,7 @@ VariableMapCont::addOption(string key, OptionType type,
                         const string &description, int defaultValue)
 {
    _checkKey(key, description);
-   if(kInteger != type)
+   if (kInteger != type)
    {
       cerr << "VariableMapCont::addOption() Error: Key '" << key
            << "' is not defined as an integer but has an integer "
@@ -132,7 +132,7 @@ VariableMapCont::addOption(string key, OptionType type,
                         const string &description, double defaultValue)
 {
    _checkKey(key, description);
-   if(kDouble != type)
+   if (kDouble != type)
    {
       cerr << "VariableMapCont::addOption() Error: Key '" << key
            << "' is not defined as an double but has an double "
@@ -148,7 +148,7 @@ VariableMapCont::addOption(string key, OptionType type,
                         const string &defaultValue)
 {
    _checkKey(key, description);
-   if(kString != type)
+   if (kString != type)
    {
       cerr << "VariableMapCont::addOption() Error: Key '" << key
            << "' is not defined as an string but has an string "
@@ -171,7 +171,7 @@ VariableMapCont::addOption(string key, OptionType type,
                         const string &description, bool defaultValue)
 {
    _checkKey(key, description);
-   if(kBool != type)
+   if (kBool != type)
    {
       cerr << "VariableMapCont::addOption() Error: Key '" << key
            << "' is not defined as an bool but has an bool "
@@ -187,7 +187,7 @@ VariableMapCont::integerValue(std::string key)
 {
    lowercaseString(key);
    SIMapIter iter = m_integerMap.find(key);
-   if(m_integerMap.end() == iter)
+   if (m_integerMap.end() == iter)
    {
       cerr << "VariableMapCont::integerValue() Error: key '"
            << key << "' not found.  Aborting." << endl;
@@ -201,7 +201,7 @@ VariableMapCont::doubleValue(std::string key)
 {
    lowercaseString(key);
    SDMapIter iter = m_doubleMap.find(key);
-   if(m_doubleMap.end() == iter)
+   if (m_doubleMap.end() == iter)
    {
       cerr << "VariableMapCont::doubleValue() Error: key '"
            << key << "' not found.  Aborting." << endl;
@@ -215,7 +215,7 @@ VariableMapCont::stringValue(std::string key)
 {
    lowercaseString(key);
    SSMapIter iter = m_stringMap.find(key);
-   if(m_stringMap.end() == iter)
+   if (m_stringMap.end() == iter)
    {
       cerr << "VariableMapCont::stringValue() Error: key '"
            << key << "' not found.  Aborting." << endl;
@@ -229,7 +229,7 @@ VariableMapCont::boolValue(std::string key)
 {
    lowercaseString(key);
    SBMapIter iter = m_boolMap.find(key);
-   if(m_boolMap.end() == iter)
+   if (m_boolMap.end() == iter)
    {
       cerr << "VariableMapCont::boolValue() Error: key '"
            << key << "' not found.  Aborting." << endl;
@@ -243,7 +243,7 @@ VariableMapCont::integerVector(std::string key)
 {
    lowercaseString(key);
    SIVecMapIter iter = m_integerVecMap.find(key);
-   if(m_integerVecMap.end() == iter)
+   if (m_integerVecMap.end() == iter)
    {
       cerr << "VariableMapCont::integerVector() Error: key '"
            << key << "' not found.  Aborting." << endl;
@@ -257,7 +257,7 @@ VariableMapCont::doubleVector(std::string key)
 {
    lowercaseString(key);
    SDVecMapIter iter = m_doubleVecMap.find(key);
-   if(m_doubleVecMap.end() == iter)
+   if (m_doubleVecMap.end() == iter)
    {
       cerr << "VariableMapCont::doubleVector() Error: key '"
            << key << "' not found.  Aborting." << endl;
@@ -271,7 +271,7 @@ VariableMapCont::stringVector(std::string key)
 {
    lowercaseString(key);
    SSVecMapIter iter = m_stringVecMap.find(key);
-   if(m_stringVecMap.end() == iter)
+   if (m_stringVecMap.end() == iter)
    {
       cerr << "VariableMapCont::stringVector() Error: key '"
            << key << "' not found.  Aborting." << endl;
@@ -284,7 +284,7 @@ bool
 VariableMapCont::_valueHasBeenModified(const string &key)
 {
    SBMapConstIter iter = m_variableModifiedMap.find(key);
-   if(m_variableModifiedMap.end() == iter)
+   if (m_variableModifiedMap.end() == iter)
    {
       // Not found.  Not a valid option
       cerr << "VariableMapCont::valueHasBeenModfied() Error: '"

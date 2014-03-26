@@ -49,7 +49,7 @@ CLPTemplateFitter
 &CLPTemplateFitter::operator=(const CLPTemplateFitter& rhs)
 {
    // Avoid overwriting myself
-   if(this == &rhs)
+   if (this == &rhs)
    {
       return *this;
    }
@@ -106,13 +106,13 @@ CLPTemplateFitter::addTemplate(const string &name, TH1F *tempHist,
    m_constraintMeanVec.push_back( mean     );
    m_constraintSigmaVec.push_back( sigma    );
    m_templateNameVec.push_back( name     );
-   if(start == stop)
+   if (start == stop)
    {
       // we need to make values for this.  Since we don't know that we
       // have the data histogram _OR_ the bins picked, we're going to
       // have to make up some numbers.
       double size = tempHist->Integral();
-      if(size <= 0)
+      if (size <= 0)
       {
          size = 1;
       }
@@ -125,14 +125,14 @@ CLPTemplateFitter::addTemplate(const string &name, TH1F *tempHist,
    m_templateIndexMap [name] = index;
    m_numTemplates            = index + 1;
    // Is this really a morphing template?
-   if(dynamic_cast< CLPTemplateMorph* > (tempHist) )
+   if (dynamic_cast< CLPTemplateMorph* > (tempHist) )
    {
       // Yup.
       m_morphSet.insert(index);
    }
    // if we've already setup minuit, unset it up because we're adding
    // new parameters
-   if(m_minuitPtr)
+   if (m_minuitPtr)
    {
       _destroyMinuit();
    }
@@ -153,7 +153,7 @@ CLPTemplateFitter::addBinNorm(const string &name,
    m_numBinNorms            = index + 1;
    // if we've already setup minuit, unset it up because we're adding
    // new parameters
-   if(m_minuitPtr)
+   if (m_minuitPtr)
    {
       _destroyMinuit();
    }
@@ -167,7 +167,7 @@ CLPTemplateFitter::setBinNormFunctoid(const std::string &name,
 {
    int tempIndex, binNormIndex;
    _paramIndex(name, tempIndex, binNormIndex);
-   if(-1 == binNormIndex)
+   if (-1 == binNormIndex)
    {
       cerr << "CLPTemplateFitter::setBinNormFunctoid() Error '"
            << name << "' is not a valid name." << endl;
@@ -182,7 +182,7 @@ CLPTemplateFitter::setBinNormFunctoid(const std::string &name, int tempIndex,
 {
    int temporary, binNormIndex;
    _paramIndex(name, temporary, binNormIndex);
-   if(-1 == binNormIndex)
+   if (-1 == binNormIndex)
    {
       cerr << "CLPTemplateFitter::setBinNormFunctoid() Error '"
            << name << "' is not a valid name." << endl;
@@ -213,14 +213,14 @@ CLPTemplateFitter::fixParameter(const string &name)
 {
    int tempIndex, binNormIndex;
    int paramIndex = _paramIndex(name, tempIndex, binNormIndex);
-   if(-1 == paramIndex)
+   if (-1 == paramIndex)
    {
       cerr << "CLPTemplateFitter::fixParameter() Error '"
            << name << "' is not a valid name." << endl;
       return false;
    }
    // is this a template?
-   if(tempIndex >= 0)
+   if (tempIndex >= 0)
    {
       // insert paramIndex into set
       m_fixedParameterSet.insert(paramIndex);
@@ -229,7 +229,7 @@ CLPTemplateFitter::fixParameter(const string &name)
       assert(binNormIndex >= 0);
       m_fixedBinNormSet.insert(binNormIndex);
    }
-   if(m_minuitPtr)
+   if (m_minuitPtr)
    {
       // If we already have Minuit setup, don't forget to tell it too.
       m_minuitPtr->FixParameter(paramIndex);
@@ -242,19 +242,19 @@ CLPTemplateFitter::releaseParameter(const string &name)
 {
    int tempIndex, binNormIndex;
    int paramIndex = _paramIndex(name, tempIndex, binNormIndex);
-   if(-1 == paramIndex)
+   if (-1 == paramIndex)
    {
       cerr << "CLPTemplateFitter::releaseParameter() Error '"
            << name << "' is not a valid name." << endl;
       return false;
    }
    // is this a template?
-   if(tempIndex >= 0)
+   if (tempIndex >= 0)
    {
       // remove paramIndex from set
       BinNormClass::ISetIter setIter =
          m_fixedParameterSet.find(paramIndex);
-      if(m_fixedParameterSet.end() != setIter)
+      if (m_fixedParameterSet.end() != setIter)
       {
          // We found it.  Get rid of it.
          m_fixedParameterSet.erase(setIter);
@@ -265,13 +265,13 @@ CLPTemplateFitter::releaseParameter(const string &name)
       // remove paramIndex from set
       BinNormClass::ISetIter setIter =
          m_fixedBinNormSet.find(paramIndex);
-      if(m_fixedBinNormSet.end() != setIter)
+      if (m_fixedBinNormSet.end() != setIter)
       {
          // We found it.  Get rid of it.
          m_fixedBinNormSet.erase(setIter);
       }
    }
-   if(m_minuitPtr)
+   if (m_minuitPtr)
    {
       // If we already have Minuit setup, don't forget to tell it too.
       m_minuitPtr->Release(paramIndex);
@@ -283,7 +283,7 @@ bool
 CLPTemplateFitter::isParameterFixed(const string &name) const
 {
    int paramIndex = _paramIndex(name);
-   if(-1 == paramIndex)
+   if (-1 == paramIndex)
    {
       cerr << "CLPTemplateFitter::releaseParameter() Error '"
            << name << "' is not a valid name." << endl;
@@ -296,20 +296,20 @@ bool
 CLPTemplateFitter::isParameterFixed(int paramIndex) const
 {
    double numParams = 0;
-   if(m_minuitPtr)
+   if (m_minuitPtr)
    {
       numParams = m_numMinuitParams;
    } else {
       numParams = m_numTemplates + m_numBinNorms;
    }
-   if(paramIndex < 0 || paramIndex >= numParams)
+   if (paramIndex < 0 || paramIndex >= numParams)
    {
       cerr << "CLPTemplateFitter::isParameterFixed() Error: paramIndex("
            << paramIndex << ") is not in allowed ramge [0, "
            << numParams << "[." << endl;
       return false;
    }
-   if(paramIndex < m_numTemplates)
+   if (paramIndex < m_numTemplates)
    {
       // template
       return(m_fixedParameterSet.end() !=
@@ -328,7 +328,7 @@ CLPTemplateFitter::setParameter(const string &name, double value)
 {
    int tempIndex, binNormIndex;
    int paramIndex = _paramIndex(name, tempIndex, binNormIndex);
-   if(-1 == paramIndex)
+   if (-1 == paramIndex)
    {
       cerr << "CLPTemplateFitter::setParameter() Error '"
            << name << "' is not a valid name." << endl;
@@ -336,21 +336,21 @@ CLPTemplateFitter::setParameter(const string &name, double value)
    }
 
    // Is this a template?
-   if(tempIndex >= 0)
+   if (tempIndex >= 0)
    {
       m_normVec[tempIndex] = value;
    }
    // is this a binNorm
-   else if(binNormIndex >= 0)
+   else if (binNormIndex >= 0)
    {
       m_binNormVec[binNormIndex].setStartingValue(value);
    }
    // If we've already setup a fitVec, then set its value, too
-   if(m_fitVec.size())
+   if (m_fitVec.size())
    {
       m_fitVec.at(paramIndex) = value;
    }
-   if(m_minuitPtr)
+   if (m_minuitPtr)
    {
       int errflg;
       Double_t arglist[15];
@@ -369,13 +369,13 @@ CLPTemplateFitter::setConstraint(const string &name,
    // fill this in soon.  Until then
    int tempIndex, binNormIndex;
    int paramIndex = _paramIndex(name, tempIndex, binNormIndex);
-   if(-1 == paramIndex)
+   if (-1 == paramIndex)
    {
       cerr << "CLPTemplateFitter::setConstraint() Error '"
            << name << "' is not a valid name." << endl;
       assert(0);
    }
-   if(tempIndex >= 0)
+   if (tempIndex >= 0)
    {
       m_constraintMeanVec.at(tempIndex) = mean;
       m_constraintSigmaVec.at(tempIndex) = sigma;
@@ -395,13 +395,13 @@ CLPTemplateFitter::getConstraint(const string &name,
    // fill this in soon.  Until then
    int tempIndex, binNormIndex;
    int paramIndex = _paramIndex(name, tempIndex, binNormIndex);
-   if(-1 == paramIndex)
+   if (-1 == paramIndex)
    {
       cerr << "CLPTemplateFitter::getConstraint() Error '"
            << name << "' is not a valid name." << endl;
       assert(0);
    }
-   if(tempIndex >= 0)
+   if (tempIndex >= 0)
    {
       mean  = m_constraintMeanVec.at(tempIndex);
       sigma = m_constraintSigmaVec.at(tempIndex);
@@ -417,13 +417,13 @@ CLPTemplateFitter::getConstraint(const string &name,
 void
 CLPTemplateFitter::getConstraint(int paramIndex, double &mean, double &sigma)
 {
-   if(paramIndex < 0 || paramIndex >= m_numTemplates + m_numBinNorms)
+   if (paramIndex < 0 || paramIndex >= m_numTemplates + m_numBinNorms)
    {
       cerr << "CLPTemplateFitter::getConstraint() Error '"
            << paramIndex << "' is not a valid paramIndex." << endl;
       assert(0);
    }
-   if(paramIndex < m_numTemplates)
+   if (paramIndex < m_numTemplates)
    {
       mean  = m_constraintMeanVec.at(paramIndex);
       sigma = m_constraintSigmaVec.at(paramIndex);
@@ -439,7 +439,7 @@ CLPTemplateFitter::getConstraint(int paramIndex, double &mean, double &sigma)
 void
 CLPTemplateFitter::fit()
 {
-   if(! m_minuitPtr)
+   if (! m_minuitPtr)
    {
       _initializeMinuit();
    }
@@ -450,7 +450,7 @@ CLPTemplateFitter::fit()
    m_minuitPtr->mnexcm("SIMP", arglist, 0, ierflg);
    m_minuitPtr->Migrad(); // Migrad
    m_minuitPtr->mnhess(); // Hess
-   if(m_doMinos)
+   if (m_doMinos)
    {
       m_minuitPtr->mnexcm("MINO", arglist, 0, ierflg);
    }
@@ -458,12 +458,12 @@ CLPTemplateFitter::fit()
    m_errorVec.clear();
    m_posErrorVec.clear();
    m_negErrorVec.clear();
-   for(int paramIndex = 0; paramIndex < m_numMinuitParams; ++paramIndex)
+   for (int paramIndex = 0; paramIndex < m_numMinuitParams; ++paramIndex)
    {
       double value = 0, error = 0;
       m_minuitPtr->GetParameter(paramIndex, value, error);
       m_fitVec.push_back(value);
-      if(! error || ! m_doMinos)
+      if (! error || ! m_doMinos)
       {
          m_errorVec.push_back(error);
          m_posErrorVec.push_back(0.);
@@ -482,7 +482,7 @@ CLPTemplateFitter::fit()
    // dout << endl;
    // dumpSTL(m_errorVec);
    // cout << endl;
-   if(m_verbose & kOutputFitResults)
+   if (m_verbose & kOutputFitResults)
    {
       outputFitResults();
    }
@@ -496,12 +496,12 @@ CLPTemplateFitter::fit()
    double *covMat = new double [m_numMinuitParams * m_numMinuitParams];
    m_minuitPtr->mnemat(covMat, m_numMinuitParams);
 
-   for(int outer = 0; outer < m_numMinuitParams; ++outer)
+   for (int outer = 0; outer < m_numMinuitParams; ++outer)
    {
       DVec empty;
       m_covarMatrixDVV.push_back(empty);
       tempCovarDVV.push_back(empty);
-      for(int inner = 0; inner < m_numMinuitParams; ++inner)
+      for (int inner = 0; inner < m_numMinuitParams; ++inner)
       {
          // Save the value to tempCoverDVV.
          tempCovarDVV[outer].push_back
@@ -520,9 +520,9 @@ CLPTemplateFitter::fit()
    //////////////////////////////////////////////////////////////////////
    // first get a 'map' of 'free parameter' to 'parameter'
    IVec freeParameterVec;
-   for(int loop = 0; loop < m_numMinuitParams; ++loop)
+   for (int loop = 0; loop < m_numMinuitParams; ++loop)
    {
-      if(! isParameterFixed(loop) )
+      if (! isParameterFixed(loop) )
       {
          // We've got a free parameter
          freeParameterVec.push_back(loop);
@@ -532,12 +532,12 @@ CLPTemplateFitter::fit()
    // Groovy.  Now copy the non-zero values
    int size =(int) freeParameterVec.size();
    assert(m_minuitPtr->GetNumFreePars() == size);
-   for(int outer = 0; outer < size; ++outer)
+   for (int outer = 0; outer < size; ++outer)
    {
       // outer is the zero-suppressed index(1..n)
       // outerIndex is the full index(1..n)
       int outerIndex = freeParameterVec [outer];
-      for(int inner = 0; inner < size; ++inner)
+      for (int inner = 0; inner < size; ++inner)
       {
          // inner is the zero-suppressed index(1..n)
          // innerIndex is the full index(1..n)
@@ -547,7 +547,7 @@ CLPTemplateFitter::fit()
       } // for inner
    } // for outer
 
-   if(m_verbose & kOutputCovarMatrix)
+   if (m_verbose & kOutputCovarMatrix)
    {
       outputCovarianceMatrix();
    } // if verbose
@@ -560,17 +560,17 @@ CLPTemplateFitter::fitEverythingBut(const string &name,
    // make sure that we know what variable to fix
    int paramIndex = -1;
    SIMapConstIter iter = m_templateIndexMap.find(name);
-   if(m_templateIndexMap.end() != iter)
+   if (m_templateIndexMap.end() != iter)
    {
       paramIndex = iter->second;
    } else {
       iter = m_binNormIndexMap.find(name);
-      if(m_binNormIndexMap.end() != iter)
+      if (m_binNormIndexMap.end() != iter)
       {
          paramIndex = iter->second + m_numTemplates;
       }
    }
-   if(-1 == paramIndex)
+   if (-1 == paramIndex)
    {
       cerr << "CLPTemplateFitter::fitEverythingBut() Error '"
            << name << "' is not a valid name." << endl;
@@ -579,11 +579,11 @@ CLPTemplateFitter::fitEverythingBut(const string &name,
    bool isfixed = isParameterFixed(paramIndex);
 
    // make sure Minuit is ready to go
-   if(! m_minuitPtr)
+   if (! m_minuitPtr)
    {
       _initializeMinuit();
    }
-   if(! isfixed)
+   if (! isfixed)
    {
       m_minuitPtr->FixParameter(paramIndex);
    }
@@ -602,7 +602,7 @@ CLPTemplateFitter::fitEverythingBut(const string &name,
    m_minuitPtr->mnexcm("MIG", arglist, 0, errflg);
    m_fitVec.clear();
    m_errorVec.clear();
-   for(int paramIndex = 0; paramIndex < m_numMinuitParams; ++paramIndex)
+   for (int paramIndex = 0; paramIndex < m_numMinuitParams; ++paramIndex)
    {
       double value = 0, error = 0;
       m_minuitPtr->GetParameter(paramIndex, value, error);
@@ -614,7 +614,7 @@ CLPTemplateFitter::fitEverythingBut(const string &name,
    double ln0,edm,errdef;
    int nvpar,nparx,icstat;
    m_minuitPtr->mnstat(ln0, edm, errdef, nvpar, nparx, icstat);
-   if(! isfixed)
+   if (! isfixed)
    {
       m_minuitPtr->Release(paramIndex);
    }
@@ -629,17 +629,17 @@ CLPTemplateFitter::scanVariable(CLPTrapezoid::Vec &retval, const string &name,
    // make sure that we know what variable to fix
    int paramIndex = -1;
    SIMapConstIter iter = m_templateIndexMap.find(name);
-   if(m_templateIndexMap.end() != iter)
+   if (m_templateIndexMap.end() != iter)
    {
       paramIndex = iter->second;
    } else {
       iter = m_binNormIndexMap.find(name);
-      if(m_binNormIndexMap.end() != iter)
+      if (m_binNormIndexMap.end() != iter)
       {
          paramIndex = iter->second + m_numTemplates;
       }
    }
-   if(-1 == paramIndex)
+   if (-1 == paramIndex)
    {
       cerr << "CLPTemplateFitter::scanVariable() Error '"
            << name << "' is not a valid name." << endl;
@@ -648,14 +648,14 @@ CLPTemplateFitter::scanVariable(CLPTrapezoid::Vec &retval, const string &name,
    //cout << "Modifying " << paramIndex << endl;
 
    // make sure Minuit is ready to go
-   if(! m_minuitPtr)
+   if (! m_minuitPtr)
    {
       _initializeMinuit();
    }
    m_minuitPtr->FixParameter(paramIndex);
    sm_tfPtr = this;
    double step =(upper - lower) / numPoints;
-   for(int loop = 0; loop <= numPoints; ++loop)
+   for (int loop = 0; loop <= numPoints; ++loop)
    {
       double value = lower + loop * step;
       int errflg;
@@ -674,7 +674,7 @@ CLPTemplateFitter::scanVariable(CLPTrapezoid::Vec &retval, const string &name,
       double ln0,edm,errdef;
       int nvpar,nparx,icstat;
       m_minuitPtr->mnstat(ln0, edm, errdef, nvpar, nparx, icstat);
-      if(m_debugLevel)
+      if (m_debugLevel)
       {
          cout << setw(4) << value << " " << setw(10) << ln0 << endl;
       }
@@ -702,7 +702,7 @@ CLPTemplateFitter::resetMinuitParameters()
    // I have two choices here.  I cam simply delete and re-initialize
    // Minuit, or I can go through and reset the parameters.
    // Me being lazy:
-   if(m_minuitPtr)
+   if (m_minuitPtr)
    {
       delete m_minuitPtr;
       m_minuitPtr = 0;
@@ -714,16 +714,16 @@ CLPTemplateFitter::resetMinuitParameters()
 const string&
 CLPTemplateFitter::paramName(int paramIndex) const
 {
-   if(paramIndex < 0)
+   if (paramIndex < 0)
    {
       return kEmptyString;
    }
-   if(paramIndex < m_numTemplates)
+   if (paramIndex < m_numTemplates)
    {
       return m_templateNameVec[paramIndex];
    }
    paramIndex -= m_numTemplates;
-   if(paramIndex < m_numBinNorms)
+   if (paramIndex < m_numBinNorms)
    {
       return m_binNormNameVec[paramIndex];
    }
@@ -755,7 +755,7 @@ CLPTemplateFitter::updatedHistogram(const DVec &paramVec)
    _setAllMorphingParameters(& (paramVec.at(0)) );
    TH1F *clone =(TH1F*) m_dataHPtr->Clone("clone");
    clone->Reset();
-   for(int binNormIndex = 0; binNormIndex <= m_numBins; ++binNormIndex)
+   for (int binNormIndex = 0; binNormIndex <= m_numBins; ++binNormIndex)
    {
       clone->SetBinContent(binNormIndex, _getTotalBinContent(binNormIndex,
                                                            paramVec));
@@ -771,7 +771,7 @@ CLPTemplateFitter::updatedHistogram(string name,
    _setAllMorphingParameters(& (paramVec.at(0)) );
    int tempIndex = -1;
    SIMapConstIter iter = m_templateIndexMap.find(name);
-   if(m_templateIndexMap.end() == iter)
+   if (m_templateIndexMap.end() == iter)
    {
       cerr << "CLPTemplateFitter::updatedHistogram() Error: '"
            << name << "' is not a valid template name." << endl;
@@ -785,7 +785,7 @@ TH1F*
 CLPTemplateFitter::updatedHistogram(int tempIndex,
                                      const DVec &paramVec)
 {
-   if(tempIndex < 0 || tempIndex >= m_numTemplates)
+   if (tempIndex < 0 || tempIndex >= m_numTemplates)
    {
       cerr << "CLPTemplateFitter::updatedHistogram() Error: '"
            << tempIndex << "' is not a valid template index." << endl;
@@ -797,21 +797,21 @@ CLPTemplateFitter::updatedHistogram(int tempIndex,
    TH1F *clone =(TH1F*) m_templateHPtrVec[tempIndex]->Clone( name.c_str() );
    // Loop over all bins.  If desired, we will only "consider" bins
    // used in the fit.
-   for(int binNormIndex = 0; binNormIndex <= m_numBins; ++binNormIndex)
+   for (int binNormIndex = 0; binNormIndex <= m_numBins; ++binNormIndex)
    {
       double factor = _getBinFactor(tempIndex, binNormIndex, paramVec);
       // are we not including ALL bins AND this bin IS NOT to be fit
-      if(! m_useAllBinsInPlots && ! _isBinFit(binNormIndex) )
+      if (! m_useAllBinsInPlots && ! _isBinFit(binNormIndex) )
       {
          factor = 0.;
       }
       double contents = clone->GetBinContent(binNormIndex) * factor;
       clone->SetBinContent(binNormIndex, contents);
       // Update error
-      if(0)
+      if (0)
       {
          double error = clone->GetBinError(binNormIndex) * factor;
-         if(error)
+         if (error)
          {
             clone->SetBinError(binNormIndex, error);
          } // if non-zero error
@@ -827,11 +827,11 @@ CLPTemplateFitter::ratioHistogram() const
    ratioHPtr->SetTitle("Ratio of Data to Fitted Template");
    // Loop over all bins.  If desired, we will only "consider" bins
    // used in the fit.
-   for(int binNormIndex = 0; binNormIndex <= m_numBins; ++binNormIndex)
+   for (int binNormIndex = 0; binNormIndex <= m_numBins; ++binNormIndex)
    {
       // Is this in range? Is there anything here?
       double data = ratioHPtr->GetBinContent(binNormIndex);
-      if(data <= 0)
+      if (data <= 0)
       {
          ratioHPtr->SetBinContent(binNormIndex, 0.);
          ratioHPtr->SetBinError(binNormIndex, 0.);
@@ -840,11 +840,11 @@ CLPTemplateFitter::ratioHistogram() const
       double ratio = 0, error = 0;
       double fit  = _getTotalBinContent(binNormIndex, m_fitVec);
       // are we not including ALL bins AND this bin IS NOT to be fit
-      if(! m_useAllBinsInPlots && ! _isBinFit(binNormIndex) )
+      if (! m_useAllBinsInPlots && ! _isBinFit(binNormIndex) )
       {
          fit = 0.;
       }
-      if(fit > 0)
+      if (fit > 0)
       {
          ratio = data / fit;
          error = ratio / sqrt(data);
@@ -862,18 +862,18 @@ CLPTemplateFitter::residualHistogram() const
    residualHPtr->SetTitle("Residual of Data to Fitted Template");
    // Loop over all bins.  If desired, we will only "consider" bins
    // used in the fit.
-   for(int binNormIndex = 0; binNormIndex <= m_numBins; ++binNormIndex)
+   for (int binNormIndex = 0; binNormIndex <= m_numBins; ++binNormIndex)
    {
       // Is this in range? Is there anything here?
       double data = residualHPtr->GetBinContent(binNormIndex);
-      if(data <= 0)
+      if (data <= 0)
       {
          residualHPtr->SetBinContent(binNormIndex, 0.);
          residualHPtr->SetBinError(binNormIndex, 0.);
          continue;
       } // if not a bin we fit
       // are we not including ALL bins AND this bin IS NOT to be fit
-      if(! m_useAllBinsInPlots && ! _isBinFit(binNormIndex) )
+      if (! m_useAllBinsInPlots && ! _isBinFit(binNormIndex) )
       {
          residualHPtr->SetBinContent(binNormIndex, 0.);
          residualHPtr->SetBinError(binNormIndex, 0.);
@@ -890,23 +890,23 @@ void
 CLPTemplateFitter::outputFitResults() const
 {
    int size = 9;
-   for(int paramIndex = 0; paramIndex < m_numMinuitParams; ++paramIndex)
+   for (int paramIndex = 0; paramIndex < m_numMinuitParams; ++paramIndex)
    {
-      if((int) paramName(paramIndex).length() > size)
+      if ((int) paramName(paramIndex).length() > size)
       {
          size =(int) paramName(paramIndex).length();
       }
    }
    size += 1;
    cout << "Fit Results:" << endl;
-   for(int paramIndex = 0; paramIndex < m_numMinuitParams; ++paramIndex)
+   for (int paramIndex = 0; paramIndex < m_numMinuitParams; ++paramIndex)
    {
       cout << setw(2) << paramIndex << ") "
            << setw(size) << paramName(paramIndex) << " : "
            << Form("%12.4f", m_fitVec.at(paramIndex));
-      if(m_errorVec[paramIndex])
+      if (m_errorVec[paramIndex])
       {
-         if(m_doMinos && m_posErrorVec.size())
+         if (m_doMinos && m_posErrorVec.size())
          {
             string pos = Form("+%.4f", m_posErrorVec.at(paramIndex));
             string ave = Form("+- %8.4f", m_errorVec.at(paramIndex));
@@ -931,13 +931,13 @@ CLPTemplateFitter::outputCovarianceMatrix(bool nonZeroOnly) const
    BinNormClass::ISet paramSet;
    _fillParamISet(paramSet, nonZeroOnly);
    cout << endl << "Covariance Matrix:" << endl;
-   for(BinNormClass::ISetConstIter outerIter = paramSet.begin();
+   for (BinNormClass::ISetConstIter outerIter = paramSet.begin();
         paramSet.end() != outerIter;
         ++outerIter)
    {
       cout << setw(2) << *outerIter << ") "
            << setw(10) << paramName( *outerIter ) << " : ";
-      for(BinNormClass::ISetConstIter innerIter = paramSet.begin();
+      for (BinNormClass::ISetConstIter innerIter = paramSet.begin();
            paramSet.end() != innerIter;
            ++innerIter)
       {
@@ -946,7 +946,7 @@ CLPTemplateFitter::outputCovarianceMatrix(bool nonZeroOnly) const
       } // for innerIter
       cout << endl;
    } // for outerIter
-   if(0)
+   if (0)
    {
       cout << endl << "Minuit Covar:" << endl;
       m_minuitPtr->mnmatu(1);
@@ -961,20 +961,20 @@ CLPTemplateFitter::outputCorrelationMatrix(bool nonZeroOnly) const
    BinNormClass::ISet paramSet;
    _fillParamISet(paramSet, nonZeroOnly);
    cout << endl << "Correlation Matrix:" << endl;
-   for(BinNormClass::ISetConstIter outerIter = paramSet.begin();
+   for (BinNormClass::ISetConstIter outerIter = paramSet.begin();
         paramSet.end() != outerIter;
         ++outerIter)
    {
       cout << setw(2) << *outerIter << ") "
            << setw(10) << paramName( *outerIter ) << " : ";
-      for(BinNormClass::ISetConstIter innerIter = paramSet.begin();
+      for (BinNormClass::ISetConstIter innerIter = paramSet.begin();
            paramSet.end() != innerIter;
            ++innerIter)
       {
          double denom = m_covarMatrixDVV[ *outerIter ][ *outerIter ] *
             m_covarMatrixDVV[ *innerIter ][ *innerIter ];
          double value = 0.;
-         if(denom > 0)
+         if (denom > 0)
          {
             value = m_covarMatrixDVV[ *outerIter ][ *innerIter ] /
                sqrt(denom);
@@ -991,7 +991,7 @@ CLPTemplateFitter::removeBinFromFit(int bin)
 {
    BinNormClass::ISetIter iter = m_binsSet.find(bin);
    // Did we find it?
-   if(m_binsSet.end() != iter)
+   if (m_binsSet.end() != iter)
    {
       // remove it
       m_binsSet.erase(iter);
@@ -1001,7 +1001,7 @@ CLPTemplateFitter::removeBinFromFit(int bin)
 void
 CLPTemplateFitter::removeBinsFromFit(const BinNormClass::ISet &binset)
 {
-   for(BinNormClass::ISetConstIter iter = binset.begin();
+   for (BinNormClass::ISetConstIter iter = binset.begin();
         binset.end() != iter;
         ++iter)
    {
@@ -1026,7 +1026,7 @@ double
 CLPTemplateFitter::getValue(const string &name) const
 {
    int paramIndex = _paramIndex(name);
-   if(paramIndex < 0)
+   if (paramIndex < 0)
    {
       cerr << "CLPTemplateFitter::getValue() Error '"
            << name << "' is not a valid name." << endl;
@@ -1039,7 +1039,7 @@ double
 CLPTemplateFitter::getError(const string &name) const
 {
    int paramIndex = _paramIndex(name);
-   if(paramIndex < 0)
+   if (paramIndex < 0)
    {
       cerr << "CLPTemplateFitter::getError() Error '"
            << name << "' is not a valid name." << endl;
@@ -1052,7 +1052,7 @@ double
 CLPTemplateFitter::getPosError(const string &name) const
 {
    int paramIndex = _paramIndex(name);
-   if(paramIndex < 0)
+   if (paramIndex < 0)
    {
       cerr << "CLPTemplateFitter::getPosError() Error '"
            << name << "' is not a valid name." << endl;
@@ -1065,7 +1065,7 @@ double
 CLPTemplateFitter::getNegError(const string &name) const
 {
    int paramIndex = _paramIndex(name);
-   if(paramIndex < 0)
+   if (paramIndex < 0)
    {
       cerr << "CLPTemplateFitter::getNegError() Error '"
            << name << "' is not a valid name." << endl;
@@ -1086,12 +1086,12 @@ CLPTemplateFitter::getCovarianceMatrix(SVec &paramNamesVec,
    assert(size > 0);
    TMatrixD covarMatrix(size, size);
    int outer = 0;
-   for(BinNormClass::ISetConstIter outerIter = paramSet.begin();
+   for (BinNormClass::ISetConstIter outerIter = paramSet.begin();
         paramSet.end() != outerIter;
         ++outerIter)
    {
       int inner = 0;
-      for(BinNormClass::ISetConstIter innerIter = paramSet.begin();
+      for (BinNormClass::ISetConstIter innerIter = paramSet.begin();
            paramSet.end() != innerIter;
            ++innerIter)
       {
@@ -1118,12 +1118,12 @@ CLPTemplateFitter::getCovarianceMatrix(IVec &paramIndiciesVec,
    assert(size > 0);
    TMatrixD covarMatrix(size, size);
    int outer = 0;
-   for(BinNormClass::ISetConstIter outerIter = paramSet.begin();
+   for (BinNormClass::ISetConstIter outerIter = paramSet.begin();
         paramSet.end() != outerIter;
         ++outerIter)
    {
       int inner = 0;
-      for(BinNormClass::ISetConstIter innerIter = paramSet.begin();
+      for (BinNormClass::ISetConstIter innerIter = paramSet.begin();
            paramSet.end() != innerIter;
            ++innerIter)
       {
@@ -1151,7 +1151,7 @@ CLPTemplateFitter::generateRandomParams(DVec &paramVec) const
 {
    int size =(int) m_nonZeroElementsVec.size();
    // If everything is fixed, just return now
-   if(! size) return;
+   if (! size) return;
    // set a mean vector
    TVectorD zeroVec(size);
    // Generate random numbbers
@@ -1160,7 +1160,7 @@ CLPTemplateFitter::generateRandomParams(DVec &paramVec) const
    // fill paramVec
    paramVec = m_fitVec;
    int count = 0;
-   for(IVecConstIter nzIter = m_nonZeroElementsVec.begin();
+   for (IVecConstIter nzIter = m_nonZeroElementsVec.begin();
         m_nonZeroElementsVec.end() != nzIter;
         ++nzIter,++count)
    {
@@ -1175,7 +1175,7 @@ void
 CLPTemplateFitter::fillParamVec(DVec &paramVec) const
 {
    paramVec.clear();
-   for(DVecConstIter iter = m_fitVec.begin();
+   for (DVecConstIter iter = m_fitVec.begin();
         m_fitVec.end() != iter;
         ++iter)
    {
@@ -1187,7 +1187,7 @@ void
 CLPTemplateFitter::fillErrorVec(DVec &errorVec) const
 {
    errorVec.clear();
-   for(DVecConstIter iter = m_errorVec.begin();
+   for (DVecConstIter iter = m_errorVec.begin();
         m_errorVec.end() != iter;
         ++iter)
    {
@@ -1199,7 +1199,7 @@ void
 CLPTemplateFitter::fillPosErrorVec(DVec &posErrorVec) const
 {
    posErrorVec.clear();
-   for(DVecConstIter iter = m_posErrorVec.begin();
+   for (DVecConstIter iter = m_posErrorVec.begin();
         m_posErrorVec.end() != iter;
         ++iter)
    {
@@ -1211,7 +1211,7 @@ void
 CLPTemplateFitter::fillNegErrorVec(DVec &negErrorVec) const
 {
    negErrorVec.clear();
-   for(DVecConstIter iter = m_negErrorVec.begin();
+   for (DVecConstIter iter = m_negErrorVec.begin();
         m_negErrorVec.end() != iter;
         ++iter)
    {
@@ -1225,7 +1225,7 @@ CLPTemplateFitter::getNameIndexMap() const
    // Start with the template map
    SIMap retval = m_templateIndexMap;
    // now add in the BinNorms
-   for(SIMapConstIter iter = m_binNormIndexMap.begin();
+   for (SIMapConstIter iter = m_binNormIndexMap.begin();
         m_binNormIndexMap.end() != iter;
         ++iter)
    {
@@ -1238,7 +1238,7 @@ void
 CLPTemplateFitter::fillNameVec(SVec &nameVec) const
 {
    nameVec  = m_templateNameVec;
-   for(SVecConstIter iter = m_binNormNameVec.begin();
+   for (SVecConstIter iter = m_binNormNameVec.begin();
         m_binNormNameVec.end() != iter;
         ++iter)
    {
@@ -1251,14 +1251,14 @@ CLPTemplateFitter::parameterIndex(const string &name) const
 {
    // Check the templates
    SIMapConstIter iter = m_templateIndexMap.find(name);
-   if(m_templateIndexMap.end() != iter)
+   if (m_templateIndexMap.end() != iter)
    {
       // Found it.  We're done
       return iter->second;
    }
    // O.k.  Check the BinNorms
    iter = m_binNormIndexMap.find(name);
-   if(m_binNormIndexMap.end() != iter)
+   if (m_binNormIndexMap.end() != iter)
    {
       // Found it.  We're done
       return iter->second + m_numTemplates;
@@ -1271,23 +1271,23 @@ void
 CLPTemplateFitter::_setAllMorphingParameters(const double *parameterArray)
 {
    // are there any morphing templates?
-   if(! m_morphSet.size())
+   if (! m_morphSet.size())
    {
       // Nothing to see here
       return;
    }
-   for(BinNormClass::ISetConstIter iter = m_morphSet.begin();
+   for (BinNormClass::ISetConstIter iter = m_morphSet.begin();
         m_morphSet.end() != iter;
         ++iter)
    {
       CLPTemplateMorph *morphPtr =
          dynamic_cast< CLPTemplateMorph* >(m_templateHPtrVec.at(*iter));
       assert(morphPtr);
-      if(verbose())
+      if (verbose())
       {
          TString name = morphPtr->GetName();
          TString match = "anti";
-         // if(name.Contains(match))
+         // if (name.Contains(match))
          // {
          //    TCanvas c1;
          //    morphPtr->Draw();
@@ -1312,14 +1312,14 @@ CLPTemplateFitter::minimizeFcn(int &npar, double *gin, double &retval,
                                 double *parameterArray, int iflag)
 {
    // static int count = 0;
-   // if(++count < 2)
+   // if (++count < 2)
    // {
    //    sm_tfPtr->m_debugLevel = 1;
    //    // dump all input parameters
    //    cout << "Dumping parameters: " << npar << endl;
    //    cout << "Params: " << sm_tfPtr->m_minuitPtr->GetNumPars() << endl;
    //    int numparams = sm_tfPtr->m_minuitPtr->GetNumPars();
-   //    for(int loop = 0; loop < numparams; ++loop)
+   //    for (int loop = 0; loop < numparams; ++loop)
    //    {
    //       cout << setw(2) << loop << ") "
    //            << setw(8) << sm_tfPtr->paramName(loop)
@@ -1331,7 +1331,7 @@ CLPTemplateFitter::minimizeFcn(int &npar, double *gin, double &retval,
    //    //cout << "minimizeFcn: " << ++count << endl;
    // }
    assert(sm_tfPtr);
-   // for(int loop = 0; loop < npar; ++loop)
+   // for (int loop = 0; loop < npar; ++loop)
    // {
    //    cout << "  " << parameterArray[loop];
    // }
@@ -1346,17 +1346,17 @@ CLPTemplateFitter::logPoisson(double observed, double expected)
 {
    //const double kMinDouble = -1.7976931348623157e+308;
    const double kMinDouble = -1.7976931348623157e+306;
-   if(observed == 0.0)
+   if (observed == 0.0)
    {
       return -1 * expected;
    }
-   if(observed < 0 || expected <= 0)
+   if (observed < 0 || expected <= 0)
    {
       return kMinDouble;
    }
    double retval =  observed * log(expected) - expected
       - TMath::LnGamma(observed + 1.);
-   if( isnan(retval) )
+   if ( isnan(retval) )
    {
       // if we're here, then just use the Gaussian approximation.
       double sigma = sqrt(expected);
@@ -1371,7 +1371,7 @@ CLPTemplateFitter::indexOfName(const string &name,
                                 const SIMap &nameIndexMap)
 {
    SIMapConstIter iter = nameIndexMap.find(name);
-   if(nameIndexMap.end() == iter)
+   if (nameIndexMap.end() == iter)
    {
       // not found
       return -1;
@@ -1390,7 +1390,7 @@ CLPTemplateFitter::sqrtMatrix(TMatrixD &retval, const TMatrixD &mat)
    vInv.Invert();
    int size = mat.GetNrows();
    TMatrixD valueMat(size, size);
-   for(int loop = 0; loop < size; ++loop)
+   for (int loop = 0; loop < size; ++loop)
    {
       valueMat(loop, loop) = sqrt( eigenvalues(loop) );
    }
@@ -1407,15 +1407,15 @@ CLPTemplateFitter::gaussCorrRand(TVectorD &retVec, const TMatrixD &sqrtCovMat,
    // time.
    int size = retVec.GetNrows();
    TVectorD ugr(size); // unit Gauss random number
-   for(int loop = 0; loop < size; ++loop)
+   for (int loop = 0; loop < size; ++loop)
    {
       ugr(loop) = gRandom->Gaus(0., 1.);
 
    } // for loop
    retVec = meanVec;
-   for(int outer = 0; outer < size; ++outer)
+   for (int outer = 0; outer < size; ++outer)
    {
-      for(int inner = 0; inner < size; ++inner)
+      for (int inner = 0; inner < size; ++inner)
       {
          retVec(outer) += sqrtCovMat(outer, inner) * ugr(inner);
       } // for inner
@@ -1432,7 +1432,7 @@ CLPTemplateFitter::_getBinFactor(int tempIndex, int binNormIndex,
    _validateMinuitInit("getBinFactor");
    _validateTemplateIndex("getBinFactor", tempIndex);
    _validateBinIndex("getBinFactor", binNormIndex);
-   if(! arrayAddress)
+   if (! arrayAddress)
    {
       arrayAddress = m_arrayAddress;
    }
@@ -1482,7 +1482,7 @@ CLPTemplateFitter::_getTotalBinContent(int binNormIndex,
    _validateMinuitInit("gettotalBinContent");
    _validateBinIndex("gettotalBinContent", binNormIndex);
    double retval = 0;
-   for(int tempIndex = 0; tempIndex < m_numTemplates; ++tempIndex)
+   for (int tempIndex = 0; tempIndex < m_numTemplates; ++tempIndex)
    {
       retval += _getBinContent(tempIndex, binNormIndex, arrayAddress);
    }
@@ -1496,7 +1496,7 @@ CLPTemplateFitter::_getTotalBinContent(int binNormIndex,
    _validateMinuitInit("gettotalBinContent");
    _validateBinIndex("gettotalBinContent", binNormIndex);
    double retval = 0;
-   for(int tempIndex = 0; tempIndex < m_numTemplates; ++tempIndex)
+   for (int tempIndex = 0; tempIndex < m_numTemplates; ++tempIndex)
    {
       retval += _getBinContent(tempIndex, binNormIndex, paramVec);
    }
@@ -1507,14 +1507,14 @@ double
 CLPTemplateFitter::_byBin(int tempIndex, int binNormIndex,
                            double *arrayAddress) const
 {
-   if(! arrayAddress)
+   if (! arrayAddress)
    {
       arrayAddress = m_arrayAddress;
    }
    // Will calculate ALL factors that affect this template and bin,
    // not just the first one.
    double retval = 1.;
-   for(BinNormClass::VecConstIter iter = m_binNormVec.begin();
+   for (BinNormClass::VecConstIter iter = m_binNormVec.begin();
         m_binNormVec.end() != iter;
         ++iter)
    {
@@ -1532,7 +1532,7 @@ CLPTemplateFitter::_byBin(int tempIndex, int binNormIndex,
    // Will calculate ALL factors that affect this template and bin,
    // not just the first one.
    double retval = 1.;
-   for(BinNormClass::VecConstIter iter = m_binNormVec.begin();
+   for (BinNormClass::VecConstIter iter = m_binNormVec.begin();
         m_binNormVec.end() != iter;
         ++iter)
    {
@@ -1550,13 +1550,13 @@ CLPTemplateFitter::_paramIndex(const string& name,
    int paramIndex = -1;
    tempIndex = binNormIndex = -1;
    SIMapConstIter iter = m_templateIndexMap.find(name);
-   if(m_templateIndexMap.end() != iter)
+   if (m_templateIndexMap.end() != iter)
    {
       tempIndex = paramIndex = iter->second;
    } else {
       // not a template.  Is it a binNorm?
       iter = m_binNormIndexMap.find(name);
-      if(m_binNormIndexMap.end() != iter)
+      if (m_binNormIndexMap.end() != iter)
       {
          binNormIndex = iter->second;
          paramIndex = iter->second + m_numTemplates;
@@ -1572,7 +1572,7 @@ CLPTemplateFitter::_totalLogProb() const
    ////////////////////////
    // Loop over all bins //
    ////////////////////////
-   for(BinNormClass::ISetConstIter iter = m_binsSet.begin();
+   for (BinNormClass::ISetConstIter iter = m_binsSet.begin();
         m_binsSet.end() != iter;
         ++iter)
    {
@@ -1586,9 +1586,9 @@ CLPTemplateFitter::_totalLogProb() const
    // Loop over all constraints //
    ///////////////////////////////
    // Template Constraints
-   for(int tempIndex = 0; tempIndex < m_numTemplates; ++tempIndex)
+   for (int tempIndex = 0; tempIndex < m_numTemplates; ++tempIndex)
    {
-      if(m_constraintSigmaVec[tempIndex] > 0)
+      if (m_constraintSigmaVec[tempIndex] > 0)
       {
          double zScore =
 (m_arrayAddress[tempIndex] - m_constraintMeanVec[tempIndex]) /
@@ -1597,9 +1597,9 @@ CLPTemplateFitter::_totalLogProb() const
       }
    } // for tempIndex
    // BinNorm Constraints
-   for(int binNormIndex = 0; binNormIndex < m_numBinNorms; ++binNormIndex)
+   for (int binNormIndex = 0; binNormIndex < m_numBinNorms; ++binNormIndex)
    {
-      if(m_binNormConstraintSigmaVec[binNormIndex] > 0)
+      if (m_binNormConstraintSigmaVec[binNormIndex] > 0)
       {
          int index = binNormIndex + m_numTemplates;
          double zScore =
@@ -1616,30 +1616,30 @@ void
 CLPTemplateFitter::_initializeMinuit()
 {
    sm_tfPtr = this;
-   if(m_minuitPtr)
+   if (m_minuitPtr)
    {
       cerr << "CLPTemplateFitter::_initializeMinuit() error: Minuit is alredy"
            << " initialized." << endl;
       return;
    }
-   if(! m_numTemplates)
+   if (! m_numTemplates)
    {
       cerr << "CLPTemplateFitter::_initializeMinuit() error: Must have at"
            << " least 1 template." << endl;
       assert(0);
    }
-   if(! m_dataHPtr)
+   if (! m_dataHPtr)
    {
       cerr << "CLPTemplateFitter::_initializeMinuit() error: Must have already"
            << " called addData()." << endl;
       assert(0);
    }
    // are there any morphing templates?
-   if(m_morphSet.size())
+   if (m_morphSet.size())
    {
       SVec nameVec;
       fillNameVec(nameVec);
-      for(BinNormClass::ISetConstIter iter = m_morphSet.begin();
+      for (BinNormClass::ISetConstIter iter = m_morphSet.begin();
            m_morphSet.end() != iter;
            ++iter)
       {
@@ -1661,7 +1661,7 @@ CLPTemplateFitter::_initializeMinuit()
    assert(dataEvents > 0);
    // set up our parameters
    m_fitVec.clear();
-   for(int tempIndex = 0; tempIndex < m_numTemplates; ++tempIndex)
+   for (int tempIndex = 0; tempIndex < m_numTemplates; ++tempIndex)
    {
       double tempEvents = _eventsInRange( m_templateHPtrVec[tempIndex] );
       const StartStopStep  &sss = m_startStopStepVec.at(tempIndex);
@@ -1676,14 +1676,14 @@ CLPTemplateFitter::_initializeMinuit()
                            ierrflg);
       m_fitVec.push_back( m_normVec[tempIndex] );
       // should we fix this parameter
-      if(m_fixedParameterSet.end() !=
+      if (m_fixedParameterSet.end() !=
           m_fixedParameterSet.find(tempIndex))
       {
          // yes
          m_minuitPtr->FixParameter(tempIndex);
       }
    } // for tempIndex
-   for(int binNormIndex = 0; binNormIndex < m_numBinNorms; ++binNormIndex)
+   for (int binNormIndex = 0; binNormIndex < m_numBinNorms; ++binNormIndex)
    {
       BinNormClass &binNorm = m_binNormVec[binNormIndex];
       binNorm.setParamIndex(binNormIndex + m_numTemplates);
@@ -1699,7 +1699,7 @@ CLPTemplateFitter::_initializeMinuit()
                            ierrflg);
       m_fitVec.push_back( value );
       // should we fix this parameter?
-      if(m_fixedBinNormSet.end() !=
+      if (m_fixedBinNormSet.end() !=
           m_fixedBinNormSet.find(binNormIndex))
       {
          // yes
@@ -1713,7 +1713,7 @@ double
 CLPTemplateFitter::_eventsInRange(TH1F* histPtr)
 {
    double retval = 0.;
-   for(BinNormClass::ISetConstIter iter = m_binsSet.begin();
+   for (BinNormClass::ISetConstIter iter = m_binsSet.begin();
         m_binsSet.end() != iter;
         ++iter)
    {
@@ -1733,7 +1733,7 @@ void
 CLPTemplateFitter::_validateBinIndex(const string &function,
                                       int binNormIndex) const
 {
-   if(binNormIndex < 0 || binNormIndex > m_numBins)
+   if (binNormIndex < 0 || binNormIndex > m_numBins)
    {
       cerr << "CLPTemplateFitter::" << function
            << "(): bin index " << binNormIndex << " is invalid." << endl;
@@ -1745,7 +1745,7 @@ void
 CLPTemplateFitter::_validateTemplateIndex(const string &function,
                                            int tempIndex) const
 {
-   if(tempIndex < 0 || tempIndex > m_numTemplates)
+   if (tempIndex < 0 || tempIndex > m_numTemplates)
    {
       cerr << "CLPTemplateFitter::" << function
            << "(): template index " << tempIndex << " is invalid." << endl;
@@ -1756,7 +1756,7 @@ CLPTemplateFitter::_validateTemplateIndex(const string &function,
 void
 CLPTemplateFitter::_validateMinuitInit(const string &function) const
 {
-   if(! m_minuitPtr)
+   if (! m_minuitPtr)
    {
       cerr << "CLPTemplateFitter::" << function <<
          "() Error: Called before Minuit initialization." << endl;
@@ -1769,10 +1769,10 @@ CLPTemplateFitter::_validateHistogram(const string &function,
                                        TH1F *histPtr)
 {
    int numBins = histPtr->GetNbinsX();
-   if(m_numBins)
+   if (m_numBins)
    {
       // this is not the first histogram.  Make sure it's consistent.
-      if(m_numBins != numBins)
+      if (m_numBins != numBins)
       {
          cerr << "CLPTemplateFitter::" << function
               << "() error: histogram "
@@ -1786,14 +1786,14 @@ CLPTemplateFitter::_validateHistogram(const string &function,
       // this is our first histogram
       m_numBins = numBins;
       // check to see if min/max bin are set
-      if(! m_binsSet.size())
+      if (! m_binsSet.size())
       {
          BinNormClass::insertRangeIntoSet(m_binsSet, 1, numBins);
       } else {
          // Check to make sure that this doesn't violate the binning
          // set that we already have.
 
-         // if(m_maxBin > numBins)
+         // if (m_maxBin > numBins)
          // {
          //    cerr << "CLPTemplateFitter::" << function
          //         << "() error: histogram "
@@ -1810,12 +1810,12 @@ CLPTemplateFitter::_fillParamISet(BinNormClass::ISet &paramSet,
                                    bool nonZeroOnly) const
 {
    paramSet.clear();
-   if(nonZeroOnly)
+   if (nonZeroOnly)
    {
       // Only use the parameters that are not fixed
-      for(int loop = 0; loop < m_numMinuitParams; ++loop)
+      for (int loop = 0; loop < m_numMinuitParams; ++loop)
       {
-         if(! isParameterFixed(loop) )
+         if (! isParameterFixed(loop) )
          {
             // We've got a free parameter
             paramSet.insert(loop);
@@ -1835,17 +1835,17 @@ CLPTemplateFitter::_fillParamISet(BinNormClass::ISet &paramSet,
 
 ostream& operator<<(ostream& o_stream, const CLPTemplateFitter &rhs)
 {
-   for(int tempIndex = 0; tempIndex < rhs.m_numTemplates; ++tempIndex)
+   for (int tempIndex = 0; tempIndex < rhs.m_numTemplates; ++tempIndex)
    {
       o_stream << setw(2) << tempIndex << ") "
                << setw(10) << rhs.m_templateNameVec[tempIndex]
                << " " << setw(8) << rhs.m_normVec[tempIndex]
                << " : " << rhs.m_startStopStepVec.at(tempIndex);
-      if(rhs.isParameterFixed(tempIndex))
+      if (rhs.isParameterFixed(tempIndex))
       {
          o_stream << "  Fixed" << endl;
       } else {
-         if(rhs.m_constraintSigmaVec.at(tempIndex))
+         if (rhs.m_constraintSigmaVec.at(tempIndex))
          {
             o_stream << Form("  %5.2f +- %4.2f",
                           rhs.m_constraintMeanVec.at(tempIndex),
@@ -1856,17 +1856,17 @@ ostream& operator<<(ostream& o_stream, const CLPTemplateFitter &rhs)
          }
       }
    } // for tempIndex
-   for(int bnIndex = 0; bnIndex < rhs.m_numBinNorms; ++bnIndex)
+   for (int bnIndex = 0; bnIndex < rhs.m_numBinNorms; ++bnIndex)
    {
       o_stream << setw(2) << bnIndex + rhs.m_numTemplates << ") "
                << "BN " << setw(7) << rhs.m_binNormNameVec[bnIndex]
                << " " << setw(8) << rhs.m_binNormVec[bnIndex].startingValue()
                << " : " << rhs.m_binNormVec.at(bnIndex).startStopStep();
-      if(rhs.isParameterFixed(bnIndex + rhs.m_numTemplates))
+      if (rhs.isParameterFixed(bnIndex + rhs.m_numTemplates))
       {
          o_stream << " Fixed" << endl;
       } else {
-         if(rhs.m_binNormConstraintSigmaVec.at(bnIndex))
+         if (rhs.m_binNormConstraintSigmaVec.at(bnIndex))
          {
             o_stream << Form("  %5.2f +- %4.2f",
                           rhs.m_binNormConstraintMeanVec.at(bnIndex),
@@ -1881,11 +1881,11 @@ ostream& operator<<(ostream& o_stream, const CLPTemplateFitter &rhs)
       // o_stream << rhs.m_binNormVec.at(bnIndex) << endl;
       // funcPtr->dumpToOstream(o_stream);
       // o_stream << endl;
-      if(rhs.verbose(CLPTemplateFitter::kOutputBinNorms))
+      if (rhs.verbose(CLPTemplateFitter::kOutputBinNorms))
       {
          o_stream << rhs.m_binNormVec.at(bnIndex) << endl;
       }
-      if(funcPtr && rhs.verbose(CLPTemplateFitter::kOutputFunctoids))
+      if (funcPtr && rhs.verbose(CLPTemplateFitter::kOutputFunctoids))
       {
          funcPtr->dumpToOstream(o_stream);
          o_stream << endl;

@@ -31,23 +31,23 @@ OptionUtils::parseArguments(int argc, char** argv, bool returnArgs)
    bool printOptions = false;
    SVec argsVec;
    ns_argv0 = argv[0];
-   for(int loop = 1; loop < argc; ++loop)
+   for (int loop = 1; loop < argc; ++loop)
    {
       string arg = argv[loop];
       string::size_type where = arg.find_first_of("=");
-      if(string::npos != where)
+      if (string::npos != where)
       {
-         if(! setVariableFromString (arg) )
+         if (! setVariableFromString (arg) )
          {
             cerr << "Don't understand: " << arg << endl;
             exit(0);
          }
          continue;
       } // tag=value strings
-      else if(arg.at(0) == '-')
+      else if (arg.at(0) == '-')
       {
          string::size_type where = arg.find_first_not_of("-");
-         if(string::npos == where)
+         if (string::npos == where)
          {
             // a poorly formed option
             cerr << "Don't understand: " << arg << endl;
@@ -57,13 +57,13 @@ OptionUtils::parseArguments(int argc, char** argv, bool returnArgs)
          lowercaseString(arg);
          char first = arg.at(where);
          // Print the values
-         if('p' == first)
+         if ('p' == first)
          {
             printOptions = true;
             continue;
          }
          // Exit after printing values
-         if('e' == first || 'h' == first)
+         if ('e' == first || 'h' == first)
          {
             help();
          }
@@ -71,7 +71,7 @@ OptionUtils::parseArguments(int argc, char** argv, bool returnArgs)
          cerr << "Don't understand: " << arg << endl;
          exit(0);
       } // -arg strings
-      if(returnArgs)
+      if (returnArgs)
       {
          argsVec.push_back(arg);
       } else {
@@ -79,7 +79,7 @@ OptionUtils::parseArguments(int argc, char** argv, bool returnArgs)
          exit(0);
       }
    } // for loop
-   if(printOptions)
+   if (printOptions)
    {
       printOptionValues();
    } // if printOptions
@@ -95,7 +95,7 @@ OptionUtils::setUsageString(const std::string &usage)
 void
 OptionUtils::help()
 {
-   if(ns_usageString.length())
+   if (ns_usageString.length())
    {
       cout << "Usage: " << ns_argv0 << " " << ns_usageString << endl;
    }
@@ -107,7 +107,7 @@ void
 OptionUtils::split(SVec &retval, string line, string match,
                     bool ignoreComments)
 {
-   if(ignoreComments)
+   if (ignoreComments)
    {
       removeComment(line);
    } // if ignoreComments
@@ -116,7 +116,7 @@ OptionUtils::split(SVec &retval, string line, string match,
    string::size_type start1 = line.find_first_not_of(kSpaces);
    // Is the first non-space character a '#'
    char firstCh = line[start1];
-   if('#' == firstCh)
+   if ('#' == firstCh)
    {
       // this line is a comment
       return;
@@ -128,7 +128,7 @@ OptionUtils::split(SVec &retval, string line, string match,
    while(string::npos != current)
    {
       string::size_type pos;
-      if(string::npos != last)
+      if (string::npos != last)
       {
          pos = last + 1;
       } else {
@@ -136,7 +136,7 @@ OptionUtils::split(SVec &retval, string line, string match,
       }
       string part = line.substr( pos, current - last - 1);
       // don't bother adding 0 length strings
-      if(part.length())
+      if (part.length())
       {
          retval.push_back(part);
       }
@@ -149,7 +149,7 @@ void
 OptionUtils::removeComment(string &line)
 {
    string::size_type location = line.find("#");
-   if(string::npos != location)
+   if (string::npos != location)
    {
       // we've got a comment.  Strip it out
       line = line.substr(0, location - 1);
@@ -160,18 +160,18 @@ void
 OptionUtils::removeLeadingAndTrailingSpaces(std::string &line)
 {
    string::size_type pos = line.find_first_not_of(kSpaces);
-   if(string::npos == pos)
+   if (string::npos == pos)
    {
       // we don't have anything here at all.  Just quit now
       return;
    }
-   if(pos)
+   if (pos)
    {
       // We have spaces at the beginning.
       line = line.substr(pos);
    }
    pos = line.find_last_not_of(kSpaces);
-   if(pos + 1 != line.length())
+   if (pos + 1 != line.length())
    {
       // we've got spaces at the end
       line = line.substr(0, pos + 1);
@@ -182,7 +182,7 @@ string
 OptionUtils::removeEnding(const string &input, const string &ending)
 {
    string::size_type position = input.rfind(ending);
-   if(input.length() - ending.length() == position)
+   if (input.length() - ending.length() == position)
    {
       // we've got it
       return input.substr(0, position);
@@ -198,13 +198,13 @@ OptionUtils::findCommand(const string &line,
 {
    command = rest = "";
    string::size_type nonspace = line.find_first_not_of(kSpaces);
-   if(string::npos == nonspace)
+   if (string::npos == nonspace)
    {
       // we don't have anything here at all.  Just quit now
       return;
    }
    string::size_type space = line.find_first_of(kSpaces, nonspace);
-   if(string::npos == space)
+   if (string::npos == space)
    {
       // we only have a command and nothing else
       command = line.substr(nonspace);
@@ -222,24 +222,24 @@ OptionUtils::printOptionValues()
    cout << "------------------------------------------------------------------"
         << endl << "Option Values:" << endl;
    // Print the bools first
-   if(ns_boolMap.size())
+   if (ns_boolMap.size())
    {
       cout << "  Bool options:" << endl;
    }
-   for(OptionMapIter iter = ns_boolMap.begin();
+   for (OptionMapIter iter = ns_boolMap.begin();
        ns_boolMap.end() != iter;
        ++iter)
    {
       string &description = ns_variableDescriptionMap[ iter->first ];
       bool *valuePtr =(bool *) iter->second;
       cout << "    " << iter->first << " = ";
-      if(*valuePtr)
+      if (*valuePtr)
       {
          cout << "true";
       } else {
          cout << "false";
       }
-      if(description.length())
+      if (description.length())
       {
          cout << " - " << description;
       }
@@ -247,18 +247,18 @@ OptionUtils::printOptionValues()
    } // for iter
 
    // Print the ints next
-   if(ns_intMap.size())
+   if (ns_intMap.size())
    {
       cout << "  Int options:" << endl;
    }
-   for(OptionMapIter iter = ns_intMap.begin();
+   for (OptionMapIter iter = ns_intMap.begin();
        ns_intMap.end() != iter;
        ++iter)
    {
       string &description = ns_variableDescriptionMap[ iter->first ];
       int *valuePtr =(int *)iter->second;
       cout << "    " << iter->first << " = " << *valuePtr;
-      if(description.length())
+      if (description.length())
       {
          cout << " - " << description;
       }
@@ -266,18 +266,18 @@ OptionUtils::printOptionValues()
    } // for iter
 
    // Print the doubles next
-   if(ns_doubleMap.size())
+   if (ns_doubleMap.size())
    {
       cout << "  Double options:" << endl;
    }
-   for(OptionMapIter iter = ns_doubleMap.begin();
+   for (OptionMapIter iter = ns_doubleMap.begin();
        ns_doubleMap.end() != iter;
        ++iter)
    {
       string &description = ns_variableDescriptionMap[ iter->first ];
       double *valuePtr =(double *)iter->second;
       cout << "    " << iter->first << " = " << *valuePtr;
-      if(description.length())
+      if (description.length())
       {
          cout << " - " << description;
       }
@@ -285,29 +285,29 @@ OptionUtils::printOptionValues()
    } // for iter
 
    // Print the strings next
-   if(ns_stringMap.size())
+   if (ns_stringMap.size())
    {
       cout << "  String options:" << endl;
    }
-   for(OptionMapIter iter = ns_stringMap.begin();
+   for (OptionMapIter iter = ns_stringMap.begin();
        ns_stringMap.end() != iter;
        ++iter)
    {
       string &description = ns_variableDescriptionMap[ iter->first ];
       string *valuePtr =(string *) iter->second;
       cout << "    " << iter->first << " = '" << *valuePtr << "'";
-      if(description.length())
+      if (description.length())
       {
          cout << " - " << description;
       }
       cout << endl;
    } // for iter
    // SVec
-   if(ns_svecMap.size())
+   if (ns_svecMap.size())
    {
       cout << "  SVec options:" << endl;
    }
-   for(OptionMapIter iter = ns_svecMap.begin();
+   for (OptionMapIter iter = ns_svecMap.begin();
        ns_svecMap.end() != iter;
        ++iter)
    {
@@ -316,18 +316,18 @@ OptionUtils::printOptionValues()
       cout << "    " << iter->first << " = ";
       dumpSTL(*valuePtr);
       cout << endl;
-      if(description.length())
+      if (description.length())
       {
          cout << "      - " << description;
       }
       cout << endl;
    } // for iter
    // IVec
-   if(ns_ivecMap.size())
+   if (ns_ivecMap.size())
    {
       cout << "  IVec options:" << endl;
    }
-   for(OptionMapIter iter = ns_ivecMap.begin();
+   for (OptionMapIter iter = ns_ivecMap.begin();
        ns_ivecMap.end() != iter;
        ++iter)
    {
@@ -336,18 +336,18 @@ OptionUtils::printOptionValues()
       cout << "    " << iter->first << " = ";
       dumpSTL(*valuePtr);
       cout << endl;
-      if(description.length())
+      if (description.length())
       {
          cout << "      - " << description;
       }
       cout << endl;
    } // for iter
    // DVec
-   if(ns_dvecMap.size())
+   if (ns_dvecMap.size())
    {
       cout << "  DVec options:" << endl;
    }
-   for(OptionMapIter iter = ns_dvecMap.begin();
+   for (OptionMapIter iter = ns_dvecMap.begin();
        ns_dvecMap.end() != iter;
        ++iter)
    {
@@ -356,7 +356,7 @@ OptionUtils::printOptionValues()
       cout << "    " << iter->first << " = ";
       dumpSTL(*valuePtr);
       cout << endl;
-      if(description.length())
+      if (description.length())
       {
          cout << "      - " << description;
       }
@@ -463,7 +463,7 @@ bool
 OptionUtils::valueHasBeenModified(const string &key)
 {
    StrBoolMapConstIter iter = ns_variableModifiedMap.find(key);
-   if(ns_variableModifiedMap.end() == iter)
+   if (ns_variableModifiedMap.end() == iter)
    {
       // Not found.  Not a valid option
       cerr << "OptionUtils::valueHasBeenModfied() Error: '"
@@ -484,7 +484,7 @@ OptionUtils::setVariableFromString(const string &arg,
    lowercaseString(varname);
    // check to make sure this is a valid option
    StrBoolMapConstIter sbiter = ns_variableModifiedMap.find(varname);
-   if(ns_variableModifiedMap.end() == sbiter)
+   if (ns_variableModifiedMap.end() == sbiter)
    {
       // Not found.  Not a valid option
       return false;
@@ -492,14 +492,14 @@ OptionUtils::setVariableFromString(const string &arg,
 
    // if 'dontOverrideChange' is set, then we are being asked to NOT
    // change any variables that have already been changed.
-   if(dontOverrideChange && valueHasBeenModified (varname) )
+   if (dontOverrideChange && valueHasBeenModified (varname) )
    {
       // don't go any further
       return true;
    }
    // doubles
    OptionMapIter iter = ns_doubleMap.find(varname);
-   if(ns_doubleMap.end() != iter)
+   if (ns_doubleMap.end() != iter)
    {
       // we found it
       double *doublePtr =(double*) iter->second;
@@ -509,7 +509,7 @@ OptionUtils::setVariableFromString(const string &arg,
    }
    // integers
    iter = ns_intMap.find(varname);
-   if(ns_intMap.end() != iter)
+   if (ns_intMap.end() != iter)
    {
       // we found it
       int *intPtr =(int*) iter->second;
@@ -520,7 +520,7 @@ OptionUtils::setVariableFromString(const string &arg,
    }
    // strings
    iter = ns_stringMap.find(varname);
-   if(ns_stringMap.end() != iter)
+   if (ns_stringMap.end() != iter)
    {
       // we found it
       string *stringPtr =(string*) iter->second;
@@ -530,13 +530,13 @@ OptionUtils::setVariableFromString(const string &arg,
    }
    // SVec
    iter = ns_svecMap.find(varname);
-   if(ns_svecMap.end() != iter)
+   if (ns_svecMap.end() != iter)
    {
       // we found it
       SVec *svecPtr =(SVec*) iter->second;
       SVec words;
       split(words, value, ",");
-      for(SVecConstIter svecIter = words.begin();
+      for (SVecConstIter svecIter = words.begin();
            words.end() != svecIter;
            ++svecIter)
       {
@@ -549,13 +549,13 @@ OptionUtils::setVariableFromString(const string &arg,
    }
    // IVec
    iter = ns_ivecMap.find(varname);
-   if(ns_ivecMap.end() != iter)
+   if (ns_ivecMap.end() != iter)
    {
       // we found it
       IVec *ivecPtr =(IVec*) iter->second;
       SVec words;
       split(words, value, ",");
-      for(SVecConstIter svecIter = words.begin();
+      for (SVecConstIter svecIter = words.begin();
            words.end() != svecIter;
            ++svecIter)
       {
@@ -568,13 +568,13 @@ OptionUtils::setVariableFromString(const string &arg,
    }
    // DVec
    iter = ns_dvecMap.find(varname);
-   if(ns_dvecMap.end() != iter)
+   if (ns_dvecMap.end() != iter)
    {
       // we found it
       DVec *dvecPtr =(DVec*) iter->second;
       SVec words;
       split(words, value, ",");
-      for(SVecConstIter svecIter = words.begin();
+      for (SVecConstIter svecIter = words.begin();
            words.end() != svecIter;
            ++svecIter)
       {
@@ -587,12 +587,12 @@ OptionUtils::setVariableFromString(const string &arg,
    }
    // bools
    iter = ns_boolMap.find(varname);
-   if(ns_boolMap.end() != iter)
+   if (ns_boolMap.end() != iter)
    {
       // we found it
       bool *boolPtr =(bool*) iter->second;
       int val = atoi(value.c_str());
-      if(val)
+      if (val)
       {
          *boolPtr = true;
       } else {
@@ -609,7 +609,7 @@ bool
 OptionUtils::setVariablesFromFile(const string &filename)
 {
    ifstream source(filename.c_str(), ios::in);
-   if(! source)
+   if (! source)
    {
       cerr << "file " << filename << "could not be opened" << endl;
       return false;
@@ -619,18 +619,18 @@ OptionUtils::setVariablesFromFile(const string &filename)
    {
       // find the first nonspace
       string::size_type where = line.find_first_not_of(kSpaces);
-      if(string::npos == where)
+      if (string::npos == where)
       {
          // no non-spaces
          continue;
       }
       char first = line.at(where);
-      if('-' != first)
+      if ('-' != first)
       {
          continue;
       }
       where = line.find_first_not_of(kSpaces, where + 1);
-      if(string::npos == where)
+      if (string::npos == where)
       {
          // no non-spaces
          continue;
@@ -640,22 +640,22 @@ OptionUtils::setVariablesFromFile(const string &filename)
       // first '#'.
       string withspaces = line.substr(where);
       string nospaces;
-      for(int position = 0;
+      for (int position = 0;
            position <(int) withspaces.length();
            ++position)
       {
          char ch = withspaces[position];
-         if('#' == ch)
+         if ('#' == ch)
          {
             // start of a comment
             break;
-         } else if(' ' == ch || '\t' == ch)
+         } else if (' ' == ch || '\t' == ch)
          {
             continue;
          }
          nospaces += ch;
       } // for position
-      if(! setVariableFromString (nospaces, true) )
+      if (! setVariableFromString (nospaces, true) )
       {
          cerr << "Don't understand line" << endl << line << endl
               << "in options file '" << filename << "'.  Aborting."

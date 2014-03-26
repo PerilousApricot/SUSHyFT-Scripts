@@ -49,7 +49,7 @@ mrf::MRFitter::MRFitter(const std::string &configFilename,
     m_canAddToPolyMap(true)
 {
     cout << "creating MRFitter object";
-    if(m_prefix.length())
+    if (m_prefix.length())
     {
         cout << "(" << m_prefix << ")";
     }
@@ -58,7 +58,7 @@ mrf::MRFitter::MRFitter(const std::string &configFilename,
     // // before returning, make sure the 'Data' is one of the names of
     // // the samples
     SVec &namesVec = stringVector("names");
-    if( namesVec.end() ==
+    if ( namesVec.end() ==
             find(namesVec.begin(),
                 namesVec.end(),
                 ns_dataName) )
@@ -72,7 +72,7 @@ mrf::MRFitter::MRFitter(const std::string &configFilename,
     // objects all have the same binning.  Since this is the case for
     // the foreseeable future, it should be fine, but I thought I
     // should leave a warning here just in case.
-    if(boolValue("print"))
+    if (boolValue("print"))
     {
         m_parser.printOptionValues();
     }
@@ -82,13 +82,13 @@ bool mrf::MRFitter::_loadConfigFile(const std::string &configFilename,
         bool mainLoop)
 {
     using namespace optutl;
-    if(mainLoop)
+    if (mainLoop)
     {
         // If we're here, then we're the main version of this subroutine
         // call.  Check anything that needs to be checked exactly once
         // before loading configuration files.
         m_ignoredNamesMap.clear();
-        for(SVecConstIter iter =
+        for (SVecConstIter iter =
                 stringVector("ignoreInclude").begin();
                 stringVector("ignoreInclude").end() != iter;
                 ++iter)
@@ -97,12 +97,12 @@ bool mrf::MRFitter::_loadConfigFile(const std::string &configFilename,
         } // for iter
     }
     string fullConfigName(configFilename);
-    if(stringValue("inputPrefix").length())
+    if (stringValue("inputPrefix").length())
     {
         fullConfigName = stringValue("inputPrefix") + "/" + configFilename;
     }
     ifstream source(fullConfigName.c_str(), ios::in);
-    if(! source)
+    if (! source)
     {
         cerr << "file " << fullConfigName << " could not be opened" << endl;
         exit(-1);
@@ -113,22 +113,22 @@ bool mrf::MRFitter::_loadConfigFile(const std::string &configFilename,
     {
         string command, rest;
         CommandLineParser::findCommand(line, command, rest);
-        if(! command.length())
+        if (! command.length())
         {
             // blank line
             continue;
         }
-        if('#' == command.at(0))
+        if ('#' == command.at(0))
         {
             // comment - ignore
             continue;
         }
-        if("-" == command)
+        if ("-" == command)
         {
             // function declaration
             SVec words;
             CommandLineParser::split(words, rest);
-            if(words.size() < 3)
+            if (words.size() < 3)
             {
                 dout << "loadConfigFile() error: I don't understand line: "
                     << line << endl
@@ -138,7 +138,7 @@ bool mrf::MRFitter::_loadConfigFile(const std::string &configFilename,
             polynoidName = words.at(0);
             double mean  = atof( words.at(1).c_str() );
             double width = atof( words.at(2).c_str() );
-            if(words.size() >= 6)
+            if (words.size() >= 6)
             {
                 // The user has given us the bounds.  Let's use them.
                 double   lower = atof( words.at(3).c_str() );
@@ -153,10 +153,10 @@ bool mrf::MRFitter::_loadConfigFile(const std::string &configFilename,
             }
             continue;
         } // if -
-        if("--" == command)
+        if ("--" == command)
         {
             // function definition
-            if(! polynoidName.length() )
+            if (! polynoidName.length() )
             {
                 dout << "loadConfigFile() error: You can't add polynomials with"
                     << " out first defining: " << endl
@@ -167,7 +167,7 @@ bool mrf::MRFitter::_loadConfigFile(const std::string &configFilename,
             }
             SVec words;
             CommandLineParser::split(words, rest, ":");
-            if(words.size() != 3)
+            if (words.size() != 3)
             {
                 dout << "loadConfigFile() error: I don't understand line: "
                     << line << endl
@@ -186,24 +186,24 @@ bool mrf::MRFitter::_loadConfigFile(const std::string &configFilename,
             SVec groupWords;
             CommandLineParser::split(groupWords, groupString);
             IVec groupVec;
-            for(SVecConstIter iter = groupWords.begin();
+            for (SVecConstIter iter = groupWords.begin();
                     groupWords.end() != iter;
                     ++iter)
             {
                 bool found = false;
                 int groupBin = 0;
-                for(SVecConstIter groupIter =
+                for (SVecConstIter groupIter =
                         stringVector("groupNames").begin();
                         stringVector("groupNames").end() != groupIter;
                         ++groupIter,++groupBin)
                 {
-                    if(*iter == *groupIter)
+                    if (*iter == *groupIter)
                     {
                         found = true;
                         break;
                     }
                 }
-                if(! found)
+                if (! found)
                 {
                     // dumpNamedSTLendl("groups: ", stringVector("groupNames") );
                     dout << "loadConfigFile() error: I don't understand line: "
@@ -218,12 +218,12 @@ bool mrf::MRFitter::_loadConfigFile(const std::string &configFilename,
             SVec samplesWords;
             IVec samplesVec;
             CommandLineParser::split(samplesWords, samplesString);
-            for(SVecConstIter iter = samplesWords.begin();
+            for (SVecConstIter iter = samplesWords.begin();
                     samplesWords.end() != iter;
                     ++iter)
             {
                 SIMapConstIter siIter = m_nameTemplateIDMap.find( *iter );
-                if(m_nameTemplateIDMap.end() == siIter)
+                if (m_nameTemplateIDMap.end() == siIter)
                 {
                     int index = m_nameTemplateIDMap[ *iter ] =
 (int) m_nameTemplateIDMap.size();
@@ -236,7 +236,7 @@ bool mrf::MRFitter::_loadConfigFile(const std::string &configFilename,
             SVec polyWords;
             DVec polyVec;
             CommandLineParser::split(polyWords, polyString);
-            for(SVecConstIter iter = polyWords.begin();
+            for (SVecConstIter iter = polyWords.begin();
                     polyWords.end() != iter;
                     ++iter)
             {
@@ -247,18 +247,18 @@ bool mrf::MRFitter::_loadConfigFile(const std::string &configFilename,
                     polyVec);
             continue;
         } // if --
-        if("@" == command)
+        if ("@" == command)
         {
             // include file
             SVec filenames;
             CommandLineParser::split(filenames, rest);
-            for(SVecConstIter iter = filenames.begin();
+            for (SVecConstIter iter = filenames.begin();
                     filenames.end() != iter;
                     ++iter)
             {
                 // check to make sure I'm not supposed to ignore this file
                 SIMapIter ignoreIter = m_ignoredNamesMap.find(*iter);
-                if(m_ignoredNamesMap.end() != ignoreIter)
+                if (m_ignoredNamesMap.end() != ignoreIter)
                 {
                     // ignore this one
                     ignoreIter->second += 1;
@@ -270,7 +270,7 @@ bool mrf::MRFitter::_loadConfigFile(const std::string &configFilename,
                 // B and file B loading file A.  It would be easy enough
                 // to implement.
                 cout << "loading " << *iter << endl;
-                if(! _loadConfigFile(*iter, false))
+                if (! _loadConfigFile(*iter, false))
                 {
                     dout << "Failed to load " << *iter << ".  Aborting."
                         << endl;
@@ -279,20 +279,20 @@ bool mrf::MRFitter::_loadConfigFile(const std::string &configFilename,
             } // for iter
             continue;
         } // if *
-        if("+" == command)
+        if ("+" == command)
         {
             // we're setting a variable
             string nospaces;
-            for(int position = 0;
+            for (int position = 0;
                     position <(int) rest.length();
                     ++position)
             {
                 char ch = rest.at(position);
-                if('#' == ch)
+                if ('#' == ch)
                 {
                     // start of a comment
                     break;
-                } else if(' ' == ch || '\t' == ch)
+                } else if (' ' == ch || '\t' == ch)
                 {
                     continue;
                 }
@@ -300,7 +300,7 @@ bool mrf::MRFitter::_loadConfigFile(const std::string &configFilename,
             } // for position
             // set the variable from the string UNLESS this variable has
             // already been set(=> ', true')
-            if(! m_parser.setVariableFromString(nospaces, true) )
+            if (! m_parser.setVariableFromString(nospaces, true) )
             {
                 dout << "Don't understand line" << endl << line << endl
                     << "in options file '" << configFilename << "'.  Aborting."
@@ -314,7 +314,7 @@ bool mrf::MRFitter::_loadConfigFile(const std::string &configFilename,
             << endl;
         exit(0);
     } // while getline
-    if(mainLoop)
+    if (mainLoop)
     {
         // If we're here, then we're the main version of this subroutine
         // call.  Check anything that needs to be checked exactly once
@@ -322,29 +322,29 @@ bool mrf::MRFitter::_loadConfigFile(const std::string &configFilename,
 
         // Make sure we ignored all config files that we were asked to:
         bool problem = false;
-        for(SIMapConstIter iter = m_ignoredNamesMap.begin();
+        for (SIMapConstIter iter = m_ignoredNamesMap.begin();
                 m_ignoredNamesMap.end() != iter;
                 ++iter)
         {
-            if( ! iter->second)
+            if ( ! iter->second)
             {
                 problem = true;
                 cerr << "Error: Did not ignore '" << iter->first
                     << "' as requested." << endl;
             }
         } // for iter
-        if(problem)
+        if (problem)
         {
             cerr << "Aborting." << endl;
             exit(0);
         } // if problem
 
         // load any additional configuration files requested now
-        for(SVecConstIter iter = stringVector("includeFiles").begin();
+        for (SVecConstIter iter = stringVector("includeFiles").begin();
                 stringVector("includeFiles").end() != iter;
                 ++iter)
         {
-            if(! _loadConfigFile(*iter, false))
+            if (! _loadConfigFile(*iter, false))
             {
                 dout << "Failed to load " << *iter << ".  Aborting."
                     << endl;
@@ -362,22 +362,22 @@ void mrf::MRFitter::fit(bool verbose)
 {
     m_fitter.resetMinuitParameters();
     m_fitter.fit();
-    if(verbose)
+    if (verbose)
     {
         m_fitter.outputFitResults();
     }
-    if(boolValue("showCorrelations"))
+    if (boolValue("showCorrelations"))
     {
         m_fitter.outputCorrelationMatrix();
     }
-    if(verbose || boolValue("showCorrelations"))
+    if (verbose || boolValue("showCorrelations"))
     {
         cout << endl;
     }
     // Do we scan any variables?
-    if(m_scanStructVec.size())
+    if (m_scanStructVec.size())
     {
-        for(ScanStructVecIter ssvIter = m_scanStructVec.begin();
+        for (ScanStructVecIter ssvIter = m_scanStructVec.begin();
                 m_scanStructVec.end() != ssvIter;
                 ++ssvIter)
         {
@@ -394,7 +394,7 @@ void mrf::MRFitter::fit(bool verbose)
                 CLPTrapezoid::findYintersect(scan,  step, 1.) - fitValue;
             ssvIter->m_lowerError =
                 CLPTrapezoid::findYintersect(scan, -step, 1.) - fitValue;
-            if(verbose)
+            if (verbose)
             {
                 cout << "scanning " << ssvIter->m_name << endl;
                 cout << scan << endl << endl;
@@ -407,7 +407,7 @@ void mrf::MRFitter::fit(bool verbose)
             int counter = 0;
             int npts = ssvIter->m_numSteps;
             double x[npts], y[npts];
-            for(CLPTrapezoid::Vec::const_iterator vi = scan.begin(); vi<scan.end(); vi++){
+            for (CLPTrapezoid::Vec::const_iterator vi = scan.begin(); vi<scan.end(); vi++){
                 x[counter] = vi->lowerX();
                 y[counter] = vi->lowerY();
                 counter++;
@@ -436,7 +436,7 @@ void mrf::MRFitter::throwPE(const DVec &paramVec, bool ideal)
     // we want to get the total template for a given set of parameters:
     TH1F *templateHPtr = m_fitter.updatedHistogram(paramVec);
     assert(templateHPtr);
-    if(ideal)
+    if (ideal)
     {
         // Throw an 'ideal PE'
         dataHPtr->Add(templateHPtr);
@@ -445,7 +445,7 @@ void mrf::MRFitter::throwPE(const DVec &paramVec, bool ideal)
         int numEvents = gRandom->Poisson( templateHPtr->Integral() );
         // // DEBUG ONLY
         // int numEvents = templateHPtr->Integral();
-        for(int loop = 0; loop < numEvents; ++loop)
+        for (int loop = 0; loop < numEvents; ++loop)
         {
             dataHPtr->Fill( templateHPtr->GetRandom() );
         } // for loop
@@ -649,7 +649,7 @@ void mrf::addToHistogram(TH1F *outputPtr, TH1F *inputPtr,
         int offset, int rebin, float scale)
 {
     int numBins = inputPtr->GetNbinsX();
-    for(int bin = 1; bin <= numBins; ++bin)
+    for (int bin = 1; bin <= numBins; ++bin)
     {
         int tobin =(bin - 1) / rebin + 1 + offset;
         outputPtr->Fill((float) tobin, scale * inputPtr->GetBinContent(bin) );
@@ -670,7 +670,7 @@ void mrf::MRFitter::_initializeFitter()
             integerVector("colorValues"),
             m_colorMap);
     // First figure out what is going to use morphing
-    for(SVecConstIter iter = stringVector("morphNames").begin();
+    for (SVecConstIter iter = stringVector("morphNames").begin();
             stringVector("morphNames").end() != iter;
             ++iter)
     {
@@ -681,7 +681,7 @@ void mrf::MRFitter::_initializeFitter()
         SVecConstIter result = find(stringVector("names").begin(),
                 stringVector("names").end(),
                 *iter);
-        if( result == stringVector("names").end())
+        if ( result == stringVector("names").end())
         {
             // messed this one up
             cerr << "Error: There is no group '" << *iter <<
@@ -691,13 +691,13 @@ void mrf::MRFitter::_initializeFitter()
         m_usesTemplateMorphing.insert( *iter );
     } // for iter
     // Make sure stringVector("groupNames") exist and m_groupIndexMap is setup.
-    if(! stringVector("groupNames").size())
+    if (! stringVector("groupNames").size())
     {
         stringVector("groupNames").push_back("");
     }
     int count = 0;
     SSMap lowerEdgeStringMap, upperEdgeStringMap;
-    if(integerVector("binsPerGroup").size())
+    if (integerVector("binsPerGroup").size())
     {
         // if we have it, we'll set everything up now.  If not, we'll
         // get it from the data.
@@ -705,28 +705,28 @@ void mrf::MRFitter::_initializeFitter()
                 integerVector("binsPerGroup"),
                 m_groupBinsMap);
     }
-    if(stringVector("groupNames").size() ==
+    if (stringVector("groupNames").size() ==
             stringVector("upperEdgeVector").size())
     {
         _2vecsToMap(stringVector("groupNames"),
                 stringVector("upperEdgeVector"),
                 upperEdgeStringMap);
     }
-    if(stringVector("groupNames").size() ==
+    if (stringVector("groupNames").size() ==
             stringVector("lowerEdgeVector").size())
     {
         _2vecsToMap(stringVector("groupNames"),
                 stringVector("lowerEdgeVector"),
                 lowerEdgeStringMap);
     }
-    for(SVecConstIter iter = stringVector("groupNames").begin();
+    for (SVecConstIter iter = stringVector("groupNames").begin();
             stringVector("groupNames").end() != iter;
             ++iter)
     {
         m_groupIndexMap[ *iter ] = count++;
         SSMapConstIter upperIter = upperEdgeStringMap.find( *iter );
         SSMapConstIter lowerIter = lowerEdgeStringMap.find( *iter );
-        if(upperEdgeStringMap.end() != upperIter &&
+        if (upperEdgeStringMap.end() != upperIter &&
                 lowerEdgeStringMap.end() != lowerIter)
         {
             m_groupUpperEdgeMap[ *iter ] = atof( upperIter->second.c_str() );
@@ -740,7 +740,7 @@ void mrf::MRFitter::_initializeFitter()
     _loadTemplates(stringValue("templateFile"));
     PolyNoid::setGroupBinWidths(integerVector("binsPerGroup"));
     _makeEverythingPretty();
-    if(boolValue("rescaleDefaults"))
+    if (boolValue("rescaleDefaults"))
     {
         _rescaleDefaults();
     }
@@ -751,13 +751,13 @@ void mrf::MRFitter::_initializeFitter()
     // take care of any groups that aren't supposed to be in the fit
     BinNormClass::ISet nofitSet;
     const IVec &binBoundariesVec = PolyNoid::groupBinBoundariesVec();
-    for(SVecConstIter iter =
+    for (SVecConstIter iter =
             stringVector("excludeGroups").begin();
             stringVector("excludeGroups").end() != iter;
             ++iter)
     {
         SIMapConstIter groupIter = m_groupIndexMap.find(*iter);
-        if(m_groupIndexMap.end() == groupIter)
+        if (m_groupIndexMap.end() == groupIter)
         {
             cerr << "Error: There is no group '" << *iter <<
                 "' to exclude.  Aborting." << endl;
@@ -767,12 +767,12 @@ void mrf::MRFitter::_initializeFitter()
         int upperEdge = binBoundariesVec.at( groupIter->second + 1 );
         BinNormClass::insertRangeIntoSet(nofitSet, lowerEdge, upperEdge);
     }
-    if(! nofitSet.empty())
+    if (! nofitSet.empty())
     {
         m_fitter.removeBinsFromFit(nofitSet);
     }
     // setup scan structs if requested
-    for(SVecConstIter svIter = stringVector("scanVariables").begin();
+    for (SVecConstIter svIter = stringVector("scanVariables").begin();
             stringVector("scanVariables").end() != svIter;
             ++svIter)
     {
@@ -780,7 +780,7 @@ void mrf::MRFitter::_initializeFitter()
         // number of entries.
         SVec pieces;
         optutl::CommandLineParser::split(pieces, *svIter, ":");
-        if(pieces.size() != 4)
+        if (pieces.size() != 4)
         {
             dout << "Don't understand '" << *svIter
                 << "' in 'scanVariables': ";
@@ -811,7 +811,7 @@ void mrf::MRFitter::saveCanvasResult(std::string outputName,
         optutl::CommandLineParser::removeEnding(outputName,
                 ".root");
     TCanvas canvas("canvas", "canvas", 800, 600);
-    if(boolValue("logPlots"))
+    if (boolValue("logPlots"))
     {
         canvas.SetLogy();
     }
@@ -824,10 +824,10 @@ void mrf::MRFitter::saveCanvasResult(std::string outputName,
     TH1F *dataHist = histPtrVec.at(dataIndex) =
 (TH1F*) m_fitter.getData()->Clone("newdata");
     // don't try and get data, so start at 1
-    for(int histIndex = 1; histIndex < kNumTemplates; ++histIndex)
+    for (int histIndex = 1; histIndex < kNumTemplates; ++histIndex)
     {
         const string &name = stringVector("names").at(histIndex);
-        if(paramVec.size())
+        if (paramVec.size())
         {
             // use the vector passed in
             histPtrVec.at(histIndex) = m_fitter.updatedHistogram(name, paramVec);
@@ -840,40 +840,40 @@ void mrf::MRFitter::saveCanvasResult(std::string outputName,
         histPtr->SetLineColor(kBlack);
     } // for histIndex
     THStack stack("Stack", stringValue("plotTitle").c_str());
-    for(int histIndex = kNumTemplates - 1; histIndex > 0; --histIndex)
+    for (int histIndex = kNumTemplates - 1; histIndex > 0; --histIndex)
     {
         stack.Add( histPtrVec.at(histIndex) );
     }
     double maxHeight = stack.GetMaximum();
     maxHeight *= 1.5;
-    if(boolValue("logPlots"))
+    if (boolValue("logPlots"))
     {
         maxHeight *= 20;
     }
     stack.SetMaximum(maxHeight);
     stack.Draw();
-    if(boolValue("dataErrorBars"))
+    if (boolValue("dataErrorBars"))
     {
         _addSqrtErrors(dataHist);
     }
     dataHist->SetMarkerStyle(20);
-    if(! boolValue("dontPlotData"))
+    if (! boolValue("dontPlotData"))
     {
         dataHist->Draw("p same");
     }
     // save templates to root file
-    if(boolValue("saveTemplates"))
+    if (boolValue("saveTemplates"))
     {
         TFile *filePtr =
             TFile::Open((outputName + "_templates.root").c_str(),
                     "recreate");
         assert(filePtr);
-        for(TH1FPtrVecConstIter iter = histPtrVec.begin();
+        for (TH1FPtrVecConstIter iter = histPtrVec.begin();
                 histPtrVec.end() != iter;
                 ++iter)
         {
             CLPTemplateMorph *morphPtr = dynamic_cast< CLPTemplateMorph* >(*iter);
-            if( morphPtr )
+            if ( morphPtr )
             {
                 // Yup.  This is a morph.
                 TH1F *tempHist = morphPtr->th1fCopy();
@@ -884,7 +884,7 @@ void mrf::MRFitter::saveCanvasResult(std::string outputName,
             }
         }
         // save the data too unless we were asked not to
-        if(! boolValue("dontPlotData"))
+        if (! boolValue("dontPlotData"))
         {
             dataHist->Write();
         }
@@ -892,7 +892,7 @@ void mrf::MRFitter::saveCanvasResult(std::string outputName,
         delete filePtr;
     } // if saving templates
     drawLines(maxHeight);
-    if(doubleVector("legendCoordinates").size() < 4)
+    if (doubleVector("legendCoordinates").size() < 4)
     {
         doubleVector("legendCoordinates").clear();
         doubleVector("legendCoordinates").push_back(0.3);
@@ -904,11 +904,11 @@ void mrf::MRFitter::saveCanvasResult(std::string outputName,
             doubleVector("legendCoordinates").at(1),
             doubleVector("legendCoordinates").at(2),
             doubleVector("legendCoordinates").at(3) );
-    if(! boolValue("dontPlotData"))
+    if (! boolValue("dontPlotData"))
     {
         legend.AddEntry(dataHist, ns_dataName.c_str(), "p");
     }
-    for(int histIndex = 1; histIndex < kNumTemplates; ++histIndex)
+    for (int histIndex = 1; histIndex < kNumTemplates; ++histIndex)
     {
         legend.AddEntry(histPtrVec.at(histIndex),
                 stringVector("names").at(histIndex).c_str(), "f");
@@ -920,18 +920,18 @@ void mrf::MRFitter::saveCanvasResult(std::string outputName,
     // Make Njet plots
     TH1FPtrVec  histNjetPtrVec(kNumTemplates,(TH1F*) 0);
     int njetBins =(int) stringVector("groupNames").size();
-    if(njetBins < 2)
+    if (njetBins < 2)
     {
         // don't bother
         return;
     }
-    for(int histIndex = 0; histIndex < kNumTemplates; ++histIndex)
+    for (int histIndex = 0; histIndex < kNumTemplates; ++histIndex)
     {
         string histName = stringVector("names").at(histIndex) + "Njet";
         TH1F* histPtr = histNjetPtrVec.at(histIndex) =
             new TH1F(histName.c_str(), histName.c_str(),
                     njetBins, 0, njetBins);
-        if(stringVector("names").at(histIndex) != ns_dataName)
+        if (stringVector("names").at(histIndex) != ns_dataName)
         {
             // set colors
             histPtr->SetFillColor( m_colorMap [stringVector("names").at(histIndex)] );
@@ -944,7 +944,7 @@ void mrf::MRFitter::saveCanvasResult(std::string outputName,
         const TH1F *bigHistPtr = histPtrVec.at(histIndex);
         int numGroups =(int) stringVector("groupNames").size();
         const IVec &binBoundariesVec = PolyNoid::groupBinBoundariesVec();
-        for(int groupBin = 0; groupBin < numGroups; ++groupBin)
+        for (int groupBin = 0; groupBin < numGroups; ++groupBin)
         {
             int lower, upper;
             lower = binBoundariesVec.at(groupBin);
@@ -957,7 +957,7 @@ void mrf::MRFitter::saveCanvasResult(std::string outputName,
 
     THStack njetStack("njetStack",(stringValue("plotTitle") +
                 " N Jet Distributions").c_str());
-    for(int histIndex = kNumTemplates - 1; histIndex > 0; --histIndex)
+    for (int histIndex = kNumTemplates - 1; histIndex > 0; --histIndex)
     {
         njetStack.Add( histNjetPtrVec.at(histIndex) );
     }
@@ -965,11 +965,11 @@ void mrf::MRFitter::saveCanvasResult(std::string outputName,
     maxHeight *= 1.2;
     njetStack.SetMaximum(maxHeight);
     njetStack.Draw();
-    if(boolValue("dataErrorBars"))
+    if (boolValue("dataErrorBars"))
     {
         _addSqrtErrors( histNjetPtrVec.at(dataIndex) );
     }
-    if(! boolValue("dontPlotData"))
+    if (! boolValue("dontPlotData"))
     {
         histNjetPtrVec.at(dataIndex)->Draw("p same");
     }
@@ -981,7 +981,7 @@ void mrf::MRFitter::saveCanvasResult(std::string outputName,
 void mrf::MRFitter::drawLines(double maxHeight, bool unitSpacing)
 {
     double textFactor = 1.;
-    if(boolValue("logPlots"))
+    if (boolValue("logPlots"))
     {
         textFactor /= 20;
     }
@@ -989,18 +989,18 @@ void mrf::MRFitter::drawLines(double maxHeight, bool unitSpacing)
     const IVec &binBoundariesVec = PolyNoid::groupBinBoundariesVec();
     assert(binBoundariesVec.size());
     int numGroups =(int) stringVector("groupNames").size();
-    if(numGroups < 2)
+    if (numGroups < 2)
     {
         // If there's only one group, then don't bother with lines and
         // text, etc.
         return;
     }
-    for(int groupBin = 0; groupBin < numGroups; ++groupBin)
+    for (int groupBin = 0; groupBin < numGroups; ++groupBin)
     {
         double lower, upper;
         lower =(double) binBoundariesVec.at(groupBin);
         upper =(double) binBoundariesVec.at(groupBin + 1);
-        if(unitSpacing)
+        if (unitSpacing)
         {
             lower =(double) groupBin;
             upper = lower + 1;
@@ -1015,7 +1015,7 @@ void mrf::MRFitter::drawLines(double maxHeight, bool unitSpacing)
         textPtr->SetTextAngle(90);
         textPtr->Draw();
         TLine *linePtr = new TLine(upper, 0., upper, maxHeight);
-        // if(kNumJetBins != jetBin)
+        // if (kNumJetBins != jetBin)
         // {
         linePtr->SetLineStyle(3);
         // }
@@ -1049,7 +1049,7 @@ void mrf::MRFitter::testFitter()
 void mrf::MRFitter::convertFitterToTreeOrder(const DVec &paramVec,
         DVec &treeParamVec)
 {
-    for(int loop = 0; loop < m_numToFill; ++loop)
+    for (int loop = 0; loop < m_numToFill; ++loop)
     {
         treeParamVec.at( loop ) = paramVec.at( m_toFillIndicies.at( loop ) );
     } // for loop
@@ -1059,11 +1059,11 @@ void mrf::MRFitter::setupParamVec(DVec &paramVec,
         bool initialize,
         const SDMap &additionalValueMap)
 {
-    if(initialize)
+    if (initialize)
     {
         m_fitter.fillParamVec(paramVec);
     }
-    for(SDMapConstIter valueIter = additionalValueMap.begin();
+    for (SDMapConstIter valueIter = additionalValueMap.begin();
             additionalValueMap.end() != valueIter;
             ++valueIter)
     {
@@ -1079,16 +1079,16 @@ void mrf::MRFitter::setupBlurStruct(BlurStructVec &blurVec, const BlurStructMap 
     blurVec.clear();
 
     int size = m_fitter.size();
-    for(int paramIndex = 0; paramIndex < size; ++paramIndex)
+    for (int paramIndex = 0; paramIndex < size; ++paramIndex)
     {
-        if(m_fitter.isParameterFixed(paramIndex))
+        if (m_fitter.isParameterFixed(paramIndex))
         {
             // we don't mess with fixed parameters
             continue;
         }
         double mean, sigma;
         m_fitter.getConstraint(paramIndex, mean, sigma);
-        if(sigma > 0)
+        if (sigma > 0)
         {
             BlurStruct blur;
             blur.m_mean  = mean;
@@ -1102,7 +1102,7 @@ void mrf::MRFitter::setupBlurStruct(BlurStructVec &blurVec, const BlurStructMap 
         // information?
         const string &name = m_fitter.paramName(paramIndex);
         BlurStructMapConstIter iter = blurMap.find(name);
-        if(blurMap.end() != iter)
+        if (blurMap.end() != iter)
         {
             BlurStruct blur = iter->second;
             blur.m_index = paramIndex;
@@ -1116,7 +1116,7 @@ void mrf::MRFitter::setupBlurStruct(BlurStructVec &blurVec, const BlurStructMap 
     } // for paramIndex
     // print everything out
     cout << "Throwing:" << endl;
-    for(BlurStructVecConstIter iter = blurVec.begin();
+    for (BlurStructVecConstIter iter = blurVec.begin();
             blurVec.end() != iter;
             ++iter)
     {
@@ -1137,7 +1137,7 @@ void mrf::MRFitter::setupBlurStruct(BlurStructVec &blurVec,
             names.size() == sigmas.size());
     BlurStructMap blurMap;
     int size =(int) names.size();
-    for(int loop = 0; loop < size; ++loop)
+    for (int loop = 0; loop < size; ++loop)
     {
         BlurStruct blur;
         blur.m_mean  = means.at(loop);
@@ -1151,7 +1151,7 @@ void mrf::MRFitter::setupBlurStruct(BlurStructVec &blurVec,
 
 void mrf::blurParamVec(DVec &paramVec, const BlurStructVec &blurVec)
 {
-    for(BlurStructVecConstIter iter = blurVec.begin();
+    for (BlurStructVecConstIter iter = blurVec.begin();
             blurVec.end() != iter;
             ++iter)
     {
@@ -1177,12 +1177,12 @@ void mrf::MRFitter::_loadTemplates(const string &templateFilename)
     cout << "loading templates:     " << templateFilename << endl << endl;
     m_templateFilename = templateFilename;
     string fullTemplateName(templateFilename);
-    if(stringValue("inputPrefix").length())
+    if (stringValue("inputPrefix").length())
     {
         fullTemplateName = stringValue("inputPrefix") + "/" + templateFilename;
     }
     TFile *filePtr = TFile::Open( fullTemplateName.c_str() );
-    if(! filePtr)
+    if (! filePtr)
     {
         cerr << "Can not open file: '" << templateFilename << ".'  Aborting.";
         assert(0);
@@ -1190,16 +1190,16 @@ void mrf::MRFitter::_loadTemplates(const string &templateFilename)
     TH1::AddDirectory(false);
     // First, let's use the 'data' histogram to get the sizes of
     // everything if we haven't already.
-    if(! m_totalBins)
+    if (! m_totalBins)
     {
-        for(SVecConstIter groupIter =
+        for (SVecConstIter groupIter =
                 stringVector("groupNames").begin();
                 stringVector("groupNames").end() != groupIter;
                 ++groupIter)
         {
             string histName = ns_dataName + *groupIter;
             TH1F *histPtr =(TH1F*) filePtr->Get( histName.c_str() );
-            if(! histPtr)
+            if (! histPtr)
             {
                 dout << "data: " << histName << endl;
             }
@@ -1214,7 +1214,7 @@ void mrf::MRFitter::_loadTemplates(const string &templateFilename)
                 m_totalBins);
         // if we don't have the integer vector binsPerGroup already
         // filled, let's fill it now.
-        if(! integerVector("binsPerGroup").size() )
+        if (! integerVector("binsPerGroup").size() )
         {
             integerVector("binsPerGroup") = m_numBinsVec;
             _2vecsToMap(stringVector("groupNames"),
@@ -1225,7 +1225,7 @@ void mrf::MRFitter::_loadTemplates(const string &templateFilename)
     ///////////////////////////////////////////
     // Load all non-morphing templates first //
     ///////////////////////////////////////////
-    for(SVecConstIter groupIter =
+    for (SVecConstIter groupIter =
             stringVector("groupNames").begin();
             stringVector("groupNames").end() != groupIter;
             ++groupIter)
@@ -1233,27 +1233,27 @@ void mrf::MRFitter::_loadTemplates(const string &templateFilename)
         int groupIndex = m_groupIndexMap[ *groupIter ];
         int offset     = m_lowerEdgeBinVec.at(groupIndex) - 2;
         int numBins    = m_numBinsVec.at(groupIndex);
-        for(SVecConstIter nameIter =
+        for (SVecConstIter nameIter =
                 stringVector("names").begin();
                 stringVector("names").end() != nameIter;
                 ++nameIter)
         {
             // if this name is being used in morphing, don't load it now
-            if(m_usesTemplateMorphing.end() !=
+            if (m_usesTemplateMorphing.end() !=
                     m_usesTemplateMorphing.find( *nameIter ))
             {
                 continue;
             } // don't do it now
-            for(SVecConstIter endingIter =
+            for (SVecConstIter endingIter =
                     stringVector("endings").begin();
                     stringVector("endings").end() != endingIter;
                     ++endingIter)
             {
                 string histName = *nameIter + *groupIter + *endingIter;
                 TH1F *histPtr =(TH1F*) filePtr->Get( histName.c_str() );
-                if(! histPtr)
+                if (! histPtr)
                 {
-                    if( ! m_usesTemplateMorphing.size() &&
+                    if ( ! m_usesTemplateMorphing.size() &&
                             ! boolValue("noMissingWarning") )
                     {
                         cerr << "Warning: '" << histName << "' is missing." << endl;
@@ -1263,11 +1263,11 @@ void mrf::MRFitter::_loadTemplates(const string &templateFilename)
                 assert(histPtr);
                 assert(numBins == histPtr->GetNbinsX());
                 double scale = doubleValue("intLumi");
-                if(ns_dataName == *nameIter)
+                if (ns_dataName == *nameIter)
                 {
                     scale = 1;
                 }
-                if(! scale)
+                if (! scale)
                 {
                     scale = 1.;
                 }
@@ -1275,7 +1275,7 @@ void mrf::MRFitter::_loadTemplates(const string &templateFilename)
                 // check to make sure that we have already made this histogram
                 TH1F *newHistPtr = 0;
                 STH1FPtrMapIter histPtrIter = m_histPtrMap.find(newHistName);
-                if(m_histPtrMap.end() == histPtrIter)
+                if (m_histPtrMap.end() == histPtrIter)
                 {
                     // didn't find it
                     newHistPtr = m_histPtrMap [newHistName] =
@@ -1295,18 +1295,18 @@ void mrf::MRFitter::_loadTemplates(const string &templateFilename)
     // Now load all template-morphing templates //
     //////////////////////////////////////////////
     // Before anything, see if we need to bother
-    if( ! m_usesTemplateMorphing.size())
+    if ( ! m_usesTemplateMorphing.size())
     {
         delete filePtr;
         return;
     }
     // now, initialize STMIMap object
     const TemplateMorphInfo kEmptyTMI;
-    for(SSetConstIter utmIter = m_usesTemplateMorphing.begin();
+    for (SSetConstIter utmIter = m_usesTemplateMorphing.begin();
             m_usesTemplateMorphing.end() != utmIter;
             ++utmIter)
     {
-        for(SVecConstIter groupIter =
+        for (SVecConstIter groupIter =
                 stringVector("groupNames").begin();
                 stringVector("groupNames").end() != groupIter;
                 ++groupIter)
@@ -1319,13 +1319,13 @@ void mrf::MRFitter::_loadTemplates(const string &templateFilename)
         } // for groupIter
     } // for utmIter
     // Default templates
-    for(SVecConstIter mdtIter = stringVector("morphDefaultTemplates").begin();
+    for (SVecConstIter mdtIter = stringVector("morphDefaultTemplates").begin();
             stringVector("morphDefaultTemplates").end() != mdtIter;
             ++mdtIter)
     {
         SVec pieces;
         CommandLineParser::split(pieces, *mdtIter, ":");
-        if(pieces.size() != 2)
+        if (pieces.size() != 2)
         {
             dout << "Don't understand '" << *mdtIter
                 << "' in 'morphDefaultTemplates': ";
@@ -1333,7 +1333,7 @@ void mrf::MRFitter::_loadTemplates(const string &templateFilename)
             exit(0);
         }
         STemplateMorphInfoMapIter tmiIter = m_morphMap.find( pieces.at(0) );
-        if(m_morphMap.end() == tmiIter)
+        if (m_morphMap.end() == tmiIter)
         {
             dout << "Don't understand '" << *mdtIter
                 << "' in 'morphDefaultTemplates': ";
@@ -1342,13 +1342,13 @@ void mrf::MRFitter::_loadTemplates(const string &templateFilename)
         }
         tmiIter->second.m_defaultName = pieces.at(1);
     } // for mdtIter
-    for(SVecConstIter mdvIter = stringVector("morphDefaultValues").begin();
+    for (SVecConstIter mdvIter = stringVector("morphDefaultValues").begin();
             stringVector("morphDefaultValues").end() != mdvIter;
             ++mdvIter)
     {
         SVec pieces;
         CommandLineParser::split(pieces, *mdvIter, ":");
-        if(pieces.size() != 3)
+        if (pieces.size() != 3)
         {
             dout << "Don't understand '" << *mdvIter
                 << "' in 'morphDefaultValues': ";
@@ -1356,7 +1356,7 @@ void mrf::MRFitter::_loadTemplates(const string &templateFilename)
             exit(0);
         }
         STemplateMorphInfoMapIter tmiIter = m_morphMap.find( pieces.at(0) );
-        if(m_morphMap.end() == tmiIter)
+        if (m_morphMap.end() == tmiIter)
         {
             dout << "Don't understand '" << *mdvIter
                 << "' in 'morphDefaultValues': ";
@@ -1366,13 +1366,13 @@ void mrf::MRFitter::_loadTemplates(const string &templateFilename)
         tmiIter->second.m_defaultValuesMap[ pieces.at(1) ] =
             atof( pieces.at(2).c_str() );
     } // for mdvIter
-    for(SVecConstIter matIter = stringVector("morphAddTemplates").begin();
+    for (SVecConstIter matIter = stringVector("morphAddTemplates").begin();
             stringVector("morphAddTemplates").end() != matIter;
             ++matIter)
     {
         SVec pieces;
         CommandLineParser::split(pieces, *matIter, ":");
-        if(pieces.size() != 4)
+        if (pieces.size() != 4)
         {
             dout << "Don't understand '" << *matIter
                 << "' in 'morphAddTemplates': ";
@@ -1380,7 +1380,7 @@ void mrf::MRFitter::_loadTemplates(const string &templateFilename)
             exit(0);
         }
         STemplateMorphInfoMapIter tmiIter = m_morphMap.find( pieces.at(0) );
-        if(m_morphMap.end() == tmiIter)
+        if (m_morphMap.end() == tmiIter)
         {
             dout << "Don't understand '" << *matIter
                 << "' in 'morphAddTemplates': ";
@@ -1393,19 +1393,19 @@ void mrf::MRFitter::_loadTemplates(const string &templateFilename)
 
     _printMorphMap();
 
-    for(SSetConstIter utmIter = m_usesTemplateMorphing.begin();
+    for (SSetConstIter utmIter = m_usesTemplateMorphing.begin();
             m_usesTemplateMorphing.end() != utmIter;
             ++utmIter)
     {
         CLPTemplateMorph::PtrVec morphPtrVec;
-        for(SVecConstIter groupIter =
+        for (SVecConstIter groupIter =
                 stringVector("groupNames").begin();
                 stringVector("groupNames").end() != groupIter;
                 ++groupIter)
         {
             const string fullName = *utmIter + *groupIter;
             STemplateMorphInfoMapConstIter mmIter = m_morphMap.find(fullName);
-            if(m_morphMap.end() == mmIter)
+            if (m_morphMap.end() == mmIter)
             {
                 // this shouldn't happen
                 assert(0);
@@ -1421,13 +1421,13 @@ void mrf::MRFitter::_loadTemplates(const string &templateFilename)
             // get and adddefault histogram
             TH1F *defaultHistPtr =
 (TH1F*) filePtr->Get( morphInfo.m_defaultName.c_str() );
-            if(! defaultHistPtr )
+            if (! defaultHistPtr )
             {
                 dout << "Can not find '" << morphInfo.m_defaultName
                     << "' in template file." << endl;
                 exit(0);
             }
-            if( doubleValue("intLumi") )
+            if ( doubleValue("intLumi") )
             {
                 defaultHistPtr->Scale( doubleValue("intLumi") );
                 // Sanitize the input
@@ -1435,21 +1435,21 @@ void mrf::MRFitter::_loadTemplates(const string &templateFilename)
             }
             morphPtr->addDefaultTemplate(defaultHistPtr);
             // now add all appropriate morphing variables
-            for(SDMapConstIter dvmIter = morphInfo.m_defaultValuesMap.begin();
+            for (SDMapConstIter dvmIter = morphInfo.m_defaultValuesMap.begin();
                     morphInfo.m_defaultValuesMap.end() != dvmIter;
                     ++dvmIter)
             {
                 morphPtr->addMorphVariable( dvmIter->first, dvmIter->second );
             } // for dvmIter
             // now add all other morph templaltes
-            for(SSDPairVecMapConstIter atvIter =
+            for (SSDPairVecMapConstIter atvIter =
                     morphInfo.m_additionalTemplatesVecMap.begin();
                     morphInfo.m_additionalTemplatesVecMap.end() != atvIter;
                     ++atvIter)
             {
                 const string &variable = atvIter->first;
                 const SDPairVec &addInfoVec = atvIter->second;
-                for(SDPairVecConstIter aiIter = addInfoVec.begin();
+                for (SDPairVecConstIter aiIter = addInfoVec.begin();
                         addInfoVec.end() != aiIter;
                         ++aiIter)
                 {
@@ -1457,13 +1457,13 @@ void mrf::MRFitter::_loadTemplates(const string &templateFilename)
                     double value = aiIter->second;
                     TH1F *histPtr =
 (TH1F*) filePtr->Get( histName.c_str() );
-                    if(! histPtr )
+                    if (! histPtr )
                     {
                         dout << "Can not find '" << histName
                             << "' in template file." << endl;
                         exit(0);
                     }
-                    if( doubleValue("intLumi") )
+                    if ( doubleValue("intLumi") )
                     {
                         histPtr->Scale( doubleValue("intLumi") );
                         // Sanitize the inputs
@@ -1478,7 +1478,7 @@ void mrf::MRFitter::_loadTemplates(const string &templateFilename)
         CLPTemplateMorph *morphPtr =
             new CLPTemplateMorph( utmIter->c_str(), utmIter->c_str() );
         morphPtr->setNoUnderOverflow(true);
-        for(CLPTemplateMorph::PtrVecConstIter mpvIter = morphPtrVec.begin();
+        for (CLPTemplateMorph::PtrVecConstIter mpvIter = morphPtrVec.begin();
                 morphPtrVec.end() != mpvIter;
                 ++mpvIter)
         {
@@ -1496,16 +1496,16 @@ mrf::MRFitter::_rescaleDefaults()
     double total = 0.;
     double data = 0.;
     double lumiScale = doubleValue("intLumi");
-    if(! lumiScale )
+    if (! lumiScale )
     {
         lumiScale = 1.;
     }
-    for(SVecConstIter nameIter = stringVector("names").begin();
+    for (SVecConstIter nameIter = stringVector("names").begin();
             stringVector("names").end() != nameIter;
             ++nameIter)
     {
         const string &name = *nameIter;
-        if(ns_dataName == name)
+        if (ns_dataName == name)
         {
             // Don't add data as a template
             data = m_histPtrMap[name]->Integral();
@@ -1514,19 +1514,19 @@ mrf::MRFitter::_rescaleDefaults()
         // get  default values
         double defaultValue = 1.;
         SDMapConstIter defaultIter = m_defaultValuesMap.find( name );
-        if(m_defaultValuesMap.end() != defaultIter)
+        if (m_defaultValuesMap.end() != defaultIter)
         {
             defaultValue = defaultIter->second;
         }
         total += m_histPtrMap[name]->Integral() * defaultValue * lumiScale;
     }
     double factor = data / total;
-    for(SVecConstIter nameIter = stringVector("names").begin();
+    for (SVecConstIter nameIter = stringVector("names").begin();
             stringVector("names").end() != nameIter;
             ++nameIter)
     {
         const string &name = *nameIter;
-        if(ns_dataName == name)
+        if (ns_dataName == name)
         {
             // Don't add data as a template
             continue;
@@ -1534,7 +1534,7 @@ mrf::MRFitter::_rescaleDefaults()
         // get and reset default values
         double defaultValue = 1.;
         SDMapConstIter defaultIter = m_defaultValuesMap.find( name );
-        if(m_defaultValuesMap.end() != defaultIter)
+        if (m_defaultValuesMap.end() != defaultIter)
         {
             defaultValue = defaultIter->second;
         }
@@ -1544,25 +1544,25 @@ mrf::MRFitter::_rescaleDefaults()
 
 void mrf::MRFitter::_printMorphMap()
 {
-    for(STemplateMorphInfoMapConstIter iter = m_morphMap.begin();
+    for (STemplateMorphInfoMapConstIter iter = m_morphMap.begin();
             m_morphMap.end() != iter;
             ++iter)
     {
         cout << iter->first << " : " << iter->second.m_defaultName << endl;
-        for(SDMapConstIter dvmIter = iter->second.m_defaultValuesMap.begin();
+        for (SDMapConstIter dvmIter = iter->second.m_defaultValuesMap.begin();
                 iter->second.m_defaultValuesMap.end() != dvmIter;
                 ++dvmIter)
         {
             cout << "   " << dvmIter->first << " : " << dvmIter->second;
         } // for dvmIter
         cout << endl;
-        for(SSDPairVecMapConstIter advIter =
+        for (SSDPairVecMapConstIter advIter =
                 iter->second.m_additionalTemplatesVecMap.begin();
                 iter->second.m_additionalTemplatesVecMap.end() != advIter;
                 ++advIter)
         {
             cout << "     " << advIter->first << " : ";
-            for(SDPairVecConstIter sdIter = advIter->second.begin();
+            for (SDPairVecConstIter sdIter = advIter->second.begin();
                     advIter->second.end() != sdIter;
                     ++sdIter)
             {
@@ -1587,12 +1587,12 @@ void mrf::MRFitter::_hookupFitter()
     _2vecsToMap(stringVector("rangeNames"),
             doubleVector("stepRange"),  stepRangeMap);
     // Add templates.
-    for(SVecConstIter nameIter = stringVector("names").begin();
+    for (SVecConstIter nameIter = stringVector("names").begin();
             stringVector("names").end() != nameIter;
             ++nameIter)
     {
         const string &name = *nameIter;
-        if(ns_dataName == name)
+        if (ns_dataName == name)
         {
             // Don't add data as a template
             continue;
@@ -1603,10 +1603,10 @@ void mrf::MRFitter::_hookupFitter()
         double upperValue   =  10.;
         double stepSize     =   0.001;
         SDMapConstIter defaultIter = m_defaultValuesMap.find( name );
-        if(m_defaultValuesMap.end() != defaultIter)
+        if (m_defaultValuesMap.end() != defaultIter)
         {
             defaultValue = defaultIter->second;
-            if(defaultValue)
+            if (defaultValue)
             {
                 lowerValue = -10. * fabs(defaultValue);
                 upperValue =  10. * fabs(defaultValue);
@@ -1616,7 +1616,7 @@ void mrf::MRFitter::_hookupFitter()
         }
         // check RangeMaps
         SDMapConstIter rangeIter = lowerRangeMap.find( name );
-        if(lowerRangeMap.end() != rangeIter)
+        if (lowerRangeMap.end() != rangeIter)
         {
             lowerValue = lowerRangeMap [name];
             upperValue = upperRangeMap [name];
@@ -1626,7 +1626,7 @@ void mrf::MRFitter::_hookupFitter()
         double constraintMean  = 0.;
         double constraintWidth = 0.;
         SDMapConstIter constraintIter = m_constraintMap.find( name );
-        if(m_constraintMap.end() != constraintIter)
+        if (m_constraintMap.end() != constraintIter)
         {
             // we've got a constraint.  Since there's no sense in making
             // a constraint mean different than the default value, just
@@ -1636,7 +1636,7 @@ void mrf::MRFitter::_hookupFitter()
         } // if constraint found
         // Figure out how many templates I have
         STH1FPtrPairVec histVec;
-        for(SVecConstIter endingIter =
+        for (SVecConstIter endingIter =
                 stringVector("endings").begin();
                 stringVector("endings").end() != endingIter;
                 ++endingIter)
@@ -1644,7 +1644,7 @@ void mrf::MRFitter::_hookupFitter()
             string newHistName = name  + *endingIter;
             STH1FPtrMapConstIter histPtrIter =
                 m_histPtrMap.find(newHistName);
-            if(m_histPtrMap.end() != histPtrIter)
+            if (m_histPtrMap.end() != histPtrIter)
             {
                 histVec.push_back( make_pair( name, histPtrIter->second ) );
             }
@@ -1653,7 +1653,7 @@ void mrf::MRFitter::_hookupFitter()
         int size =(int) histVec.size();
         assert(size);
         // let's do simple first
-        if(1 == size)
+        if (1 == size)
         {
             const STH1FPtrPair &histPair = histVec.at(0);
             // Only one.  Just add it.
@@ -1673,7 +1673,7 @@ void mrf::MRFitter::_hookupFitter()
         assert( m_histPtrMap.end() == m_histPtrMap.find(name) );
         // o.k.  Let's add these puppies
         BinNormClass::ISet templateSet;
-        for(STH1FPtrPairVecConstIter histIter = histVec.begin();
+        for (STH1FPtrPairVecConstIter histIter = histVec.begin();
                 histVec.end() != histIter;
                 ++histIter)
         {
@@ -1706,13 +1706,13 @@ void mrf::MRFitter::_hookupFitter()
     // Update PolyNoid Template Indicies //
     ///////////////////////////////////////
     // first tell the Polynoid class about the information it needs.
-    for(SIMapConstIter ntiIter = m_nameTemplateIndexMap.begin();
+    for (SIMapConstIter ntiIter = m_nameTemplateIndexMap.begin();
             m_nameTemplateIndexMap.end() != ntiIter;
             ++ntiIter)
     {
         // make sure our other map has this one, too
         SIMapConstIter otherIter = m_nameTemplateIDMap.find( ntiIter->first );
-        if(m_nameTemplateIDMap.end() == otherIter)
+        if (m_nameTemplateIDMap.end() == otherIter)
         {
             // we don't use this one so skip it
             continue;
@@ -1727,13 +1727,13 @@ void mrf::MRFitter::_hookupFitter()
     _addPolyMapToFitter();
     // Need to fix any parameters?
     // Fix parameters with new values
-    for(SVecConstIter fixIter = stringVector("fixParamVal").begin();
+    for (SVecConstIter fixIter = stringVector("fixParamVal").begin();
             stringVector("fixParamVal").end() != fixIter;
             ++fixIter)
     {
         SVec words;
         optutl::CommandLineParser::split(words, *fixIter, "=");
-        if(2 != words.size())
+        if (2 != words.size())
         {
             cerr << "Can not fix parameter value using '"
                 << *fixIter << "'.  Aborting." << endl;
@@ -1745,7 +1745,7 @@ void mrf::MRFitter::_hookupFitter()
         assert( m_fitter.fixParameter(paramName) );
     } // for fixIter
     // Fix the parameters with values as they are
-    for(SVecConstIter fixIter =
+    for (SVecConstIter fixIter =
             stringVector("fixParameters").begin();
             stringVector("fixParameters").end() != fixIter;
             ++fixIter)
@@ -1753,7 +1753,7 @@ void mrf::MRFitter::_hookupFitter()
         assert( m_fitter.fixParameter(*fixIter) );
     } // for fixIter
     // output fitter setup?
-    if(boolValue("outputFitterSetup"))
+    if (boolValue("outputFitterSetup"))
     {
         cout << "fitter" << endl << m_fitter << endl;
     }
@@ -1769,7 +1769,7 @@ void mrf::MRFitter::_createBinsSums()
     using namespace optutl;
     assert( stringVector("binsSum").size() % 3 == 0 );
     int size =(int) stringVector("binsSum").size() / 3;
-    for(int loop = 0; loop < size; ++loop)
+    for (int loop = 0; loop < size; ++loop)
     {
         string name   = stringVector("binsSum").at( 3 * loop     );
         string temps  = stringVector("binsSum").at( 3 * loop + 1 );
@@ -1777,7 +1777,7 @@ void mrf::MRFitter::_createBinsSums()
         BinsSum &binsSum = m_fitter.binsSumCont().createNew(name);
         SVec tempWords;
         CommandLineParser::split(tempWords, temps, ";");
-        for(SVecConstIter tempIter = tempWords.begin();
+        for (SVecConstIter tempIter = tempWords.begin();
                 tempWords.end() != tempIter;
                 ++tempIter)
         {
@@ -1787,11 +1787,11 @@ void mrf::MRFitter::_createBinsSums()
         } // for tempIter
         SVec groupWords;
         CommandLineParser::split(groupWords, groups, ";");
-        for(SVecConstIter groupIter = groupWords.begin();
+        for (SVecConstIter groupIter = groupWords.begin();
                 groupWords.end() != groupIter;
                 ++groupIter)
         {
-            if("all" == *groupIter)
+            if ("all" == *groupIter)
             {
                 binsSum.addBinRange(1, m_totalBins);
                 continue;
@@ -1808,9 +1808,9 @@ void mrf::MRFitter::_decideWhichVariablesToSave()
     m_toFillIndicies.clear();
     m_numToFill = 0;
     int size = m_fitter.size();
-    for(int loop = 0; loop < size; ++loop)
+    for (int loop = 0; loop < size; ++loop)
     {
-        //      if(! m_fitter.isParameterFixed(loop) )
+        //      if (! m_fitter.isParameterFixed(loop) )
         // {
         // we've got a live one, here
         m_toFillNames.push_back( m_fitter.paramName(loop) );
@@ -1841,7 +1841,7 @@ void mrf::_2vecsToMap(const SVec &namesVec, const DVec &valuesVec,
 {
     assert( namesVec.size() == valuesVec.size() );
     int size =(int) namesVec.size();
-    for(int loop = 0; loop < size; ++loop)
+    for (int loop = 0; loop < size; ++loop)
     {
         valueMap[ namesVec.at(loop) ] = valuesVec.at(loop);
     }
@@ -1851,13 +1851,13 @@ void mrf::_2vecsToMap(const SVec &namesVec, const DVec &valuesVec,
 void mrf::_2vecsToMap(const SVec &namesVec, const IVec &valuesVec,
         SIMap &valueMap)
 {
-    if( namesVec.size() != valuesVec.size() )
+    if ( namesVec.size() != valuesVec.size() )
     {
         cout << namesVec.size() << " != " << valuesVec.size() << endl;
     }
     assert( namesVec.size() == valuesVec.size() );
     int size =(int) namesVec.size();
-    for(int loop = 0; loop < size; ++loop)
+    for (int loop = 0; loop < size; ++loop)
     {
         valueMap[ namesVec.at(loop) ] = valuesVec.at(loop);
     }
@@ -1868,7 +1868,7 @@ void mrf::_2vecsToMap(const SVec &namesVec, const SVec &valuesVec,
 {
     assert( namesVec.size() == valuesVec.size() );
     int size =(int) namesVec.size();
-    for(int loop = 0; loop < size; ++loop)
+    for (int loop = 0; loop < size; ++loop)
     {
         valueMap[ namesVec.at(loop) ] = valuesVec.at(loop);
     }
@@ -1878,7 +1878,7 @@ void mrf::_svecToSDMap(const SVec &nameAndValueVec, SDMap &valueMap)
 {
     assert( !(nameAndValueVec.size() % 2) );
     int size =((int) nameAndValueVec.size() ) / 2;
-    for(int loop = 0; loop < size; ++loop)
+    for (int loop = 0; loop < size; ++loop)
     {
         const string &name = nameAndValueVec.at( 2 * loop );
         double value = atof( nameAndValueVec.at( 2 * loop + 1).c_str() );
@@ -1889,15 +1889,15 @@ void mrf::_svecToSDMap(const SVec &nameAndValueVec, SDMap &valueMap)
 
 void mrf::MRFitter::_fixGroupStrings()
 {
-    if(m_fixedGroupStrings) return;
+    if (m_fixedGroupStrings) return;
     m_fixedGroupStrings = true;
     SVec newStrings;
     int count = 0;
-    if(! stringVector("groupStrings").size() )
+    if (! stringVector("groupStrings").size() )
     {
         stringVector("groupStrings") = stringVector("groupNames");
     }
-    for(SVecConstIter iter =
+    for (SVecConstIter iter =
             stringVector("groupStrings").begin();
             stringVector("groupStrings").end() != iter;
             ++iter)
@@ -1917,12 +1917,12 @@ void mrf::MRFitter::_fixGroupStrings()
 
 void mrf::MRFitter::_addPolyToMap(const PolyNoid &poly)
 {
-    if(! m_canAddToPolyMap)
+    if (! m_canAddToPolyMap)
     {
         cerr << "MRFitter::_addPolyToMap() error:"<< endl;
         assert(0);
     }
-    if(m_polynoidMap.end() != m_polynoidMap.find( poly.name() ))
+    if (m_polynoidMap.end() != m_polynoidMap.find( poly.name() ))
     {
         // already an entry there.  No good
         cerr << "MRFitter::_addPolyToMap() error:"
@@ -1935,7 +1935,7 @@ void mrf::MRFitter::_addPolyToMap(const PolyNoid &poly)
 PolyNoid & mrf::MRFitter::_poly(const string &name)
 {
     PolyNoid::MapIter iter = m_polynoidMap.find( name );
-    if(m_polynoidMap.end() == iter )
+    if (m_polynoidMap.end() == iter )
     {
         // already an entry there.  No good
         cerr << "MRFitter::_poly() error:'"
@@ -1950,7 +1950,7 @@ void mrf::MRFitter::_addPolyMapToFitter()
     // O.k.  So after we do this, we can't add any more PolyNoids to
     // the map.
     m_canAddToPolyMap = false;
-    for(PolyNoid::MapIter iter = m_polynoidMap.begin();
+    for (PolyNoid::MapIter iter = m_polynoidMap.begin();
             m_polynoidMap.end() != iter;
             ++iter)
     {
@@ -1964,10 +1964,10 @@ void mrf::MRFitter::_addPolyMapToFitter()
 void mrf::_addSqrtErrors(TH1F *histPtr)
 {
     int numBins = histPtr->GetNbinsX();
-    for(int bin = 1; bin <= numBins; ++bin)
+    for (int bin = 1; bin <= numBins; ++bin)
     {
         double contents = histPtr->GetBinContent(bin);
-        if(contents > 0)
+        if (contents > 0)
         {
             histPtr->SetBinError(bin, sqrt(contents));
         }
