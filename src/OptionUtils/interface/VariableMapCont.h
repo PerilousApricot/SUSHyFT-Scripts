@@ -78,7 +78,7 @@ class VariableMapCont
       // friends //
       /////////////
       // tells particle data how to print itself out
-      friend std::ostream& operator<< (std::ostream& o_stream,
+      friend std::ostream& operator<<(std::ostream& o_stream,
                                        const VariableMapCont &rhs);
 
       //////////////////////////
@@ -100,58 +100,58 @@ class VariableMapCont
       // prints out '--help' screen, then exits.
       void help();
 
-      // returns OptionType (or kNone (0)) of a given option.
-      OptionType hasVariable (std::string key);
-      OptionType hasOption (std::string key)
-      { return hasVariable (key); }
+      // returns OptionType(or kNone (0)) of a given option.
+      OptionType hasVariable(std::string key);
+      OptionType hasOption(std::string key)
+      { return hasVariable(key); }
 
 
       // Add variable to option maps.  'key' is passed in by copy
       // because it is modified in place.
-      void addOption (std::string key, OptionType type,
+      void addOption(std::string key, OptionType type,
                       const std::string &description = "");
-      void addOption (std::string key, OptionType type,
+      void addOption(std::string key, OptionType type,
                       const std::string &description,
                       int defaultValue);
-      void addOption (std::string key, OptionType type,
+      void addOption(std::string key, OptionType type,
                       const std::string &description,
                       double defaultValue);
-      void addOption (std::string key, OptionType type,
+      void addOption(std::string key, OptionType type,
                       const std::string &description,
                       const std::string &defaultValue);
-      void addOption (std::string key, OptionType type,
+      void addOption(std::string key, OptionType type,
                       const std::string &description,
                       const char *defaultValue);
-      void addOption (std::string key, OptionType type,
+      void addOption(std::string key, OptionType type,
                       const std::string &description,
                       bool defaultValue);
       //   addVariable works just like addOption, but has no description.
-      void addVariable (std::string key, OptionType type)
-      { addOption (key, type, ""); }
-      void addVariable (std::string key, OptionType type, int defaultValue)
-      { addOption (key, type, "", defaultValue); }
-      void addVariable (std::string key, OptionType type, double defaultValue)
-      { addOption (key, type, "", defaultValue); }
-      void addVariable (std::string key, OptionType type,
+      void addVariable(std::string key, OptionType type)
+      { addOption(key, type, ""); }
+      void addVariable(std::string key, OptionType type, int defaultValue)
+      { addOption(key, type, "", defaultValue); }
+      void addVariable(std::string key, OptionType type, double defaultValue)
+      { addOption(key, type, "", defaultValue); }
+      void addVariable(std::string key, OptionType type,
                         const std::string &defaultValue)
-      { addOption (key, type, "", defaultValue); }
-      void addVariable (std::string key, OptionType type,
+      { addOption(key, type, "", defaultValue); }
+      void addVariable(std::string key, OptionType type,
                         const char *defaultValue)
-      { addOption (key, type, "", defaultValue); }
-      void addVariable (std::string key, OptionType type, bool defaultValue)
-      { addOption (key, type, "", defaultValue); }
+      { addOption(key, type, "", defaultValue); }
+      void addVariable(std::string key, OptionType type, bool defaultValue)
+      { addOption(key, type, "", defaultValue); }
 
 
       // some of the guts of above
-      void _checkKey (std::string &key, const std::string &description = "");
+      void _checkKey(std::string &key, const std::string &description = "");
 
-      int         &integerValue  (std::string key);
-      double      &doubleValue   (std::string key);
-      std::string &stringValue   (std::string key);
-      bool        &boolValue     (std::string key);
-      IVec        &integerVector (std::string key);
-      DVec        &doubleVector  (std::string key);
-      SVec        &stringVector  (std::string key);
+      int         &integerValue(std::string key);
+      double      &doubleValue(std::string key);
+      std::string &stringValue(std::string key);
+      bool        &boolValue(std::string key);
+      IVec        &integerVector(std::string key);
+      DVec        &doubleVector(std::string key);
+      SVec        &stringVector(std::string key);
 
       /////////////////////////////
       // Static Member Functions //
@@ -161,14 +161,14 @@ class VariableMapCont
       static void lowercaseString(std::string &arg);
 
       // converts a single character to lower case
-      static char toLower (char &ch);
+      static char toLower(char &ch);
 
 
    protected:
 
       // returns true if a variable has been modified from the command
       // line.
-      bool _valueHasBeenModified (const std::string &key);
+      bool _valueHasBeenModified(const std::string &key);
 
       /////////////////////////
       // Private Member Data //

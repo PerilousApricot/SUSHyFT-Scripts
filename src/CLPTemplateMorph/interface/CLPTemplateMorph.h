@@ -37,7 +37,7 @@ class CLPTemplateMorph : public TH1F
       // friends //
       /////////////
       // tells particle data how to print itself out
-      friend std::ostream& operator<< (std::ostream& o_stream,
+      friend std::ostream& operator<<(std::ostream& o_stream,
                                        const CLPTemplateMorph &rhs);
 
       //////////////////////////
@@ -71,14 +71,14 @@ class CLPTemplateMorph : public TH1F
       { m_smoothDeltas = smoothDeltas; }
 
       // turns on full output
-      void setOutputAll (bool outputAll) { m_outputAll = outputAll; }
+      void setOutputAll(bool outputAll) { m_outputAll = outputAll; }
 
       // returns true if this is a container of other CLPTemplateMorphs
       bool isMorphContainer() const { return m_isMorphContainer; }
 
       // setting and checking noUnderOverflow
       bool noUnderOverflow() const { return m_noUnderOverflow; }
-      void setNoUnderOverflow (bool noUnderOverflow = true)
+      void setNoUnderOverflow(bool noUnderOverflow = true)
       { m_noUnderOverflow = noUnderOverflow; }
 
 
@@ -88,61 +88,61 @@ class CLPTemplateMorph : public TH1F
       //////////////////////////////
       // adds default template.  Can only be done once.  Must be done
       // BEFORE adding any morphing variables or templates.
-      void addDefaultTemplate (TH1F *histPtr);
+      void addDefaultTemplate(TH1F *histPtr);
 
       // adds a new morphing variable.  Must provide name.  'center'
       // describes where the default template should be used.  Returns
       // index.
-      int addMorphVariable (const std::string &name, double center = 0.);
+      int addMorphVariable(const std::string &name, double center = 0.);
 
       // adds a new template and variable  to a morphing variable.
-      void addMorphTemplate (const std::string &name, double value,
+      void addMorphTemplate(const std::string &name, double value,
                              TH1F *histPtr);
-      void addMorphTemplate (int index, double value, TH1F *histPtr);
+      void addMorphTemplate(int index, double value, TH1F *histPtr);
 
       // set the paramVec and recalculates the histogram.
-      void setParamVec (const DVec &paramVec);
+      void setParamVec(const DVec &paramVec);
 
       // this function works as the above, except that you must have
       // already called 'setInternalIndicies()'.  The user is taking
       // responsibility that arrayPtr is at least as large as the
       // highest index set.
-      void setParamVecFromArray (const double *arrayPtr);
+      void setParamVecFromArray(const double *arrayPtr);
 
       // returns the index of a name.  -1 if not found
-      int morphIndex (const std::string &name) const;
+      int morphIndex(const std::string &name) const;
 
       // sets the internal index on the position of a name in a vector
       // of strings.
-      void setInternalIndicies (const SVec &nameVec);
+      void setInternalIndicies(const SVec &nameVec);
 
       // take the current parameter values and recalculates the histogram
       void recalculate();
 
       // fills tgraphPtrVec with all CLPBinConts
-      void allTGraphs (TGraphPtrVec &tgraphPtrVec) const;
+      void allTGraphs(TGraphPtrVec &tgraphPtrVec) const;
 
       // take the CDF for a given variable from another
       // CLPTemplateMorph.  Does not work with Morph containers and
       // 'name' must exist in rhs, but not yet in this morph.
-      void takeMorphVariable (const CLPTemplateMorph &rhs,
+      void takeMorphVariable(const CLPTemplateMorph &rhs,
                               const std::string &name);
 
       // Adds a Morph to the ptrVec.  This should only be done after
       // the morph being passed in is fully configured.
       // NOTE: As this only keeps pointers, changes to the morphs that
       // are added will affect this morph.
-      void addMorph (CLPTemplateMorph *morphPtr);
-      void addMorph (CLPTemplateMorph &morph)
+      void addMorph(CLPTemplateMorph *morphPtr);
+      void addMorph(CLPTemplateMorph &morph)
       { addMorph( &morph ); }
 
       // makes a TH1F* copy of itself.  User is responsible for memory.
-      TH1F *th1fCopy () const;
+      TH1F *th1fCopy() const;
 
       /////////////////////////////
       // Static Member Functions //
       /////////////////////////////
-      static void setParamVecs (PtrVec &morphPtrVec, const DVec &paramVec);
+      static void setParamVecs(PtrVec &morphPtrVec, const DVec &paramVec);
 
   private:
 
@@ -150,7 +150,7 @@ class CLPTemplateMorph : public TH1F
       // Private Member Functions //
       //////////////////////////////
       // For debugging purposes
-      void _printTGraph (const CLPBinCont &cont) const;
+      void _printTGraph(const CLPBinCont &cont) const;
 
       // fills the TH1F of a morph container from the m_ptrVec
       // histograms.
@@ -176,7 +176,7 @@ class CLPTemplateMorph : public TH1F
       CLPBinCont m_defaultBC;
       CLPBinCont::DMapVec m_deltaMorphMapVec;
 
-      ClassDef (CLPTemplateMorph, 1) // CLPTemplateMorph Class
+      ClassDef(CLPTemplateMorph, 1) // CLPTemplateMorph Class
 };
 
 

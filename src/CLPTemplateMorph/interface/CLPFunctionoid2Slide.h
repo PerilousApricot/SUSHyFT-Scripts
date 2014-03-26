@@ -18,7 +18,7 @@ class CLPFunctionoid2Slide : public CLPFunctionoid2
       // friends //
       /////////////
       // tells particle data how to print itself out
-      friend std::ostream& operator<< (std::ostream& o_stream,
+      friend std::ostream& operator<<(std::ostream& o_stream,
                                        const CLPFunctionoid2Slide &rhs);
 
       //////////////////////////
@@ -31,7 +31,7 @@ class CLPFunctionoid2Slide : public CLPFunctionoid2
       /////////////////////////////////
       // Constructors and Destructor //
       /////////////////////////////////
-      CLPFunctionoid2Slide (double percentage);
+      CLPFunctionoid2Slide(double percentage);
       virtual ~CLPFunctionoid2Slide() {};
        ////////////////
       // One Liners //

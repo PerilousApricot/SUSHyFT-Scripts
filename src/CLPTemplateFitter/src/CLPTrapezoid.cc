@@ -13,22 +13,22 @@
 
 using namespace std;
 
-ClassImp (CLPTrapezoid)
+ClassImp(CLPTrapezoid)
 
-CLPTrapezoid::CLPTrapezoid (double x, double y) :
-m_lowerX (x), m_upperX (x), m_lowerY (y), m_upperY (y),
-   m_totalIntegral (0.), m_position (-1)
+CLPTrapezoid::CLPTrapezoid(double x, double y) :
+m_lowerX(x), m_upperX (x), m_lowerY (y), m_upperY (y),
+   m_totalIntegral(0.), m_position (-1)
 {
 }
 
 bool
-CLPTrapezoid::operator> (const CLPTrapezoid &rhs) const
+CLPTrapezoid::operator>(const CLPTrapezoid &rhs) const
 {
    return maxY() > rhs.maxY();
 }
 
 bool
-CLPTrapezoid::operator< (const CLPTrapezoid &rhs) const
+CLPTrapezoid::operator<(const CLPTrapezoid &rhs) const
 {
    return maxY() < rhs.maxY();
 }
@@ -36,11 +36,11 @@ CLPTrapezoid::operator< (const CLPTrapezoid &rhs) const
 double
 CLPTrapezoid::integral() const
 {
-   return 0.5 * (m_upperY + m_lowerY) * (m_upperX - m_lowerX);
+   return 0.5 *(m_upperY + m_lowerY) * (m_upperX - m_lowerX);
 }
 
 void
-CLPTrapezoid::scale (double factor)
+CLPTrapezoid::scale(double factor)
 {
    m_lowerY *= factor;
    m_upperY *= factor;
@@ -48,14 +48,14 @@ CLPTrapezoid::scale (double factor)
 }
 
 int
-CLPTrapezoid::positionWRT (double xVal) const
+CLPTrapezoid::positionWRT(double xVal) const
 {
-   if (xVal < lowerX())
+   if(xVal < lowerX())
    {
       // we are to the right, so postive
       return kToTheRight;
    }
-   if (xVal > upperX())
+   if(xVal > upperX())
    {
       // we are to the left, so negative
       return kToTheLeft;
@@ -65,14 +65,14 @@ CLPTrapezoid::positionWRT (double xVal) const
 }
 
 bool
-CLPTrapezoid::hasVerticalOverlapWith (const CLPTrapezoid &rhs) const
+CLPTrapezoid::hasVerticalOverlapWith(const CLPTrapezoid &rhs) const
 {
    double myMax  = maxY();
    double myMin  = minY();
    double rhsMax = rhs.maxY();
    double rhsMin = rhs.maxY();
-   if ((myMax > rhsMax && myMin < rhsMax) ||
-       (myMax > rhsMin && myMin < rhsMin) )
+   if((myMax > rhsMax && myMin < rhsMax) ||
+(myMax > rhsMin && myMin < rhsMin) )
    {
       // we've got overlap
       return true;
@@ -85,24 +85,24 @@ CLPTrapezoid::hasVerticalOverlapWith (const CLPTrapezoid &rhs) const
 double
 CLPTrapezoid::absSlope() const
 {
-   return fabs (m_upperY - m_lowerY) / (m_upperX - m_lowerX);
+   return fabs(m_upperY - m_lowerY) / (m_upperX - m_lowerX);
 }
 
 // static member functions
 void
-CLPTrapezoid::limits (Vec &curve,
+CLPTrapezoid::limits(Vec &curve,
                       double &upperLimit, double &lowerLimit,
                       double percent)
 {
    upperLimit = 0;
    lowerLimit = upperLimit + 1;
-   assert (percent > 0 && percent < 1);
+   assert(percent > 0 && percent < 1);
 
-   // for (VecConstIter iter = curve.begin();
+   // for(VecConstIter iter = curve.begin();
    //      curve.end() != iter;
    //      ++iter)
    // {
-   //    cout << Form ("%.4f, %.8f", iter->upperX(),
+   //    cout << Form("%.4f, %.8f", iter->upperX(),
    //                  iter->upperY() / 7.06654e-24)
    //         << endl;
    // }
@@ -112,34 +112,34 @@ CLPTrapezoid::limits (Vec &curve,
    ////////////////////////////
    VecIter leftIter = curve.begin();
    double lowestX = leftIter->lowerX();
-   for (VecIter rightIter = leftIter + 1;
+   for(VecIter rightIter = leftIter + 1;
         curve.end() != rightIter;
         ++leftIter, ++rightIter)
    {
       leftIter->setUpperX( rightIter->upperX() );
       leftIter->setUpperY( rightIter->upperY() );
    } // for iter
-   // get rid of the last (zero width) trapezoid
+   // get rid of the last(zero width) trapezoid
    double biggestX = leftIter->upperX();
-   curve.erase (leftIter);
+   curve.erase(leftIter);
 
    ////////////////////////////////////////
    // Sort Trapezoids from Tall to Short //
    ////////////////////////////////////////
-   //sort (curve.rbegin(), curve.rend());
-   sort ( curve.begin(), curve.end(), std::greater< CLPTrapezoid >() );
+   //sort(curve.rbegin(), curve.rend());
+   sort( curve.begin(), curve.end(), std::greater< CLPTrapezoid >() );
    // integrate this puppy up
    double total = 0;
    int position = 0;
-   for (VecIter iter = curve.begin();
+   for(VecIter iter = curve.begin();
         curve.end() != iter;
         ++iter)
    {
       total += iter->integral();
-      iter->setTotalIntegral (total);
-      iter->setPosition (position++);
+      iter->setTotalIntegral(total);
+      iter->setPosition(position++);
    } // for iter
-   assert (total);
+   assert(total);
 
    /////////////////////////////
    // Rescale and Get Maximum //
@@ -148,16 +148,16 @@ CLPTrapezoid::limits (Vec &curve,
    double max = 0;
    double factor = 1. / total;
    total = 0.;
-   for (VecIter iter = curve.begin();
+   for(VecIter iter = curve.begin();
         curve.end() != iter;
         ++iter)
    {
       total += iter->integral();
-      iter->scale (factor);
-      if (iter->maxY() > max)
+      iter->scale(factor);
+      if(iter->maxY() > max)
       {
          // take maxX to be the middle
-         maxX = (iter->upperX() + iter->lowerX()) / 2;
+         maxX =(iter->upperX() + iter->lowerX()) / 2;
          max = iter->maxY();
       } // if new maximum
    } // for iter
@@ -174,44 +174,44 @@ CLPTrapezoid::limits (Vec &curve,
    const VecConstIter kRevBegin = curve.end() - 1;
    const VecConstIter kRevEnd   = curve.begin() - 1;
    VecConstIter iter;
-   for (iter = kRevBegin;
+   for(iter = kRevBegin;
         kRevEnd != iter;
         --iter)
    {
-      int position = iter->positionWRT (maxX);
+      int position = iter->positionWRT(maxX);
       // is this far enough?
-      if (iter->totalIntegral() < percent)
+      if(iter->totalIntegral() < percent)
       {
          // we're done
          break;
       }
-      if (kToTheRight == position)
+      if(kToTheRight == position)
       {
          seenRight = true;
-      } else if (kToTheLeft == position)
+      } else if(kToTheLeft == position)
       {
          seenLeft = true;
       }
    } // while iter
-   assert (kRevEnd != iter);
+   assert(kRevEnd != iter);
 
    //////////////////////
    // One Sided Limits //
    //////////////////////
    // Is this an upper or lower limit
-   if ( (seenRight && ! seenLeft) ||
-        (seenLeft  && ! seenRight) )
+   if( (seenRight && ! seenLeft) ||
+(seenLeft  && ! seenRight) )
    {
       bool isUpperLimit = seenRight && ! seenLeft;
       double areaNeeded = percent - iter->totalIntegral();
       ++iter;
-      double slope = ( iter->upperY() - iter->lowerY() ) /
-         ( iter->upperY() - iter->lowerY() );
+      double slope =( iter->upperY() - iter->lowerY() ) /
+( iter->upperY() - iter->lowerY() );
       double deltaX;
-      if (slope)
+      if(slope)
       {
          double b0m;
-         if (isUpperLimit)
+         if(isUpperLimit)
          {
             // upper limit
             b0m = iter->lowerY() / slope;
@@ -219,18 +219,18 @@ CLPTrapezoid::limits (Vec &curve,
             slope *= -1;
             b0m = iter->upperY() / slope;
          }
-         if (slope > 0)
+         if(slope > 0)
          {
-            deltaX = - b0m + sqrt (b0m * b0m + 2 * areaNeeded / slope);
+            deltaX = - b0m + sqrt(b0m * b0m + 2 * areaNeeded / slope);
          } else {
-            deltaX = - b0m - sqrt (b0m * b0m + 2 * areaNeeded / slope);
+            deltaX = - b0m - sqrt(b0m * b0m + 2 * areaNeeded / slope);
          } // else if slope < 0
       } // if slope
       else
       {
          deltaX = areaNeeded / iter->lowerY();
       }
-      if (isUpperLimit)
+      if(isUpperLimit)
       {
          // Upper Limit
          lowerLimit = lowestX - 1;
@@ -248,7 +248,7 @@ CLPTrapezoid::limits (Vec &curve,
    // Two Sided Limits                     //
    //////////////////////////////////////////
    int sameAs, other;
-   if (kToTheRight == iter->positionWRT (maxX))
+   if(kToTheRight == iter->positionWRT (maxX))
    {
       sameAs = kToTheRight;
       other  = kToTheLeft;
@@ -260,27 +260,27 @@ CLPTrapezoid::limits (Vec &curve,
    // First, lets look for a previous iterator so we know we are too
    // small.
    VecConstIter otherIter = iter - 1;
-   while (curve.end() != otherIter)
+   while(curve.end() != otherIter)
    {
-      if (otherIter->positionWRT (maxX) == other)
+      if(otherIter->positionWRT (maxX) == other)
       {
          // done
          break;
       } // if
       --otherIter;
    } // while
-   assert (kRevEnd != otherIter);
+   assert(kRevEnd != otherIter);
    double minArea, maxArea;
-   minMaxArea (minArea, maxArea, iter, otherIter);
+   minMaxArea(minArea, maxArea, iter, otherIter);
 
    int count = 0;
    //cout << curve << endl;
-   while (maxArea < percent || minArea > percent)
+   while(maxArea < percent || minArea > percent)
    {
-      if (0) cout << "iter  " << *iter << endl
+      if(0) cout << "iter  " << *iter << endl
                   << "other " << *otherIter << endl
                   << "min " << minArea << " max " << maxArea << endl << endl;
-      if (++count > 10)
+      if(++count > 10)
       {
          // We shoudln't be here anymore.  Put out an error message
          // and return with the initial values so that it's clear we
@@ -290,10 +290,10 @@ CLPTrapezoid::limits (Vec &curve,
       }
       // which way do we need to go
       VecConstIter nextIter;
-      if (maxArea < percent)
+      if(maxArea < percent)
       {
          // we don't have enough yet.  Which one is smaller?
-         if (*iter < *otherIter)
+         if(*iter < *otherIter)
          {
             nextIter = iter + 1;
          } else {
@@ -301,7 +301,7 @@ CLPTrapezoid::limits (Vec &curve,
          }
       } else {
          // we have too much.  Which one is bigger
-         if (*iter > *otherIter)
+         if(*iter > *otherIter)
          {
             nextIter = iter - 1;
          } else {
@@ -309,7 +309,7 @@ CLPTrapezoid::limits (Vec &curve,
          }
       } // else if minArea > percent
       // Which one should we replace?
-      if (nextIter->positionWRT (maxX) == other)
+      if(nextIter->positionWRT (maxX) == other)
       {
          // replace the other iter
          otherIter = nextIter;
@@ -317,9 +317,9 @@ CLPTrapezoid::limits (Vec &curve,
          iter = nextIter;
       }
       // Don't forget to recalculate everything.
-      minMaxArea (minArea, maxArea, iter, otherIter);
+      minMaxArea(minArea, maxArea, iter, otherIter);
    } // while
-   if (0) cout << "iter  " << *iter << endl
+   if(0) cout << "iter  " << *iter << endl
                << "other " << *otherIter << endl
                << "min " << minArea << " max " << maxArea << endl << endl;
 
@@ -327,7 +327,7 @@ CLPTrapezoid::limits (Vec &curve,
    // area.  Let's get the final answer.
    VecConstIter biggerIter  = iter;
    VecConstIter smallerIter = otherIter;
-   if (*smallerIter > *biggerIter)
+   if(*smallerIter > *biggerIter)
    {
       // Ooops.  Got 'em backwards
       biggerIter  = otherIter;
@@ -337,8 +337,8 @@ CLPTrapezoid::limits (Vec &curve,
    // grab the area of the intervening iterators.
    VecConstIter middleIter = biggerIter + 1;
    double additionalArea = 0;
-   assert (smallerIter > biggerIter);
-   while (middleIter != smallerIter)
+   assert(smallerIter > biggerIter);
+   while(middleIter != smallerIter)
    {
       // cout << "  Adding " << *middleIter << endl;
       additionalArea += middleIter->integral();
@@ -352,35 +352,35 @@ CLPTrapezoid::limits (Vec &curve,
       + deltaX * smallerIter->maxY()
       + 0.5 * deltaX * deltaY;
    double neededArea = percent - minArea;
-   if (0) cout << " pT " << prevTotal
+   if(0) cout << " pT " << prevTotal
                << " dY " << deltaY
                << " mA " << minArea
                << " nA " << neededArea << endl;
 
    double biggerSlope  = biggerIter->absSlope();
    double smallerSlope = smallerIter->absSlope();
-   if (! biggerSlope || ! smallerSlope)
+   if(! biggerSlope || ! smallerSlope)
    {
       // At least one of the two slopes is 0
       return;
    }
-   assert (biggerSlope > 0 && smallerSlope > 0);
+   assert(biggerSlope > 0 && smallerSlope > 0);
 
    // We want to start with the smaller maximum height, h.  If I did
    // my math correctly, then we want
-   // deltaH = h - sqrt (h^2 - 2 * mEff * neededArea), where
+   // deltaH = h - sqrt(h^2 - 2 * mEff * neededArea), where
    // 1 / mEff = 1 / m1 + 1 / m2.  Given deltaH, we have
    // deltaX1 = deltaH / m1, and deltaX2 = deltaH / m2.
    //
    // Here goes:
    double height = smallerIter->maxY();
-   double mEff = 1. / ((1. / biggerSlope) + (1. / smallerSlope));
-   double deltaH = height - sqrt (height * height - 2 * mEff * neededArea);
+   double mEff = 1. /((1. / biggerSlope) + (1. / smallerSlope));
+   double deltaH = height - sqrt(height * height - 2 * mEff * neededArea);
    double deltaXbigger  = deltaH / biggerSlope;
    double deltaXsmaller = deltaH / smallerSlope;
 
    // Now we need to figure out which one is on the right
-   if (0) cout << " smLX " << smallerIter->lowerX()
+   if(0) cout << " smLX " << smallerIter->lowerX()
                << " smUX " << smallerIter->upperX()
                << " biLX " << biggerIter->lowerX()
                << " biUX " << biggerIter->upperX()
@@ -388,16 +388,16 @@ CLPTrapezoid::limits (Vec &curve,
                << " dXb  " << deltaXbigger << endl
                << "added Area "
                << 0.5 * deltaXsmaller * deltaH + 0.5 * deltaXbigger * deltaH
-               << " + " << height * (deltaXsmaller + deltaXbigger) << endl;
+               << " + " << height *(deltaXsmaller + deltaXbigger) << endl;
 
    // Don't forget to add the smidgen of deltaXbigger that is needed
    // to match the heights.
    double additionalDeltaXbigger =
-      (biggerIter->maxY() - smallerIter->maxY()) / biggerSlope;
-   if (0) cout << "aDXb " << additionalDeltaXbigger << endl;
+(biggerIter->maxY() - smallerIter->maxY()) / biggerSlope;
+   if(0) cout << "aDXb " << additionalDeltaXbigger << endl;
    deltaXbigger += additionalDeltaXbigger;
 
-   if (kToTheLeft == biggerIter->positionWRT (maxX))
+   if(kToTheLeft == biggerIter->positionWRT (maxX))
    {
       // upper limit is the 'lower' part to the right + its deltaX
       upperLimit = smallerIter->lowerX() + deltaXsmaller;
@@ -412,7 +412,7 @@ CLPTrapezoid::limits (Vec &curve,
 }
 
 bool
-CLPTrapezoid::minMaxArea (double &minArea, double &maxArea,
+CLPTrapezoid::minMaxArea(double &minArea, double &maxArea,
                           const VecConstIter &alpha,
                           const VecConstIter &beta)
 {
@@ -421,7 +421,7 @@ CLPTrapezoid::minMaxArea (double &minArea, double &maxArea,
 
    VecConstIter smallerIter;
    VecConstIter biggerIter;
-   if (*beta > *alpha)
+   if(*beta > *alpha)
    {
       biggerIter  = beta;
       smallerIter = alpha;
@@ -429,10 +429,10 @@ CLPTrapezoid::minMaxArea (double &minArea, double &maxArea,
       biggerIter  = alpha;
       smallerIter = beta;
    }
-   if (! biggerIter->hasVerticalOverlapWith (*smallerIter))
+   if(! biggerIter->hasVerticalOverlapWith (*smallerIter))
    {
       // Nothing we can do.  So return the total area of the taller
-      // one (the smaller total area) for both values and be done with
+      // one(the smaller total area) for both values and be done with
       // it.
       maxArea = minArea = biggerIter->totalIntegral();
       return false;
@@ -441,8 +441,8 @@ CLPTrapezoid::minMaxArea (double &minArea, double &maxArea,
    // grab the area of the intervening iterators.
    VecConstIter middleIter = biggerIter + 1;
    double additionalArea = 0;
-   assert (smallerIter > biggerIter);
-   while (middleIter != smallerIter)
+   assert(smallerIter > biggerIter);
+   while(middleIter != smallerIter)
    {
       additionalArea += middleIter->integral();
       ++middleIter;
@@ -473,7 +473,7 @@ CLPTrapezoid::minMaxArea (double &minArea, double &maxArea,
    double betaMin  = smallerIter->minY();
    double min;
    deltaY = alphaMin - betaMin;
-   if (deltaY < 0)
+   if(deltaY < 0)
    {
       // alphaMin is smaller
       deltaY *= -1;
@@ -489,16 +489,16 @@ CLPTrapezoid::minMaxArea (double &minArea, double &maxArea,
 }
 
 double
-CLPTrapezoid::findYintersect (const Vec &curve,
+CLPTrapezoid::findYintersect(const Vec &curve,
                               double signedStep,
                               double yDelta, double epsilon)
 {
    DVec xVec, yVec;
-   assert (curve.size());
+   assert(curve.size());
    // get TGraph and xMin and yMin
    double xMin = 0, yMin = 0;
    double first = true;
-   for (CLPTrapezoid::VecConstIter iter = curve.begin();
+   for(CLPTrapezoid::VecConstIter iter = curve.begin();
         curve.end() != iter;
         ++iter)
    {
@@ -506,27 +506,27 @@ CLPTrapezoid::findYintersect (const Vec &curve,
       double yVal( iter->lowerY() );
       xVec.push_back( xVal );
       yVec.push_back( yVal );
-      if (first)
+      if(first)
       {
          xMin = xVal;
          yMin = yVal;
          first = false;
       } else {
-         if (yVal < yMin)
+         if(yVal < yMin)
          {
             xMin = xVal;
             yMin = yVal;
          }
       }
    } // for iter
-   // dumpNamedSTLendl ("xVec", xVec);
-   // dumpNamedSTLendl ("yVec", yVec);
-   TGraph graph (xVec.size(), &(xVec[0]), &(yVec[0]));
+   // dumpNamedSTLendl("xVec", xVec);
+   // dumpNamedSTLendl("yVec", yVec);
+   TGraph graph(xVec.size(), &(xVec[0]), &(yVec[0]));
    double yValue = yDelta + yMin;
    // cout << "xMin " << xMin << " yValue " << yValue << endl;
    double upper, lower;
    bool positive = false;
-   if (signedStep > 0)
+   if(signedStep > 0)
    {
       positive = true;
       upper = xMin + signedStep;
@@ -535,45 +535,45 @@ CLPTrapezoid::findYintersect (const Vec &curve,
       lower = xMin + signedStep;
       upper = xMin;
    }
-   double value = graph.Eval (xMin + signedStep, 0, "S") - yValue;
+   double value = graph.Eval(xMin + signedStep, 0, "S") - yValue;
    // cout << "value " << value << " " << yValue << " " << xMin << " "
    //     << signedStep << endl;
    int count = 0;
    bool contained = false;
-   while (fabs (value) > epsilon  || ! contained)
+   while(fabs (value) > epsilon  || ! contained)
    {
-      if (++count >= 40)
+      if(++count >= 40)
       {
          cerr << "breaking" << endl;
          break;
       }
-      double upperVal  = graph.Eval (upper,  0, "S") - yValue;
-      double lowerVal  = graph.Eval (lower,  0, "S") - yValue;
-      if (upperVal * lowerVal < 0)
+      double upperVal  = graph.Eval(upper,  0, "S") - yValue;
+      double lowerVal  = graph.Eval(lower,  0, "S") - yValue;
+      if(upperVal * lowerVal < 0)
       {
          contained = true;
       }
       else
       {
          // we're not bounded yet
-         if (positive)
+         if(positive)
          {
             lower = upper;
             upper = upper + signedStep;
-            value = graph.Eval (upper, 0, "S") - yValue;
+            value = graph.Eval(upper, 0, "S") - yValue;
             // cout << "pos " << value << endl;
          } else {
             upper = lower;
             lower = lower + signedStep;
-            value = graph.Eval (lower, 0, "S") - yValue;
+            value = graph.Eval(lower, 0, "S") - yValue;
             // cout << "neg " << value << endl;
          }
          continue;
       }
       // we're bounded.  Pick a point in the middle
-      double middle = (upper + lower) / 2;
-      double middleVal = value = graph.Eval (middle,  0, "S") - yValue;
-      if (upperVal * middleVal > 0)
+      double middle =(upper + lower) / 2;
+      double middleVal = value = graph.Eval(middle,  0, "S") - yValue;
+      if(upperVal * middleVal > 0)
       {
          // both are same sign
          upper = middle;
@@ -583,20 +583,20 @@ CLPTrapezoid::findYintersect (const Vec &curve,
          // cout << "lo " << value << endl;
       }
    }
-   return (upper + lower) / 2;
+   return(upper + lower) / 2;
 }
 
 // friends
-ostream& operator<< (ostream& o_stream, const CLPTrapezoid &rhs)
+ostream& operator<<(ostream& o_stream, const CLPTrapezoid &rhs)
 {
-   o_stream << "[ ("
-            << Form ("%.4f", rhs.lowerX() ) << ", "
-            << Form ("%11.8f", rhs.lowerY() ) << ") , ("
-            << Form ("%.4f", rhs.upperX() ) << ", "
-            << Form ("%11.8f", rhs.upperY() ) << ") ] "
-            << Form ("%.8f", rhs.integral() ) << ", "
-            << Form ("%.8f", rhs.totalIntegral() );
-   if (rhs.lowerY() > rhs.upperY())
+   o_stream << "[("
+            << Form("%.4f", rhs.lowerX() ) << ", "
+            << Form("%11.8f", rhs.lowerY() ) << ") , ("
+            << Form("%.4f", rhs.upperX() ) << ", "
+            << Form("%11.8f", rhs.upperY() ) << ") ] "
+            << Form("%.8f", rhs.integral() ) << ", "
+            << Form("%.8f", rhs.totalIntegral() );
+   if(rhs.lowerY() > rhs.upperY())
    {
       o_stream << "   right " << rhs.position();
    } else {
@@ -605,10 +605,10 @@ ostream& operator<< (ostream& o_stream, const CLPTrapezoid &rhs)
    return o_stream;
 }
 
-ostream& operator<< (ostream& o_stream, const CLPTrapezoid::Vec &rhs)
+ostream& operator<<(ostream& o_stream, const CLPTrapezoid::Vec &rhs)
 {
    int count = 0;
-   for (CLPTrapezoid::VecConstIter iter = rhs.begin();
+   for(CLPTrapezoid::VecConstIter iter = rhs.begin();
         rhs.end() != iter;
         ++iter)
    {

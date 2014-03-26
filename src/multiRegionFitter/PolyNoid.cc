@@ -64,7 +64,7 @@ PolyNoid::addPolynomial(const IVec &groupVec,
                          const IVec &templateEnumVec,
                          const DVec &parameters)
 {
-   int index = (int) m_parametersVec.size();
+   int index =(int) m_parametersVec.size();
    m_parametersVec.push_back( parameters );
    for(IVecConstIter groupIter = groupVec.begin();
         groupVec.end() != groupIter;
@@ -155,7 +155,7 @@ PolyNoid::setGroupBinWidths(const IVec &widthVec)
       total += *iter;
       sm_groupBinBoundariesVec.push_back( total );
    } // for iter
-   sm_groupBinUpper = (int) sm_groupBinBoundariesVec.size() - 1;
+   sm_groupBinUpper =(int) sm_groupBinBoundariesVec.size() - 1;
 }
 
 
@@ -170,7 +170,7 @@ PolyNoid::polynomial(double x, const DVec &params)
         kEnd != iter;
         ++iter)
    {
-      total += xToTheN * (*iter);
+      total += xToTheN *(*iter);
       xToTheN *= x;
    } // for iter
    return total;
@@ -268,7 +268,7 @@ PolyNoid::dumpToOstream(ostream& o_stream) const
    } // for iter
 }
 
-ostream& operator<< (ostream& o_stream, const PolyNoid &rhs)
+ostream& operator<<(ostream& o_stream, const PolyNoid &rhs)
 {
    rhs.dumpToOstream(o_stream);
    return o_stream;

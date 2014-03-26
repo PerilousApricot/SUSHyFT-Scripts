@@ -36,14 +36,14 @@ class PolyNoid : public BinNormFunctoid
       /////////////
 
       // tells particle data how to print itself out
-      friend std::ostream& operator<< (std::ostream& o_stream,
+      friend std::ostream& operator<<(std::ostream& o_stream,
                                        const PolyNoid &rhs);
 
       ////////////////////////////////
       // Constructors and Operators //
       ////////////////////////////////
       PolyNoid();
-      PolyNoid (std::string &name, double mean, double width,
+      PolyNoid(std::string &name, double mean, double width,
                 double lower = 0., double upper = 0., double step = 0.);
 
       // operator()
@@ -68,34 +68,34 @@ class PolyNoid : public BinNormFunctoid
       double step()  const { return  m_step;    }
 
       // setting
-      void setName  (const std::string &name) { m_name  = name;  }
-      void setMean  (double mean)             { m_mean  = mean;  }
-      void setWidth (double width)            { m_width = width; }
-      void setLower (double lower)            { m_lower = lower; }
-      void setUpper (double upper)            { m_upper = upper; }
-      void setStep  (double step)             { m_step  = step;  }
+      void setName(const std::string &name) { m_name  = name;  }
+      void setMean(double mean)             { m_mean  = mean;  }
+      void setWidth(double width)            { m_width = width; }
+      void setLower(double lower)            { m_lower = lower; }
+      void setUpper(double upper)            { m_upper = upper; }
+      void setStep(double step)             { m_step  = step;  }
 
 
 
       // add a polynomial for a given set of group bins and templates
-      // (described by enum)
-      void addPolynomial (const IVec &groupVec,
+      //(described by enum)
+      void addPolynomial(const IVec &groupVec,
                           const IVec &templateEnumVec,
                           const DVec &parameters);
 
       // given information in template2indexMap and m_temporaryMap,
       // calculates m_groupTemplateParamMap
-      void calculateGroupTemplateParamMap (const IIMap &template2indexmap);
+      void calculateGroupTemplateParamMap(const IIMap &template2indexmap);
 
       // // adds self to polynoidMap.  Can only be done before fitter is
-      // // hooked up (will abort if tried afterwards).
+      // // hooked up(will abort if tried afterwards).
       // void addSelfToMap();
 
       // adds self to a fitter.  Returns index.
-      int addSelfToFitter (CLPTemplateFitter &fitter);
+      int addSelfToFitter(CLPTemplateFitter &fitter);
 
       // print out information about this class
-      virtual void dumpToOstream (ostream& o_stream) const;
+      virtual void dumpToOstream(ostream& o_stream) const;
 
 
 
@@ -104,18 +104,18 @@ class PolyNoid : public BinNormFunctoid
       /////////////////////////////
 
 
-      // sets jet bin widths (i.e., a vector of widths: e.g., 20 20 10
+      // sets jet bin widths(i.e., a vector of widths: e.g., 20 20 10
       // 10 ...)
-      static void setGroupBinWidths (const IVec &widthVec);
+      static void setGroupBinWidths(const IVec &widthVec);
 
       // returns the polynomial evaluated at x.
-      static double polynomial (double x, const DVec &params);
+      static double polynomial(double x, const DVec &params);
 
       // given a bin, returns jetbin index
-      static int bin2groupBin (int bin);
+      static int bin2groupBin(int bin);
 
       // returns upper and lower bin boundaries for a given group bin
-      static void lowerUpperBoundaries (int &lower, int &upper, int groupBin);
+      static void lowerUpperBoundaries(int &lower, int &upper, int groupBin);
 
       // returns reference to bin bounaries vector
       static const IVec &groupBinBoundariesVec();
@@ -152,7 +152,7 @@ class PolyNoid : public BinNormFunctoid
       // parameters in 'm_paramsVecVec'
       IIPairIMap     m_groupTemplateParamMap;
       // temporarily holds map between enum of template and parameters
-      // (used before all fitter templates have been added)
+      //(used before all fitter templates have been added)
       IIPairIMap     m_temporaryMap;
 
       ////////////////////////

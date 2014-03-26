@@ -102,7 +102,7 @@ namespace mrf
       kNotAssigned = -1,
    };
 
-   // template names (as stored in histogram)
+   // template names(as stored in histogram)
    //const std::string kDataName  = "Data";
    extern std::string ns_dataName;
 
@@ -131,7 +131,7 @@ namespace mrf
 
 
    // blurs paramVec according to the blurVec
-   void blurParamVec (DVec &paramVec, const BlurStructVec &blurVec);
+   void blurParamVec(DVec &paramVec, const BlurStructVec &blurVec);
 
 
 
@@ -140,24 +140,24 @@ namespace mrf
 
    // does any necessary calcuation given command line options and
    // updates 'tag' string for output root file.
-   void processOptions (std::string &tag);
+   void processOptions(std::string &tag);
 
    void setDataName();
 
    // Assumes that outputPtr goes from 0.5 to N + 0.5
-   void addToHistogram (TH1F *outputPtr, TH1F *inputPtr,
+   void addToHistogram(TH1F *outputPtr, TH1F *inputPtr,
                         int offset, int rebin, float scale = 1.);
 
 
 
-   void _2vecsToMap (const SVec &namesVec, const DVec &valuesVec,
+   void _2vecsToMap(const SVec &namesVec, const DVec &valuesVec,
                      SDMap &valueMap);
-   void _2vecsToMap (const SVec &namesVec, const IVec &valuesVec,
+   void _2vecsToMap(const SVec &namesVec, const IVec &valuesVec,
                      SIMap &valueMap);
-   void _2vecsToMap (const SVec &namesVec, const SVec &valuesVec,
+   void _2vecsToMap(const SVec &namesVec, const SVec &valuesVec,
                      SSMap &valueMap);
 
-   void _svecToSDMap (const SVec &nameAndValueVec, SDMap &valueMap);
+   void _svecToSDMap(const SVec &nameAndValueVec, SDMap &valueMap);
 
    void _makeEverythingPretty();
 
@@ -165,7 +165,7 @@ namespace mrf
 
 
    // sets error bars based on sqrt of bin contents
-   void _addSqrtErrors (TH1F *histPtr);
+   void _addSqrtErrors(TH1F *histPtr);
 
    //////////////////////////
    // //////////////////// //
@@ -180,11 +180,11 @@ namespace mrf
       public:
 
          // constructor
-         MRFitter (const std::string &configFilename,
+         MRFitter(const std::string &configFilename,
                    const std::string &prefix = "");
 
          // Fit the branching fraction.
-         void fit (bool verbose = true);
+         void fit(bool verbose = true);
 
          // throw PE.  If 'ideal' is true, then it will add the
          // properly normalized templates to make the PE.
@@ -192,17 +192,17 @@ namespace mrf
          // Note: The fitter is not passed as a constant reference as
          // it may need to modify itself if template morphing is
          // involved.
-         void throwPE (const DVec &paramVec,
+         void throwPE(const DVec &paramVec,
                        bool ideal = false);
 
          // saves a canvas of the fitter result.  Note that we are
          // passing a string and not a constant reference because we
          // will change the value of this.
-         void saveCanvasResult (std::string outputName = "output",
+         void saveCanvasResult(std::string outputName = "output",
                                 const DVec &paramVec = kEmptyDVec);
 
          // draw lines on plots separating jet/tag bins
-         void drawLines (double maxHeight, bool unitSpacing = false);
+         void drawLines(double maxHeight, bool unitSpacing = false);
 
 
          // test fitter. This function will change over time and is
@@ -212,7 +212,7 @@ namespace mrf
          // Convert fitter output paramVec to tree order.  This works
          // for the fitter's paramVec as well as it error vectors.
          // Note that the vectors must already be the right size.
-         void convertFitterToTreeOrder (const DVec &paramVec,
+         void convertFitterToTreeOrder(const DVec &paramVec,
                                         DVec &treeParamVec);
 
 
@@ -221,15 +221,15 @@ namespace mrf
          // the right size and has reasonable values for all entries.
          // If set to false, only the 'additionalValueMap' values will
          // be used.
-         void setupParamVec (DVec &paramVec,
+         void setupParamVec(DVec &paramVec,
                              bool initialize = false,
                              const SDMap &additionalValueMap = kEmptySDMap);
 
          // Using fitter and user-supplied inputs, decides which variables
          // will be varied for PE throwing.
-         void setupBlurStruct (BlurStructVec &blurVec,
+         void setupBlurStruct(BlurStructVec &blurVec,
                                const BlurStructMap &blurMap);
-         void setupBlurStruct (BlurStructVec &blurVec, const SVec &names,
+         void setupBlurStruct(BlurStructVec &blurVec, const SVec &names,
                                const DVec &means, const DVec &sigmas);
 
          BinsSumCont &binsSumCont() { return m_fitter.binsSumCont(); }
@@ -237,9 +237,9 @@ namespace mrf
 
          // Grab the "data" from the fitter that generates the PEs and
          // pull it into this fitter.
-         void getDataFromOtherFitter (const MRFitter &otherFitter);
+         void getDataFromOtherFitter(const MRFitter &otherFitter);
          // Sometimes, we'll want to add data from two run ranges together
-         void getDataFromOtherFitter (const MRFitter &otherFitter1, const MRFitter &otherFitter2);
+         void getDataFromOtherFitter(const MRFitter &otherFitter1, const MRFitter &otherFitter2);
 
 
          ////////////////////////
@@ -262,48 +262,48 @@ namespace mrf
          // At some point, it probably makes sense to have MRFitter
          // derive from CLPTemplateFitter.  In the mean time...
 
-         void fillParamVec (DVec &paramVec)
-         { m_fitter.fillParamVec (paramVec); }
+         void fillParamVec(DVec &paramVec)
+         { m_fitter.fillParamVec(paramVec); }
 
-         void fillErrorVec (DVec &errorVec)
-         { m_fitter.fillErrorVec (errorVec); }
+         void fillErrorVec(DVec &errorVec)
+         { m_fitter.fillErrorVec(errorVec); }
 
-         void fillPosErrorVec (DVec &errorVec)
-         { m_fitter.fillPosErrorVec (errorVec); }
+         void fillPosErrorVec(DVec &errorVec)
+         { m_fitter.fillPosErrorVec(errorVec); }
 
-         void fillNegErrorVec (DVec &errorVec)
-         { m_fitter.fillNegErrorVec (errorVec); }
+         void fillNegErrorVec(DVec &errorVec)
+         { m_fitter.fillNegErrorVec(errorVec); }
 
          void storeSqrtMatrix()
          { m_fitter.storeSqrtMatrix(); }
 
-         void fillNameVec (SVec &nameVec) const
-         { m_fitter.fillNameVec (nameVec); }
+         void fillNameVec(SVec &nameVec) const
+         { m_fitter.fillNameVec(nameVec); }
 
-         void generateRandomParams (DVec &paramVec) const
-         { m_fitter.generateRandomParams (paramVec); }
+         void generateRandomParams(DVec &paramVec) const
+         { m_fitter.generateRandomParams(paramVec); }
 
-         void scanVariable (CLPTrapezoid::Vec &retval,
+         void scanVariable(CLPTrapezoid::Vec &retval,
                             const std::string &name,
                             double lower, double upper, int numPoints = 1000)
-         { m_fitter.scanVariable (retval, name, lower, upper, numPoints); }
+         { m_fitter.scanVariable(retval, name, lower, upper, numPoints); }
 
          // returns the value or error of a parameter after the fit
-         double getValue (const std::string &name) const
-         { return m_fitter.getValue (name); }
-         double getError (const std::string &name) const
-         { return m_fitter.getError (name); }
-         double getPosError (const std::string &name) const
-         { return m_fitter.getPosError (name); }
-         double getNegError (const std::string &name) const
-         { return m_fitter.getNegError (name); }
+         double getValue(const std::string &name) const
+         { return m_fitter.getValue(name); }
+         double getError(const std::string &name) const
+         { return m_fitter.getError(name); }
+         double getPosError(const std::string &name) const
+         { return m_fitter.getPosError(name); }
+         double getNegError(const std::string &name) const
+         { return m_fitter.getNegError(name); }
 
 
-         // Given a string, it returns the index of the parameter (-1 if
+         // Given a string, it returns the index of the parameter(-1 if
          // not found).  This function is expected to be somewhat
          // expensive and should be called sparingly.
-         int parameterIndex (const std::string &name) const
-         { return m_fitter.parameterIndex (name); }
+         int parameterIndex(const std::string &name) const
+         { return m_fitter.parameterIndex(name); }
 
          //////////////////////
          // Access Functions //
@@ -316,27 +316,27 @@ namespace mrf
          { return m_prefix; }
 
 
-         int         &integerValue  (std::string key)
-         { return m_parser.integerValue (key); }
-         double      &doubleValue   (std::string key)
-         { return m_parser.doubleValue  (key); }
-         std::string &stringValue   (std::string key)
-         { return m_parser.stringValue  (key); }
-         bool        &boolValue     (std::string key)
-         { return m_parser.boolValue    (key); }
-         IVec        &integerVector (std::string key)
+         int         &integerValue(std::string key)
+         { return m_parser.integerValue(key); }
+         double      &doubleValue(std::string key)
+         { return m_parser.doubleValue(key); }
+         std::string &stringValue(std::string key)
+         { return m_parser.stringValue(key); }
+         bool        &boolValue(std::string key)
+         { return m_parser.boolValue(key); }
+         IVec        &integerVector(std::string key)
          { return m_parser.integerVector(key); }
-         DVec        &doubleVector  (std::string key)
-         { return m_parser.doubleVector (key); }
-         SVec        &stringVector  (std::string key)
-         { return m_parser.stringVector (key); }
+         DVec        &doubleVector(std::string key)
+         { return m_parser.doubleVector(key); }
+         SVec        &stringVector(std::string key)
+         { return m_parser.stringVector(key); }
 
 
 
       private:
 
          // load configuration file
-         bool _loadConfigFile (const std::string &configFilename,
+         bool _loadConfigFile(const std::string &configFilename,
                               bool mainLoop = true);
 
          // initialize the fitter according to the mode flag
@@ -348,17 +348,17 @@ namespace mrf
          // Needs to be called after 'initializeFitter()'
          void _decideWhichVariablesToSave();
 
-         void _loadTemplates (const std::string &filename);
-         void _hookupFitter ();
-         void _createBinsSums ();
+         void _loadTemplates(const std::string &filename);
+         void _hookupFitter();
+         void _createBinsSums();
 
          // Converts '_'s to ' 's
          void _fixGroupStrings();
 
          // adds polynoid to internal map
-         void _addPolyToMap (const PolyNoid &poly);
+         void _addPolyToMap(const PolyNoid &poly);
          // provides access to these polynoids
-         PolyNoid &_poly (const std::string &name);
+         PolyNoid &_poly(const std::string &name);
          // Adds polynoids to the fitter
          void _addPolyMapToFitter();
          // print out morphMap

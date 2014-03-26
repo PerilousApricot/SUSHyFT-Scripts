@@ -39,7 +39,7 @@ class BinNormClass
       // friends //
       /////////////
       // tells particle data how to print itself out
-      friend std::ostream& operator<< (std::ostream& o_stream,
+      friend std::ostream& operator<<(std::ostream& o_stream,
                                        const BinNormClass &rhs);
 
       //////////////////////////
@@ -52,13 +52,13 @@ class BinNormClass
       /////////////////////////////////
       // Constructors and Destructor //
       /////////////////////////////////
-      BinNormClass ();
-      BinNormClass (double startingValue);
-      BinNormClass (double startingValue,
+      BinNormClass();
+      BinNormClass(double startingValue);
+      BinNormClass(double startingValue,
                     double start, double stop, double step);
-      BinNormClass (const ISet &tempSet, const ISet &binSet,
+      BinNormClass(const ISet &tempSet, const ISet &binSet,
                     double startingValue);
-      BinNormClass (const ISet &tempSet, const ISet &binSet,
+      BinNormClass(const ISet &tempSet, const ISet &binSet,
                     double startingValue,
                     double start, double stop, double step);
 
@@ -67,10 +67,10 @@ class BinNormClass
       ////////////////
 
       // Setting functions
-      void setBinSet  (const ISet &binSet)  { m_binSet      = binSet;  }
-      void setParamIndex    (int index)     { m_paramIndex  = index;   }
-      void setStartingValue (double value)  { m_value       = value;   }
-      void setVerbose (bool verbose) const  { m_verbose     = verbose; }
+      void setBinSet(const ISet &binSet)  { m_binSet      = binSet;  }
+      void setParamIndex(int index)     { m_paramIndex  = index;   }
+      void setStartingValue(double value)  { m_value       = value;   }
+      void setVerbose(bool verbose) const  { m_verbose     = verbose; }
 
       // access functions
       double startingValue() const { return m_value; }
@@ -79,53 +79,53 @@ class BinNormClass
       double start() const { return m_startStopStep.start(); }
       double stop()  const { return m_startStopStep.stop(); }
       double step()  const { return m_startStopStep.step(); }
-      void setStart (double start) { m_startStopStep.setStart (start); }
-      void setStop  (double stop)  { m_startStopStep.setStop  (stop); }
-      void setStep  (double step)  { m_startStopStep.setStep  (step); }
-      void setStartStopStep (double start, double stop, double step)
-      { m_startStopStep.setStartStopStep (start, stop, step); }
+      void setStart(double start) { m_startStopStep.setStart (start); }
+      void setStop(double stop)  { m_startStopStep.setStop  (stop); }
+      void setStep(double step)  { m_startStopStep.setStep  (step); }
+      void setStartStopStep(double start, double stop, double step)
+      { m_startStopStep.setStartStopStep(start, stop, step); }
 
       const StartStopStep &startStopStep() const
       { return m_startStopStep; }
 
       // returns functoid pointer
-      const BinNormFunctoid *functoidPtr () const { return m_functoidPtr; }
+      const BinNormFunctoid *functoidPtr() const { return m_functoidPtr; }
 
       //////////////////////////////
       // Regular Member Functions //
       //////////////////////////////
 
-      // returns the index (paramIndex) if template and bin IDs are
+      // returns the index(paramIndex) if template and bin IDs are
       // contained, else kNegativeNumber
-      int index (int tempIndex, int binIndex) const;
+      int index(int tempIndex, int binIndex) const;
 
       // returns the factor by which this bin should be multiplied
-      double factor (int tempIndex, int binIndex,
+      double factor(int tempIndex, int binIndex,
                      double value, const double *paramArray) const;
 
       // adds tempSet
-      void setTempSet (const ISet &tempSet);
+      void setTempSet(const ISet &tempSet);
 
       // set one functoid for all templates
-      void setFunctoid (BinNormFunctoid &functoid);
+      void setFunctoid(BinNormFunctoid &functoid);
 
       // set a functoid for only one template
-      void setFunctoid (int tempIndex, BinNormFunctoid &functoid);
+      void setFunctoid(int tempIndex, BinNormFunctoid &functoid);
 
       /////////////////////////////
       // Static Member Functions //
       /////////////////////////////
 
       // insert a range into a set
-      static void insertRangeIntoSet (ISet &theset, int lower, int upper);
+      static void insertRangeIntoSet(ISet &theset, int lower, int upper);
 
       // prints contents of ISet to STDOUT
-      static void outputISet (const ISet &theset,
+      static void outputISet(const ISet &theset,
                               std::ostream& o_stream = std::cout);
 
       // // returns true if the set containts the element
-      // static bool setContains (const ISet &theSet, int element)
-      // {  return ( theSet.end() != theSet.find (element) ); }
+      // static bool setContains(const ISet &theSet, int element)
+      // {  return( theSet.end() != theSet.find (element) ); }
 
   private:
       /////////////////////////

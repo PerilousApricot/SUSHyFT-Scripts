@@ -30,7 +30,7 @@ class BinsSumCont
       // friends //
       /////////////
       // tells particle data how to print itself out
-      friend std::ostream& operator<< (std::ostream& o_stream,
+      friend std::ostream& operator<<(std::ostream& o_stream,
                                        const BinsSumCont &rhs);
 
       //////////////////////////
@@ -49,7 +49,7 @@ class BinsSumCont
       // One Liners //
       ////////////////
 
-      void setFitter (CLPTemplateFitter *fitterPtr)
+      void setFitter(CLPTemplateFitter *fitterPtr)
       { m_fitterPtr = fitterPtr; }
 
       int size() const { return (int) m_binsSumVec.size(); }
@@ -63,10 +63,10 @@ class BinsSumCont
       void cleanHistMap();
 
       // set the parameters used
-      void setParamVec (DVec &paramVec);
+      void setParamVec(DVec &paramVec);
 
       // add a BinsSum to self
-      int add (const BinsSum &obj);
+      int add(const BinsSum &obj);
 
       // loop over all binsSum object and record trials
       void recordTrials();
@@ -75,21 +75,21 @@ class BinsSumCont
       void reset();
 
       // loop over all binsSum and get their current values
-      void getValues (DVec &valuesVec);
+      void getValues(DVec &valuesVec);
 
       // loop over all binsSum and fill means and RMSs
-      void fillMeansAndRMSs (DVec &meanVec, DVec &rmsVec);
+      void fillMeansAndRMSs(DVec &meanVec, DVec &rmsVec);
 
       // fills an SVec with all names
-      void getAllNames (SVec &nameVec);
+      void getAllNames(SVec &nameVec);
 
       // gets from fitter if necessary and returns TH1F*
-      TH1F* getTemplate (int index) const;
+      TH1F* getTemplate(int index) const;
 
       // creates a new object with name, puts it in the vector, and
       // returns a reference to object.  Reference is only guaranteed
       // to be good until 'createNew()' or 'add()' is called.
-      BinsSum &createNew (const std::string &name);
+      BinsSum &createNew(const std::string &name);
 
       // access to individual binsSum
       BinsSum &operator() (int index);

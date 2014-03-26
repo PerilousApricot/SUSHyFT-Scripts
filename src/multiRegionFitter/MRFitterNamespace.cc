@@ -226,7 +226,7 @@ bool mrf::MRFitter::_loadConfigFile(const std::string &configFilename,
                 if(m_nameTemplateIDMap.end() == siIter)
                 {
                     int index = m_nameTemplateIDMap[ *iter ] =
-                        (int) m_nameTemplateIDMap.size();
+(int) m_nameTemplateIDMap.size();
                     samplesVec.push_back( index );
                 } else {
                     samplesVec.push_back( siIter->second );
@@ -798,7 +798,7 @@ void mrf::MRFitter::_initializeFitter()
 }
 
 
-void mrf::MRFitter::saveCanvasResult (std::string outputName,
+void mrf::MRFitter::saveCanvasResult(std::string outputName,
         const DVec &paramVec)
 {
     const string kExtention =(string) "." + stringValue("imageExtention");
@@ -822,7 +822,7 @@ void mrf::MRFitter::saveCanvasResult (std::string outputName,
     // all of the histograms at the end.
     int dataIndex = 0;
     TH1F *dataHist = histPtrVec.at(dataIndex) =
-        (TH1F*) m_fitter.getData()->Clone("newdata");
+(TH1F*) m_fitter.getData()->Clone("newdata");
     // don't try and get data, so start at 1
     for(int histIndex = 1; histIndex < kNumTemplates; ++histIndex)
     {
@@ -880,7 +880,7 @@ void mrf::MRFitter::saveCanvasResult (std::string outputName,
                 tempHist->Write();
                 delete tempHist;
             } else {
-                (*iter)->Write();
+(*iter)->Write();
             }
         }
         // save the data too unless we were asked not to
@@ -1420,7 +1420,7 @@ void mrf::MRFitter::_loadTemplates(const string &templateFilename)
             morphPtrVec.push_back( morphPtr );
             // get and adddefault histogram
             TH1F *defaultHistPtr =
-                (TH1F*) filePtr->Get( morphInfo.m_defaultName.c_str() );
+(TH1F*) filePtr->Get( morphInfo.m_defaultName.c_str() );
             if(! defaultHistPtr )
             {
                 dout << "Can not find '" << morphInfo.m_defaultName
@@ -1456,7 +1456,7 @@ void mrf::MRFitter::_loadTemplates(const string &templateFilename)
                     const string &histName = aiIter->first;
                     double value = aiIter->second;
                     TH1F *histPtr =
-                        (TH1F*) filePtr->Get( histName.c_str() );
+(TH1F*) filePtr->Get( histName.c_str() );
                     if(! histPtr )
                     {
                         dout << "Can not find '" << histName

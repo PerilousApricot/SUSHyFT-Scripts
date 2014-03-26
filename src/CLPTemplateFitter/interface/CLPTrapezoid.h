@@ -33,7 +33,7 @@ class CLPTrapezoid : public TObject
       // friends //
       /////////////
       // tells particle data how to print itself out
-      friend std::ostream& operator<< (std::ostream& o_stream,
+      friend std::ostream& operator<<(std::ostream& o_stream,
                                        const CLPTrapezoid &rhs);
 
       //////////////////////////
@@ -46,10 +46,10 @@ class CLPTrapezoid : public TObject
       /////////////////////////////////
       // Constructors and Destructor //
       /////////////////////////////////
-      CLPTrapezoid (double x, double y);
+      CLPTrapezoid(double x, double y);
 
-      bool operator> (const CLPTrapezoid &rhs) const;
-      bool operator< (const CLPTrapezoid &rhs) const;
+      bool operator>(const CLPTrapezoid &rhs) const;
+      bool operator<(const CLPTrapezoid &rhs) const;
 
        ////////////////
       // One Liners //
@@ -63,13 +63,13 @@ class CLPTrapezoid : public TObject
       double maxY()   const { return std::max (m_lowerY, m_upperY); }
       int position()  const { return m_position; }
 
-      void setLowerX (double lowerX) { m_lowerX = lowerX; }
-      void setUpperX (double upperX) { m_upperX = upperX; }
-      void setLowerY (double lowerY) { m_lowerY = lowerY; }
-      void setUpperY (double upperY) { m_upperY = upperY; }
-      void setTotalIntegral (double totalIntegral)
+      void setLowerX(double lowerX) { m_lowerX = lowerX; }
+      void setUpperX(double upperX) { m_upperX = upperX; }
+      void setLowerY(double lowerY) { m_lowerY = lowerY; }
+      void setUpperY(double upperY) { m_upperY = upperY; }
+      void setTotalIntegral(double totalIntegral)
       { m_totalIntegral = totalIntegral; }
-      void setPosition (int position) { m_position = position; }
+      void setPosition(int position) { m_position = position; }
 
       //////////////////////////////
       // Regular Member Functions //
@@ -79,15 +79,15 @@ class CLPTrapezoid : public TObject
       double integral() const;
 
       // scales all y values and integral numbers by 'factor'
-      void scale (double factor);
+      void scale(double factor);
 
       // returns a negative number if this is left of xVal, a positive
       // number if this is right of xVal, and 0 if this centered on
       // xVal.
-      int positionWRT (double xVal) const;
+      int positionWRT(double xVal) const;
 
       // returns true if there is an overlap in the Y values
-      bool hasVerticalOverlapWith (const CLPTrapezoid &rhs) const;
+      bool hasVerticalOverlapWith(const CLPTrapezoid &rhs) const;
 
       // returns the absolute value of the slope
       double absSlope() const;
@@ -96,20 +96,20 @@ class CLPTrapezoid : public TObject
       // Static Member Functions //
       /////////////////////////////
 
-      static void limits (Vec &curve,
+      static void limits(Vec &curve,
                           double &upperLimit, double &lowerLimit,
                           double percent = 0.95);
 
       // returns the minimum and maximum areas that are allowed if we
       // use these two end points.  Returns 'true' if the two
       // iterators have an overlap..
-      static bool minMaxArea (double &minArea, double &maxArea,
+      static bool minMaxArea(double &minArea, double &maxArea,
                               const VecConstIter &alpha,
                               const VecConstIter &beta);
 
 
       // A very rough and inefficient method for finding an Y intersect
-      static double findYintersect (const Vec &curve, double signedStep,
+      static double findYintersect(const Vec &curve, double signedStep,
                                     double yDelta, double epsilon = 0.00001);
 
 
@@ -129,13 +129,13 @@ class CLPTrapezoid : public TObject
       double m_totalIntegral;
       int    m_position; // for debugging purposes
 
-      ClassDef (CLPTrapezoid, 1) // CLPTrapezoid Class
+      ClassDef(CLPTrapezoid, 1) // CLPTrapezoid Class
 };
 
 
 ////////////////////////
 // ostream Definition //
 ////////////////////////
-extern ostream& operator<< (ostream& o_stream, const CLPTrapezoid::Vec &right);
+extern ostream& operator<<(ostream& o_stream, const CLPTrapezoid::Vec &right);
 
 #endif // CLPTrapezoid_HH

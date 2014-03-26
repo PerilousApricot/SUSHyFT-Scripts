@@ -30,7 +30,7 @@ class BinsSum
       /////////////
 
       // tells particle data how to print itself out
-      friend std::ostream& operator<< (std::ostream& o_stream,
+      friend std::ostream& operator<<(std::ostream& o_stream,
                                        const BinsSum &rhs);
 
       //////////////////////////
@@ -43,7 +43,7 @@ class BinsSum
       /////////////////////////////////
       // Constructors and Destructor //
       /////////////////////////////////
-      BinsSum (std::string name, BinsSumCont *containerPtr);
+      BinsSum(std::string name, BinsSumCont *containerPtr);
 
       ////////////////
       // One Liners //
@@ -53,12 +53,12 @@ class BinsSum
       const std::string &name() const { return m_name; }
 
       // add a template index
-      void addTemplateIndex (int index)
-      { m_templateIndiciesVec.push_back (index); }
+      void addTemplateIndex(int index)
+      { m_templateIndiciesVec.push_back(index); }
 
       // add a bin range
-      void addBinRange (int lower, int upper)
-      { m_lowerBinVec.push_back (lower); m_upperBinVec.push_back (upper); }
+      void addBinRange(int lower, int upper)
+      { m_lowerBinVec.push_back(lower); m_upperBinVec.push_back (upper); }
 
       // reset counting
       void reset() { m_trialsVec.clear(); }
@@ -74,7 +74,7 @@ class BinsSum
       double value() const;
 
       // calculate mean and RMS from trials
-      void calcMeanAndRMS (double &mean, double &rms) const;
+      void calcMeanAndRMS(double &mean, double &rms) const;
 
       // adds self to container.  Returns index
       int addSelfToContainer();
@@ -83,7 +83,7 @@ class BinsSum
       // Static Member Functions //
       /////////////////////////////
 
-      static void calcMeanAndRMS (double &mean, double &rms, const DVec &xvec);
+      static void calcMeanAndRMS(double &mean, double &rms, const DVec &xvec);
 
   private:
       /////////////////////////

@@ -37,30 +37,30 @@ namespace OptionUtils
 
    // parse the command line arguments.  If 'returnArgs' is true, then
    // any non-assignments and non-options will be returned.
-   SVec parseArguments (int argc, char** argv, bool returnArgs = false);
+   SVec parseArguments(int argc, char** argv, bool returnArgs = false);
 
    // set a usage string for '--help' option
-   void setUsageString (const std::string &usage);
+   void setUsageString(const std::string &usage);
 
    // prints out '--help' screen, then exits.
    void help();
 
-   // remove an ending (e.g., '.root') from a string
-   std::string removeEnding (const std::string &input,
+   // remove an ending(e.g., '.root') from a string
+   std::string removeEnding(const std::string &input,
                                     const std::string &ending);
 
    // splits a line into words
-   void split (SVec &retval, std::string line, std::string match = " \t",
+   void split(SVec &retval, std::string line, std::string match = " \t",
                bool ignoreComments = true);
 
    // removes '# ....' comment
-   void removeComment (std::string &line);
+   void removeComment(std::string &line);
 
    // removes leading and trailing spaces
-   void removeLeadingAndTrailingSpaces (std::string &line);
+   void removeLeadingAndTrailingSpaces(std::string &line);
 
    // given a line, finds first non-space word and rest of line
-   void findCommand (const std::string &line,
+   void findCommand(const std::string &line,
                      std::string &command,
                      std::string &rest);
 
@@ -71,27 +71,27 @@ namespace OptionUtils
    void lowercaseString(std::string &arg);
 
    // converts a single character to lower case
-   char toLower (char &ch);
+   char toLower(char &ch);
 
    // add variable to option maps
-   void addOptionKey (std::string key, int         &variable,
+   void addOptionKey(std::string key, int         &variable,
                       const std::string &description = "");
-   void addOptionKey (std::string key, double      &variable,
+   void addOptionKey(std::string key, double      &variable,
                       const std::string &description = "");
-   void addOptionKey (std::string key, bool        &variable,
+   void addOptionKey(std::string key, bool        &variable,
                       const std::string &description = "");
-   void addOptionKey (std::string key, std::string &variable,
+   void addOptionKey(std::string key, std::string &variable,
                       const std::string &description = "");
-   void addOptionKey (std::string key, SVec        &variable,
+   void addOptionKey(std::string key, SVec        &variable,
                       const std::string &description = "");
-   void addOptionKey (std::string key, IVec        &variable,
+   void addOptionKey(std::string key, IVec        &variable,
                       const std::string &description = "");
-   void addOptionKey (std::string key, DVec        &variable,
+   void addOptionKey(std::string key, DVec        &variable,
                       const std::string &description = "");
 
    // returns true if a variable has been modified from the command
    // line.
-   bool valueHasBeenModified (const std::string &key);
+   bool valueHasBeenModified(const std::string &key);
 
    // Sets a variable 'varname' to a 'value' from a string
    // 'varname=value'.  If 'dontOverrideChange' is set true, then the
@@ -99,13 +99,13 @@ namespace OptionUtils
    // This will allow you to read in a file to set most variables and
    // still be allowed to make changes from the command line.  If you
    // want to ignore the first 'n' characters, simply set 'offset=n'.
-   bool setVariableFromString (const std::string &arg,
+   bool setVariableFromString(const std::string &arg,
                                       bool dontOverrideChange = false,
                                       int offset = 0);
 
    // sets variable options from file where lines are formatted as
    // - var=value
-   bool setVariablesFromFile (const std::string &filename);
+   bool setVariablesFromFile(const std::string &filename);
 
    /////////////////////
    // /////////////// //

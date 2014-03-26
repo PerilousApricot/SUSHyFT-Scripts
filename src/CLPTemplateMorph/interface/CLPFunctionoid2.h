@@ -16,7 +16,7 @@ class CLPFunctionoid2
         // friends //
         /////////////
         // tells particle data how to print itself out
-        friend std::ostream& operator<< (std::ostream& o_stream,
+        friend std::ostream& operator<<(std::ostream& o_stream,
                 const CLPFunctionoid2 &rhs);
 
         //////////////////////////

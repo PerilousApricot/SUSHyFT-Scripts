@@ -16,7 +16,7 @@ class StartStopStep
       // friends //
       /////////////
       // tells particle data how to print itself out
-      friend std::ostream& operator<< (std::ostream& o_stream,
+      friend std::ostream& operator<<(std::ostream& o_stream,
                                        const StartStopStep &rhs);
 
       typedef std::vector< StartStopStep > Vec;
@@ -31,8 +31,8 @@ class StartStopStep
       /////////////////////////////////
       // Constructors and Destructor //
       /////////////////////////////////
-      StartStopStep ();
-      StartStopStep (double start, double stop, double step);
+      StartStopStep();
+      StartStopStep(double start, double stop, double step);
 
        ////////////////
       // One Liners //
@@ -47,10 +47,10 @@ class StartStopStep
       ///////////////////////
       // Setting Functions //
       ///////////////////////
-      void setStart (double start) { m_start = start; }
-      void setStop  (double stop)  { m_stop  = stop; }
-      void setStep  (double step)  { m_step  = step; }
-      void setStartStopStep (double start, double stop, double step)
+      void setStart(double start) { m_start = start; }
+      void setStop(double stop)  { m_stop  = stop; }
+      void setStep(double step)  { m_step  = step; }
+      void setStartStopStep(double start, double stop, double step)
       { m_start = start; m_stop = stop; m_step = step;}
 
       //////////////////////////////

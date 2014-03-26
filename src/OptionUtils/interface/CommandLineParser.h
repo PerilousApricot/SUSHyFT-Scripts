@@ -27,7 +27,7 @@ class CommandLineParser : public VariableMapCont
       // friends //
       /////////////
       // tells particle data how to print itself out
-      friend std::ostream& operator<< (std::ostream& o_stream,
+      friend std::ostream& operator<<(std::ostream& o_stream,
                                        const CommandLineParser &rhs);
 
       //////////////////////////
@@ -40,15 +40,15 @@ class CommandLineParser : public VariableMapCont
       /////////////////////////////////
       // Constructors and Destructor //
       /////////////////////////////////
-      CommandLineParser (const std::string &usage,
+      CommandLineParser(const std::string &usage,
                          unsigned int optionsType = kEventContOpt);
 
       ////////////////
       // One Liners //
       ////////////////
 
-      // turn on (true) or off (false) printing of options by default
-      void setPrintOptions (bool print) { m_printOptions = print; }
+      // turn on(true) or off (false) printing of options by default
+      void setPrintOptions(bool print) { m_printOptions = print; }
 
       // return vector calling arguments
       const SVec &argVec() const { return m_fullArgVec; }
@@ -61,7 +61,7 @@ class CommandLineParser : public VariableMapCont
 
       // parse the command line arguments.  If 'returnArgs' is true, then
       // any non-assignments and non-options will be returned.
-      void parseArguments (int argc, char** argv,
+      void parseArguments(int argc, char** argv,
                            bool allowNonOptionArgs = false);
 
       // prints out '--help' screen, then exits.
@@ -74,29 +74,29 @@ class CommandLineParser : public VariableMapCont
       // Pass in 'tag' if you want to modify the output name based on
       // options the user has passed in.  'tag' is not passed by const
       // reference because it may be modified.
-      void _finishDefaultOptions (std::string tag = "");
+      void _finishDefaultOptions(std::string tag = "");
 
       /////////////////////////////
       // Static Member Functions //
       /////////////////////////////
 
-      // remove an ending (e.g., '.root') from a string
-      static std::string removeEnding (const std::string &input,
+      // remove an ending(e.g., '.root') from a string
+      static std::string removeEnding(const std::string &input,
                                        const std::string &ending);
 
       // splits a line into words
-      static void split (SVec &retval, std::string line,
+      static void split(SVec &retval, std::string line,
                          std::string match = " \t",
                          bool ignoreComments = true);
 
       // removes '# ....' comment
-      static void removeComment (std::string &line);
+      static void removeComment(std::string &line);
 
       // removes leading and trailing spaces
-      static void removeLeadingAndTrailingSpaces (std::string &line);
+      static void removeLeadingAndTrailingSpaces(std::string &line);
 
       // given a line, finds first non-space word and rest of line
-      static void findCommand (const std::string &line,
+      static void findCommand(const std::string &line,
                                std::string &command,
                                std::string &rest);
 
@@ -106,13 +106,13 @@ class CommandLineParser : public VariableMapCont
       // This will allow you to read in a file to set most variables and
       // still be allowed to make changes from the command line.  If you
       // want to ignore the first 'n' characters, simply set 'offset=n'.
-      bool setVariableFromString (const std::string &arg,
+      bool setVariableFromString(const std::string &arg,
                                    bool dontOverrideChange = false,
                                    int offset = 0);
 
       // sets variable options from file where lines are formatted as
       // - var=value
-      bool setVariablesFromFile (const std::string &filename);
+      bool setVariablesFromFile(const std::string &filename);
 
 
   private:
@@ -121,12 +121,12 @@ class CommandLineParser : public VariableMapCont
       //////////////////////////////
 
       // runs command embedded in arg
-      bool _runVariableCommandFromString (const std::string &arg);
+      bool _runVariableCommandFromString(const std::string &arg);
 
 
-      // given a section number (1..N) and totalsection (N), fills output
+      // given a section number(1..N) and totalsection (N), fills output
       // list with correct files.
-      void _getSectionFiles (const SVec &inputList, SVec &outputList,
+      void _getSectionFiles(const SVec &inputList, SVec &outputList,
                              int section, int totalSection);
 
       /////////////////////////

@@ -57,7 +57,7 @@ class CLPTemplateFitter
       /////////////
 
       // tells particle data how to print itself out
-      friend std::ostream& operator<< (std::ostream& o_stream,
+      friend std::ostream& operator<<(std::ostream& o_stream,
                                        const CLPTemplateFitter &rhs);
 
       //////////////////////////
@@ -77,88 +77,88 @@ class CLPTemplateFitter
       // The Big Three //
       ///////////////////
 
-      // Copy constructor (NOT COMPLETE)
-      CLPTemplateFitter (const CLPTemplateFitter& rhs);
+      // Copy constructor(NOT COMPLETE)
+      CLPTemplateFitter(const CLPTemplateFitter& rhs);
 
       // Destructor
       ~CLPTemplateFitter();
 
-      // Operator=  (NOT COMPLETE)
+      // Operator=(NOT COMPLETE)
       CLPTemplateFitter &operator=
-      (const CLPTemplateFitter& rhs);
+(const CLPTemplateFitter& rhs);
 
       //////////////////////////////
       // Regular Member Functions //
       //////////////////////////////
 
-      // adds data template.  Returns the old TH1F pointer (if any)
-      TH1F* addData (TH1F *dataHist);
-      const TH1F* getData () const { return m_dataHPtr; }
-      void  copyDataFromOtherFitter (const CLPTemplateFitter &otherFitter);
-      void  copyDataFromOtherFitter (const CLPTemplateFitter &otherFitter1,
+      // adds data template.  Returns the old TH1F pointer(if any)
+      TH1F* addData(TH1F *dataHist);
+      const TH1F* getData() const { return m_dataHPtr; }
+      void  copyDataFromOtherFitter(const CLPTemplateFitter &otherFitter);
+      void  copyDataFromOtherFitter(const CLPTemplateFitter &otherFitter1,
 				     const CLPTemplateFitter &otherFitter2);
 
       // adds a MC template.  Returns template index
-      int addTemplate (const std::string& name, TH1F *tempHist,
+      int addTemplate(const std::string& name, TH1F *tempHist,
                        double norm, double mean = 0., double sigma = 0.,
                        double start = 0., double stop = 0., double step = 0.);
 
       // adds a bin-by-bin norm.  Returns bin norm's index
-      int addBinNorm (const std::string &name, const BinNormClass &binNorm,
+      int addBinNorm(const std::string &name, const BinNormClass &binNorm,
                       double mean = 1., double sigma = 0.);
 
-      // adds a functoid to a binNorm (either one binNorm for all
+      // adds a functoid to a binNorm(either one binNorm for all
       // templates or a binNorm for only one template.
-      void setBinNormFunctoid (const std::string &name,
+      void setBinNormFunctoid(const std::string &name,
                                BinNormFunctoid &functoid);
-      void setBinNormFunctoid (const std::string &name, int tempIndex,
+      void setBinNormFunctoid(const std::string &name, int tempIndex,
                                BinNormFunctoid &functoid);
-      void setBinNormFunctoid (int binNormIndex, BinNormFunctoid &functoid);
-      void setBinNormFunctoid (int binNormIndex, int tempIndex,
+      void setBinNormFunctoid(int binNormIndex, BinNormFunctoid &functoid);
+      void setBinNormFunctoid(int binNormIndex, int tempIndex,
                                BinNormFunctoid &functoid);
 
       // tell fitter to fix/release a parameter in Minuit
-      bool fixParameter     (const std::string &name);
-      bool releaseParameter (const std::string &name);
+      bool fixParameter(const std::string &name);
+      bool releaseParameter(const std::string &name);
 
       // Tells you whether a parameter is fixed or not
-      bool isParameterFixed (const std::string &name) const;
-      bool isParameterFixed (int paramIndex) const;
+      bool isParameterFixed(const std::string &name) const;
+      bool isParameterFixed(int paramIndex) const;
 
       // tells fitter to update value of a parameter
-      bool setParameter (const std::string &name, double value);
+      bool setParameter(const std::string &name, double value);
 
       // sets a constraint mean and sigma.  Negative sigma means
       // unconstrained.
-      void setConstraint (const std::string &name, double mean, double sigma);
+      void setConstraint(const std::string &name, double mean, double sigma);
 
       // get constraint for a given parameter
-      void getConstraint (const std::string &name, double &mean, double &sigma);
-      void getConstraint (int paramIndex, double &mean, double &sigma);
+      void getConstraint(const std::string &name, double &mean, double &sigma);
+      void getConstraint(int paramIndex, double &mean, double &sigma);
 
       // sets up and runs Minuit minimization to fit templates to data
       void fit();
 
       // fits letting everything float except the variable given is
       // fixed to the value given.  Returns -2 * ln likelihood.
-      double fitEverythingBut (const std::string &name, double value);
+      double fitEverythingBut(const std::string &name, double value);
 
       // scans a variable in the given range.  Return value is a
       // DPairSet.
-      void scanVariable (CLPTrapezoid::Vec &retval, const std::string &name,
+      void scanVariable(CLPTrapezoid::Vec &retval, const std::string &name,
                          double lower, double upper, int numPoint = 1000);
 
       // returns the value of the log likelihood given the values of
       // the parameter stored in 'parameterVec'.
-      double logLikelihoodValue (const DVec &parameterVec);
-      double logLikelihoodValue ()
-      { return logLikelihoodValue (m_fitVec); }
+      double logLikelihoodValue(const DVec &parameterVec);
+      double logLikelihoodValue()
+      { return logLikelihoodValue(m_fitVec); }
 
       // reset Minuit parameters to default starting values
       void resetMinuitParameters();
 
       // returns a string name of a given parameter
-      const std::string &paramName (int param) const;
+      const std::string &paramName(int param) const;
 
       // returns a TH1F* to the new histogram.  User is responsible
       // for the memory.  If no name is passed in, then a histogram of
@@ -169,82 +169,82 @@ class CLPTemplateFitter
       // internally.
       // 2) 'name' is passed by copy instead of by reference because
       // it is modified internally.
-      TH1F* updatedHistogram ();
-      TH1F* updatedHistogram (std::string name);
-      TH1F* updatedHistogram (int tempIndex);
-      TH1F* updatedHistogram (const DVec &paramVec);
-      TH1F* updatedHistogram (std::string name, const DVec &paramVec);
-      TH1F* updatedHistogram (int tempIndex, const DVec &paramVec);
+      TH1F* updatedHistogram();
+      TH1F* updatedHistogram(std::string name);
+      TH1F* updatedHistogram(int tempIndex);
+      TH1F* updatedHistogram(const DVec &paramVec);
+      TH1F* updatedHistogram(std::string name, const DVec &paramVec);
+      TH1F* updatedHistogram(int tempIndex, const DVec &paramVec);
 
       // returns a TH1F* that is a Fit/Data ratio.  Errors are based
       // off of sqrt(N) in each data bin.  Bins with 0 data events are
       // ignored.  User is responsible for the memory
-      TH1F* ratioHistogram () const;
+      TH1F* ratioHistogram() const;
 
-      // returns a TH1F* that is the residual of the fit (data -
+      // returns a TH1F* that is the residual of the fit(data -
       // fit). Bins with 0 data events are ignored.  User is
       // responsible for the memory.
-      TH1F* residualHistogram () const;
+      TH1F* residualHistogram() const;
 
       // outputs fit result to STDOUT
       void outputFitResults() const;
 
       // outputs the covariance matrix to STDOUT
-      void outputCovarianceMatrix (bool nonZeroOnly = true) const;
+      void outputCovarianceMatrix(bool nonZeroOnly = true) const;
 
       // outputs the covariance matrix to STDOUT
-      void outputCorrelationMatrix (bool nonZeroOnly = true) const;
+      void outputCorrelationMatrix(bool nonZeroOnly = true) const;
 
       // removes bins from fitting consideration
-      void removeBinFromFit  (int bin);
-      void removeBinsFromFit (const BinNormClass::ISet &binset);
+      void removeBinFromFit(int bin);
+      void removeBinsFromFit(const BinNormClass::ISet &binset);
 
       // return the total bin contents.  If no DVec is provided, then
       // the results from the fit are returned.
-      double getTotalBinContent (int binNormIndex) const;
-      double getTotalBinContent (int binNormIndex, const DVec &paramVec) const;
+      double getTotalBinContent(int binNormIndex) const;
+      double getTotalBinContent(int binNormIndex, const DVec &paramVec) const;
 
       // returns the value or error of a parameter after the fit
-      double getValue (const std::string &name) const;
-      double getError (const std::string &name) const;
-      double getPosError (const std::string &name) const;
-      double getNegError (const std::string &name) const;
+      double getValue(const std::string &name) const;
+      double getError(const std::string &name) const;
+      double getPosError(const std::string &name) const;
+      double getNegError(const std::string &name) const;
 
       // returns the covariance matrix as well as fills the SVec as
       // the order of the variables in the covariance matrix.  By
       // default, the function only returns the subset of variables
       // that are not fixed.
-      TMatrixD getCovarianceMatrix (SVec &paramNamesVec,
+      TMatrixD getCovarianceMatrix(SVec &paramNamesVec,
                                     bool nonZeroOnly = true) const;
-      TMatrixD getCovarianceMatrix (IVec &paramIndiciesVec,
+      TMatrixD getCovarianceMatrix(IVec &paramIndiciesVec,
                                     bool nonZeroOnly = true) const;
 
       // calculates and stores internally square root of covariance
       // matrix as well as indicies of non-zero elements
-      void storeSqrtMatrix ();
+      void storeSqrtMatrix();
 
       // after storeSqrtMatrix has been called, generates correlated
       // random numbers.  Any fixed parameters will not be modified.
-      void generateRandomParams (DVec &paramVec) const;
+      void generateRandomParams(DVec &paramVec) const;
 
       // returns paramVec with the current values of all parameters,
       // symetric and positive and negeative errors..
-      void fillParamVec (DVec &paramVec) const;
-      void fillErrorVec (DVec &paramVec) const;
-      void fillPosErrorVec (DVec &paramVec) const;
-      void fillNegErrorVec (DVec &paramVec) const;
+      void fillParamVec(DVec &paramVec) const;
+      void fillErrorVec(DVec &paramVec) const;
+      void fillPosErrorVec(DVec &paramVec) const;
+      void fillNegErrorVec(DVec &paramVec) const;
 
       // Returns SIMap which contains map between parameter name and
       // indices used.
       SIMap getNameIndexMap() const;
 
       // fills namesVec with all of the names of the parameters in order
-      void fillNameVec (SVec &nameVec) const;
+      void fillNameVec(SVec &nameVec) const;
 
-      // Given a string, it returns the index of the parameter (-1 if
+      // Given a string, it returns the index of the parameter(-1 if
       // not found).  This function is expected to be somewhat
       // expensive and should be called sparingly.
-      int parameterIndex (const std::string &name) const;
+      int parameterIndex(const std::string &name) const;
 
       // initialize Minuit
       void _initializeMinuit();
@@ -256,13 +256,13 @@ class CLPTemplateFitter
       // When set true, tells 'updatedHistogram()' and
       // 'ratioHistogram()' to use all bins, regardless of whether the
       // bin is used in the fit.
-      void setUseAllBinsInPlots (bool useAll = true)
+      void setUseAllBinsInPlots(bool useAll = true)
       { m_useAllBinsInPlots = useAll; }
-      bool usingAllBinsInPlots () const { return m_useAllBinsInPlots; }
+      bool usingAllBinsInPlots() const { return m_useAllBinsInPlots; }
 
       // sets minuit's verbose level.  Only works if used BEFORE first
       // fit.
-      void setMinuitVerboseLevel (int level) { m_minuitVerboseLevel = level; }
+      void setMinuitVerboseLevel(int level) { m_minuitVerboseLevel = level; }
 
       // return the number of parameters used
       int size() const { return m_numTemplates + m_numBinNorms; }
@@ -271,16 +271,16 @@ class CLPTemplateFitter
 
       // setting and checking verbose levels
       int verbose() const           { return m_verbose; }
-      int verbose (int flag) const  { return m_verbose & flag; }
-      void setVerbose (int verbose) { m_verbose = verbose; }
+      int verbose(int flag) const  { return m_verbose & flag; }
+      void setVerbose(int verbose) { m_verbose = verbose; }
 
       // set and check 'doMinos' variable
       bool doMinos() const { return m_doMinos; }
-      void setDoMinos (bool doMinos) { m_doMinos = doMinos; }
+      void setDoMinos(bool doMinos) { m_doMinos = doMinos; }
 
       // set and value for minExpectedBinContent
       double minExpectedBinContent() const { return m_minExpectedBinContent; }
-      void setMinExpectedBinContent (double minExpectedBinContent)
+      void setMinExpectedBinContent(double minExpectedBinContent)
       { m_minExpectedBinContent = minExpectedBinContent; }
 
       // returns reference to binsSumCont.  Note that m_binsSumCont is
@@ -294,24 +294,24 @@ class CLPTemplateFitter
       /////////////////////////////
 
       // function that Minuit minimizes
-      static void minimizeFcn (int &npar, double *gin, double &retval,
+      static void minimizeFcn(int &npar, double *gin, double &retval,
                                double *parameterArray, int iflag);
 
       // returns log of the probability that we see 'observed' when we
       // expected 'expected'.
-      static double logPoisson (double observed, double expected);
+      static double logPoisson(double observed, double expected);
 
       // Return the index for a given name.  Returns -1 if name is not
-      // found.  User must provide nameIndexMap (from 'getNameIndexMap').
-      static int indexOfName (const std::string &name,
+      // found.  User must provide nameIndexMap(from 'getNameIndexMap').
+      static int indexOfName(const std::string &name,
                               const SIMap &nameIndexMap);
 
       // returns square root of a matrix
-      static void sqrtMatrix (TMatrixD &retval, const TMatrixD &mat);
+      static void sqrtMatrix(TMatrixD &retval, const TMatrixD &mat);
 
       // Given square root of covariance matrix and a vector of means,
       // generates correlated random numbers
-      static void gaussCorrRand (TVectorD &retVec, const TMatrixD &sqrtCovMat,
+      static void gaussCorrRand(TVectorD &retVec, const TMatrixD &sqrtCovMat,
                                  const TVectorD &meanVec);
 
 
@@ -323,79 +323,79 @@ class CLPTemplateFitter
 
       // returns multiplicative factor that fitter has assigned to a
       // bin of a template.
-      double _getBinFactor (int tempIndex, int binNormIndex,
+      double _getBinFactor(int tempIndex, int binNormIndex,
                             double *arrayAddress = 0) const;
-      double _getBinFactor (int tempIndex, int binNormIndex,
+      double _getBinFactor(int tempIndex, int binNormIndex,
                             const DVec &paramVec) const;
 
       // returns bin contents for a template
-      double _getBinContent (int tempIndex, int binNormIndex,
+      double _getBinContent(int tempIndex, int binNormIndex,
                              double *arrayAddress = 0) const;
-      double _getBinContent (int tempIndex, int binNormIndex,
+      double _getBinContent(int tempIndex, int binNormIndex,
                              const DVec &paramVec) const;
 
       // returns the total bin contents for all templates
-      double _getTotalBinContent (int binNormIndex,
+      double _getTotalBinContent(int binNormIndex,
                                   double *arrayAddress = 0) const;
-      double _getTotalBinContent (int binNormIndex,
+      double _getTotalBinContent(int binNormIndex,
                                   const DVec &paramVec) const;
 
       // returns multiplicative factor by bin
-      double _byBin (int tempIndex, int binNormIndex,
+      double _byBin(int tempIndex, int binNormIndex,
                      double *arrayAddress = 0) const;
-      double _byBin (int tempIndex, int binNormIndex,
+      double _byBin(int tempIndex, int binNormIndex,
                      const DVec &paramVec) const;
 
       // returns the index of a parameter given its name.  Return -1
       // if the parameter name doesn't find any matches
-      int _paramIndex (const std::string &name,
+      int _paramIndex(const std::string &name,
                        int &tempIndex, int &binNormIndex) const;
-      int _paramIndex (const std::string &name) const
-      { int temp, binNorm; return _paramIndex (name, temp, binNorm); }
+      int _paramIndex(const std::string &name) const
+      { int temp, binNorm; return _paramIndex(name, temp, binNorm); }
 
       // returns the probability of the data fluctuating to the
       // current templates
-      double _totalLogProb () const;
+      double _totalLogProb() const;
 
       // destroys Minuit's variables
       void _destroyMinuit();
 
       // number of events in the bin range
-      double _eventsInRange (TH1F* histPtr);
+      double _eventsInRange(TH1F* histPtr);
 
       // validates bin index
-      void _validateBinIndex (const std::string &function,
+      void _validateBinIndex(const std::string &function,
                               int binNormIndex) const;
 
       // validates template index
-      void _validateTemplateIndex (const std::string &function,
+      void _validateTemplateIndex(const std::string &function,
                                    int tempIndex) const;
 
       // validates minuit is initialized
-      void _validateMinuitInit (const std::string &function) const;
+      void _validateMinuitInit(const std::string &function) const;
 
       // validates that a histogram is o.k.  Also sets informations
       // about histogram sizes.
-      void _validateHistogram (const std::string &function,
+      void _validateHistogram(const std::string &function,
                                TH1F *histPtr);
 
-      // returns the ISet of parameters to use (all if nonZeroOnly is
+      // returns the ISet of parameters to use(all if nonZeroOnly is
       // false, just the non-fixed parameter indicies if true)
-      void _fillParamISet (BinNormClass::ISet &paramSet,
+      void _fillParamISet(BinNormClass::ISet &paramSet,
                            bool nonZeroOnly) const;
 
-      void _setAllMorphingParameters (const double *parameterArray);
+      void _setAllMorphingParameters(const double *parameterArray);
 
       ///////////////////////////////////////
       // One Line Private Member Functions //
       ///////////////////////////////////////
 
       // set the address of Minuit parameters array
-      void _setArrayAddress (double *arrayAddress)
+      void _setArrayAddress(double *arrayAddress)
       { m_arrayAddress = arrayAddress; }
 
       // returns true if bin is in set of bins being fit
-      bool _isBinFit (int bin) const
+      bool _isBinFit(int bin) const
       { return m_binsSet.end() != m_binsSet.find (bin); }
 
       /////////////////////////

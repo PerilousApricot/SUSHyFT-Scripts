@@ -46,7 +46,7 @@ CLPTemplateFitter::~CLPTemplateFitter()
 }
 
 CLPTemplateFitter
-&CLPTemplateFitter::operator= (const CLPTemplateFitter& rhs)
+&CLPTemplateFitter::operator=(const CLPTemplateFitter& rhs)
 {
    // Avoid overwriting myself
    if(this == &rhs)
@@ -79,7 +79,7 @@ CLPTemplateFitter::copyDataFromOtherFitter(const CLPTemplateFitter
                                             &otherFitter)
 {
    _validateHistogram("addData", otherFitter.m_dataHPtr);
-   *m_dataHPtr = * (otherFitter.m_dataHPtr);
+   *m_dataHPtr = *(otherFitter.m_dataHPtr);
 }
 
 void
@@ -89,7 +89,7 @@ CLPTemplateFitter::copyDataFromOtherFitter(const CLPTemplateFitter
 {
    _validateHistogram("addData", otherFitter1.m_dataHPtr);
    _validateHistogram("addData", otherFitter2.m_dataHPtr);
-   TH1F *clone = (TH1F*) otherFitter1.m_dataHPtr->Clone("clone");
+   TH1F *clone =(TH1F*) otherFitter1.m_dataHPtr->Clone("clone");
    clone->Add(otherFitter2.m_dataHPtr);
    *m_dataHPtr = *clone;
 }
@@ -100,7 +100,7 @@ CLPTemplateFitter::addTemplate(const string &name, TH1F *tempHist,
                                 double start, double stop, double step)
 {
    _validateHistogram("addTemplate", tempHist);
-   int index = (int) m_templateHPtrVec.size();
+   int index =(int) m_templateHPtrVec.size();
    m_templateHPtrVec.push_back( tempHist );
    m_normVec.push_back( norm     );
    m_constraintMeanVec.push_back( mean     );
@@ -144,7 +144,7 @@ CLPTemplateFitter::addBinNorm(const string &name,
                                const BinNormClass &binNorm,
                                double mean, double sigma)
 {
-   int index = (int) m_binNormVec.size();
+   int index =(int) m_binNormVec.size();
    m_binNormVec.push_back( binNorm );
    m_binNormConstraintMeanVec.push_back( mean    );
    m_binNormConstraintSigmaVec.push_back( sigma   );
@@ -489,7 +489,7 @@ CLPTemplateFitter::fit()
 
    ////////////////////////////////////////
    // Get covariance matrix from TMinuit //
-   // (is there a better way?)           //
+   //(is there a better way?)           //
    ////////////////////////////////////////
    m_covarMatrixDVV.clear();
    DVecVec tempCovarDVV;
@@ -505,7 +505,7 @@ CLPTemplateFitter::fit()
       {
          // Save the value to tempCoverDVV.
          tempCovarDVV[outer].push_back
- ( covMat [ outer * m_numMinuitParams + inner]);
+( covMat [ outer * m_numMinuitParams + inner]);
          // Initialize m_covarMatrixDVV to 0.
          m_covarMatrixDVV[outer].push_back(0.);
       } // for inner
@@ -530,7 +530,7 @@ CLPTemplateFitter::fit()
    } // for loop
 
    // Groovy.  Now copy the non-zero values
-   int size = (int) freeParameterVec.size();
+   int size =(int) freeParameterVec.size();
    assert(m_minuitPtr->GetNumFreePars() == size);
    for(int outer = 0; outer < size; ++outer)
    {
@@ -654,7 +654,7 @@ CLPTemplateFitter::scanVariable(CLPTrapezoid::Vec &retval, const string &name,
    }
    m_minuitPtr->FixParameter(paramIndex);
    sm_tfPtr = this;
-   double step = (upper - lower) / numPoints;
+   double step =(upper - lower) / numPoints;
    for(int loop = 0; loop <= numPoints; ++loop)
    {
       double value = lower + loop * step;
@@ -687,7 +687,7 @@ double
 CLPTemplateFitter::logLikelihoodValue(const DVec &parameterVec)
 {
    sm_tfPtr = this;
-   int npar = (int) parameterVec.size();
+   int npar =(int) parameterVec.size();
    double *gin = 0;
    int iflag = 0;
    double retval;
@@ -753,7 +753,7 @@ CLPTemplateFitter::updatedHistogram(const DVec &paramVec)
 {
    // make sure we update any morph parameters if necessary
    _setAllMorphingParameters(& (paramVec.at(0)) );
-   TH1F *clone = (TH1F*) m_dataHPtr->Clone("clone");
+   TH1F *clone =(TH1F*) m_dataHPtr->Clone("clone");
    clone->Reset();
    for(int binNormIndex = 0; binNormIndex <= m_numBins; ++binNormIndex)
    {
@@ -794,7 +794,7 @@ CLPTemplateFitter::updatedHistogram(int tempIndex,
    // write clone to memory, not current directory
    TH1::AddDirectory(false);
    string name = paramName(tempIndex) + "_updated";
-   TH1F *clone = (TH1F*) m_templateHPtrVec[tempIndex]->Clone( name.c_str() );
+   TH1F *clone =(TH1F*) m_templateHPtrVec[tempIndex]->Clone( name.c_str() );
    // Loop over all bins.  If desired, we will only "consider" bins
    // used in the fit.
    for(int binNormIndex = 0; binNormIndex <= m_numBins; ++binNormIndex)
@@ -823,7 +823,7 @@ CLPTemplateFitter::updatedHistogram(int tempIndex,
 TH1F*
 CLPTemplateFitter::ratioHistogram() const
 {
-   TH1F *ratioHPtr = (TH1F*) m_dataHPtr->Clone("FitRatio");
+   TH1F *ratioHPtr =(TH1F*) m_dataHPtr->Clone("FitRatio");
    ratioHPtr->SetTitle("Ratio of Data to Fitted Template");
    // Loop over all bins.  If desired, we will only "consider" bins
    // used in the fit.
@@ -858,7 +858,7 @@ CLPTemplateFitter::ratioHistogram() const
 TH1F*
 CLPTemplateFitter::residualHistogram() const
 {
-   TH1F *residualHPtr = (TH1F*) m_dataHPtr->Clone("FitResidual");
+   TH1F *residualHPtr =(TH1F*) m_dataHPtr->Clone("FitResidual");
    residualHPtr->SetTitle("Residual of Data to Fitted Template");
    // Loop over all bins.  If desired, we will only "consider" bins
    // used in the fit.
@@ -894,7 +894,7 @@ CLPTemplateFitter::outputFitResults() const
    {
       if((int) paramName(paramIndex).length() > size)
       {
-         size = (int) paramName(paramIndex).length();
+         size =(int) paramName(paramIndex).length();
       }
    }
    size += 1;
@@ -1082,7 +1082,7 @@ CLPTemplateFitter::getCovarianceMatrix(SVec &paramNamesVec,
    // Prepare a set to describe which parameters to look at
    BinNormClass::ISet paramSet;
    _fillParamISet(paramSet, nonZeroOnly);
-   int size = (int) paramSet.size();
+   int size =(int) paramSet.size();
    assert(size > 0);
    TMatrixD covarMatrix(size, size);
    int outer = 0;
@@ -1114,7 +1114,7 @@ CLPTemplateFitter::getCovarianceMatrix(IVec &paramIndiciesVec,
    // Prepare a set to describe which parameters to look at
    BinNormClass::ISet paramSet;
    _fillParamISet(paramSet, nonZeroOnly);
-   int size = (int) paramSet.size();
+   int size =(int) paramSet.size();
    assert(size > 0);
    TMatrixD covarMatrix(size, size);
    int outer = 0;
@@ -1149,7 +1149,7 @@ CLPTemplateFitter::storeSqrtMatrix()
 void
 CLPTemplateFitter::generateRandomParams(DVec &paramVec) const
 {
-   int size = (int) m_nonZeroElementsVec.size();
+   int size =(int) m_nonZeroElementsVec.size();
    // If everything is fixed, just return now
    if(! size) return;
    // set a mean vector
@@ -1281,7 +1281,7 @@ CLPTemplateFitter::_setAllMorphingParameters(const double *parameterArray)
         ++iter)
    {
       CLPTemplateMorph *morphPtr =
-         dynamic_cast< CLPTemplateMorph* > (m_templateHPtrVec.at(*iter));
+         dynamic_cast< CLPTemplateMorph* >(m_templateHPtrVec.at(*iter));
       assert(morphPtr);
       if(verbose())
       {
@@ -1292,7 +1292,7 @@ CLPTemplateFitter::_setAllMorphingParameters(const double *parameterArray)
          //    TCanvas c1;
          //    morphPtr->Draw();
          //    c1.Print(Form("plots/morph_%s%.1f.eps",
-         // (const char*) match,
+         //(const char*) match,
          //                    parameterArray[5]));
          // } // if anti
       } // if verbose
@@ -1360,7 +1360,7 @@ CLPTemplateFitter::logPoisson(double observed, double expected)
    {
       // if we're here, then just use the Gaussian approximation.
       double sigma = sqrt(expected);
-      double arg = (observed - expected) / sigma;
+      double arg =(observed - expected) / sigma;
       retval = -0.5 * arg * arg - log( sigma * sqrt( 2 * TMath::Pi() ) );
    } // else if
    return retval;
@@ -1591,7 +1591,7 @@ CLPTemplateFitter::_totalLogProb() const
       if(m_constraintSigmaVec[tempIndex] > 0)
       {
          double zScore =
- (m_arrayAddress[tempIndex] - m_constraintMeanVec[tempIndex]) /
+(m_arrayAddress[tempIndex] - m_constraintMeanVec[tempIndex]) /
             m_constraintSigmaVec[tempIndex];
          logProb -= zScore * zScore / 2;
       }
@@ -1603,7 +1603,7 @@ CLPTemplateFitter::_totalLogProb() const
       {
          int index = binNormIndex + m_numTemplates;
          double zScore =
- (m_arrayAddress[index] -
+(m_arrayAddress[index] -
              m_binNormConstraintMeanVec[binNormIndex]) /
             m_binNormConstraintSigmaVec[binNormIndex];
          logProb -= zScore * zScore / 2;
@@ -1644,7 +1644,7 @@ CLPTemplateFitter::_initializeMinuit()
            ++iter)
       {
          CLPTemplateMorph *morphPtr =
-            dynamic_cast< CLPTemplateMorph* > (m_templateHPtrVec.at(*iter));
+            dynamic_cast< CLPTemplateMorph* >(m_templateHPtrVec.at(*iter));
          assert(morphPtr);
          morphPtr->setInternalIndicies(nameVec);
       } // for iter
@@ -1833,7 +1833,7 @@ CLPTemplateFitter::_fillParamISet(BinNormClass::ISet &paramSet,
 // Friends //
 /////////////
 
-ostream& operator<< (ostream& o_stream, const CLPTemplateFitter &rhs)
+ostream& operator<<(ostream& o_stream, const CLPTemplateFitter &rhs)
 {
    for(int tempIndex = 0; tempIndex < rhs.m_numTemplates; ++tempIndex)
    {

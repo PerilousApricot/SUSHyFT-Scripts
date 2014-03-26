@@ -28,7 +28,7 @@ class CLPBinCont : public TObject
       // friends //
       /////////////
       // tells particle data how to print itself out
-      friend std::ostream& operator<< (std::ostream& o_stream,
+      friend std::ostream& operator<<(std::ostream& o_stream,
                                        const CLPBinCont &rhs);
 
       //////////////////////////
@@ -42,7 +42,7 @@ class CLPBinCont : public TObject
       // Constructors and Destructor //
       /////////////////////////////////
       CLPBinCont();
-      CLPBinCont (TH1F *histPtr);
+      CLPBinCont(TH1F *histPtr);
       virtual ~CLPBinCont() {};
        ////////////////
       // One Liners //
@@ -59,9 +59,9 @@ class CLPBinCont : public TObject
 
       // sets and returns the value of dontRemovePoints
       bool dontRemovePoints() const { return m_dontRemovePoints; }
-      void setDontRemovePoints (bool dontRemovePoints)
+      void setDontRemovePoints(bool dontRemovePoints)
       { m_dontRemovePoints = dontRemovePoints; }
-      static void setDontRemovePointsDefault (bool dontRemoveDefault)
+      static void setDontRemovePointsDefault(bool dontRemoveDefault)
       { sm_dontRemovePointsDefault = dontRemoveDefault; }
 
       //////////////////////////////
@@ -69,19 +69,19 @@ class CLPBinCont : public TObject
       //////////////////////////////
 
       // fills itself with the integral of histPtr
-      void integrateTH1F (TH1F *histPtr);
+      void integrateTH1F(TH1F *histPtr);
 
       // Adds a bin to the vector.  If this bin is zero, will check
       // whether to add a new bin or modify the last bin.
-      void addBin (double low, double width, double total, bool isZero);
-      void addBin (double upper, double total);
+      void addBin(double low, double width, double total, bool isZero);
+      void addBin(double upper, double total);
 
       // Adds a bin to the vector MODIFYING the previous bins so that
       // we ensure that our bins only grow in X.
-      void addBinCarefully (double low, double width, double total);
+      void addBinCarefully(double low, double width, double total);
 
       // differentiates self to fill histPtr
-      void fillTH1F (TH1F *histPtr, bool noUnderOverFlow = false) const;
+      void fillTH1F(TH1F *histPtr, bool noUnderOverFlow = false) const;
 
       // returns a new TGraph pointer.  User is responsible for the memeory
       TGraph *tgraphPtr() const;
@@ -89,36 +89,36 @@ class CLPBinCont : public TObject
       // Increments the two iterators until the given x value is
       // included in the range of the the upperX() values.  Returns
       // true if both iterators are still valid.
-      bool moveIterators (CLPBin::VecConstIter &lowerIter,
+      bool moveIterators(CLPBin::VecConstIter &lowerIter,
                           CLPBin::VecConstIter &upperIter,
                           double xValue, double &yValue) const;
 
       // sets this object as the horizontal morph between two other
       // BinConts.  'param' = 0 means all alpha, 'param' = 1 means all
       // beta.
-      void horizontalMorph (const CLPBinCont &alpha, const CLPBinCont &beta,
+      void horizontalMorph(const CLPBinCont &alpha, const CLPBinCont &beta,
                             double param);
 
       // sets this object as the difference between two BinCounts.
-      void horizontalSubtract (const CLPBinCont &alpha,
+      void horizontalSubtract(const CLPBinCont &alpha,
                                const CLPBinCont &beta);
 
-      void horizontalDeltaMorph (const CLPBinCont &alpha,
+      void horizontalDeltaMorph(const CLPBinCont &alpha,
                                  const CLPBinCont &beta,
                                  double percentage);
 
-      void horizontalFunction (const CLPBinCont &alpha,
+      void horizontalFunction(const CLPBinCont &alpha,
                                const CLPBinCont &beta,
                                const CLPFunctionoid2 &functionoid);
 
       // sets this object as the sum between a default BinCount and a
       // subtracted one.
-      void horizontalAdd (const CLPBinCont &alpha,
+      void horizontalAdd(const CLPBinCont &alpha,
                           const CLPBinCont &delta,
                           double percentage = 1.);
 
       // gets rid of the first few points to avoid any bumps
-      void smoothBeginningOfDelta (double percentStep = 0.05);
+      void smoothBeginningOfDelta(double percentStep = 0.05);
 
 
       /////////////////////////////
@@ -126,11 +126,11 @@ class CLPBinCont : public TObject
       /////////////////////////////
 
       // returns the number 'param' percent in between alpha and beta
-      static double percentInBetween (double alpha, double beta, double param)
-      { return alpha + param * (beta - alpha); }
+      static double percentInBetween(double alpha, double beta, double param)
+      { return alpha + param *(beta - alpha); }
 
       // returns true if the two numbers are with in kEpsilon of each other
-      static bool areTheSame (double alpha, double beta);
+      static bool areTheSame(double alpha, double beta);
 
   private:
       ///////////////////////
@@ -149,7 +149,7 @@ class CLPBinCont : public TObject
 
       static bool sm_dontRemovePointsDefault;
 
-      ClassDef (CLPBinCont, 1) // CLPBinCont Class
+      ClassDef(CLPBinCont, 1) // CLPBinCont Class
 };
 
 #endif // CLPBinCont_HH
