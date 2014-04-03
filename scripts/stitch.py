@@ -141,7 +141,7 @@ def getScaleHistogram(hclone, config, section):
     sf=1.0
     global histogramList
     if 'Data' in section or \
-            ('QCD' in section and not \
+            ('QCD' in section and \
                 (config.has_option(section, 'force_scale_qcd') and \
                  config.get(section, 'force_scale_qcd'))):
     #if 'Data' in section:
