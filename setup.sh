@@ -11,6 +11,16 @@ if [[ -z "$SUSHYFT_MODE" ]]; then
     export SUSHYFT_MODE="ttbar_notau"
 fi
 
+if [[ $(ls -d $SUSHYFT_BASE/config/$SUSHYFT_MODE | wc -l) -gt 1 ]]; then
+    >&2 echo "ERROR: Multiple substrings match the \$SUSHYFT_MODE. This is bad"
+    return
+fi
+
+if [[ ! -e $SUSHYFT_BASE/config/$SUSHYFT_MODE ]]; then
+    >&2 echo "ERROR: Configuration \"${SUSHYFT_MODE}\" not found"
+    return
+fi
+
 # Where are we storing our output datasets?
 SUSHYFT_DATA_BASE=$SUSHYFT_BASE/data
 export SUSHYFT_EDNTUPLE_PATH=$SUSHYFT_DATA_BASE/auto_edntuple
