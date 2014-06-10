@@ -7,7 +7,9 @@ SCRIPTPATH="${BASH_SOURCE[0]}"
 export SUSHYFT_BASE="$(cd "$(dirname "${SCRIPTPATH}")" ; pwd)"
 
 # Which analysis are we doing? Determines input datasets, binning procedure
-export SUSHYFT_MODE="ttbar_notau"
+if [[ -z "$SUSHYFT_MODE" ]]; then
+    export SUSHYFT_MODE="ttbar_notau"
+fi
 
 # Where are we storing our output datasets?
 SUSHYFT_DATA_BASE=$SUSHYFT_BASE/data
