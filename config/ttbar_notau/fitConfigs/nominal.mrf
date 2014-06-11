@@ -28,8 +28,8 @@
 + colorValues =    1, 633,       616, 413, 411, 407, 400,     9
 
 # constraints
-+ constraintNames  =    ZJets,  SingleTop#, Wbx,  Wcx,  Wqq
-+ constraintValues =    0.3,       0.30, 4.0,  2.0,  2.0
+#+ constraintNames  =    ZJets,  SingleTop, Wbx,  Wcx,  Wqq
+#+ constraintValues =    0.3,       0.30, 4.0,  2.0,  2.0
 
 # Ranges
 + rangeNames =   Wcx,     Wbx,   SingleTop,    Wqq

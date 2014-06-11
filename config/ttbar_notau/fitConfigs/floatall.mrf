@@ -21,7 +21,7 @@
 
 # defaults
 + defaultNames     =   Top,   ZJets,   QCD
-+ defaultValues    =   0.234,  1.00,      1.0
++ defaultValues    =   1.00,  1.00,      1.0
 
 # colors
 + colorNames  = Data, Top, SingleTop, Wbx, Wcx, Wqq, QCD, ZJets
