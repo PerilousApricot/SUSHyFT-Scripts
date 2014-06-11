@@ -20,8 +20,8 @@
 + peSigmas =  0.020,         0.1,   0.1,   0.1,   0.1,    0.2
 
 # defaults
-+ defaultNames     =   Top,   ZJets,   QCD
-+ defaultValues    =   0.234,  1.00,      1.0
+#+ defaultNames     =   Top,   ZJets,   QCD
+#+ defaultValues    =   0.234,  1.00,      1.0
 
 # colors
 + colorNames  = Data, Top, SingleTop, Wbx, Wcx, Wqq, QCD, ZJets

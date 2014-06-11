@@ -1,1 +1,5 @@
 nominal .* 1 nominal
+BTag090 .* 0 --btagSys=down
+BTag080 .* 0 --btagSys=down2
+BTag110 .* 0 --btagSys=up
+BTag120 .* 0 --btagSys=up2
