@@ -13,7 +13,7 @@ else
     echo "Overriding SUSHYFT_MODE to be $SUSHYFT_MODE"
 fi
 
-if [[ $(ls -d $SUSHYFT_BASE/config/${SUSHYFT_MODE}_ | wc -l) -gt 1 ]]; then
+if [[ $(ls -d $SUSHYFT_BASE/config/${SUSHYFT_MODE}_ 2>&/dev/null | wc -l) -gt 1 ]]; then
     >&2 echo "ERROR: Multiple substrings match the \$SUSHYFT_MODE. This is bad"
     return
 fi
