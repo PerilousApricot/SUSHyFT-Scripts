@@ -22,7 +22,33 @@ def bin_ttbar_notau(inputTitle):
     matches = re.search(r"(.*)_(\d)j_(\d)t(_[bcq])?", inputTitle)
     if matches == None:
         if inputTitle.find('Tau') == -1:
-            print "rejected %s" % inputTitle
+            pass
+            # print "rejected %s" % inputTitle
+        return None
+    name, jets, tags, postfix = matches.group(1,2,3,4)
+    jets = int(jets)
+    tags = int(tags)
+    if jets == 0 or tags == 0:
+        return None
+    if not postfix:
+        postfix = ""
+    if jets >= 5:
+        jets = 5
+    if tags >= 2:
+        tags = 2
+    result = ["%s_%sj_%st%s" % (name, jets, tags, postfix)]
+    # make a pretag?
+    if inputTitle.lower().find('qcd') != -1:
+        for tag in ('0','1','2'):
+            result.append("%s_pretag_%sj_%st%s" % (name, jets, tag, postfix))
+    return result
+
+def bin_ttbar_notau0jet(inputTitle):
+    matches = re.search(r"(.*)_(\d)j_(\d)t(_[bcq])?", inputTitle)
+    if matches == None:
+        if inputTitle.find('Tau') == -1:
+            pass
+            # print "rejected %s" % inputTitle
         return None
     name, jets, tags, postfix = matches.group(1,2,3,4)
     jets = int(jets)
@@ -62,8 +88,10 @@ for oneFile in args:
         keyString = key.GetName()
         if options.tagMode == 'ttbar_notau':
             outputs = bin_ttbar_notau(keyString)
+        elif options.tagMode in ['ttbar_notau0jet', 'ttbar_1jet0b', 'ttbar_1jetwnob']:
+            outputs = bin_ttbar_notau0jet(keyString)
         else:
-            raise RuntimeError, "Unknown binning strategy"
+            raise RuntimeError, "Unknown binning strategy, (%s)" % (options.tagMode)
         if outputs == None:
             continue
         theirHist = inFile.Get(keyString)
@@ -74,13 +102,11 @@ for oneFile in args:
 
         for result in outputs:
             if not outFile.Get(result):
-                print "Creating"
                 thisHist  = theirHist.Clone()
                 thisHist.SetName(result)
                 thisHist.SetDirectory(outDir)
                 histList.append(thisHist)
             else:
-                print "Adding"
                 oldHist = outFile.Get(result)
                 currIntegral = oldHist.Integral()
                 oldHist.Add(theirHist)
