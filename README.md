@@ -10,7 +10,8 @@ Workflow
 --------
 
 The pipeline works (nearly) as follows:
-0. RAW to RECO to AODSIM - Produced centerally by CMS. The starting point for all analyses (~1PB)
+
+1. RAW to RECO to AODSIM - Produced centerally by CMS. The starting point for all analyses (~1PB)
 1. AOD[SIM] to PAT - Handled by tlbsm v3 PAT sequence. Stores fat PAT objects per-event. Generated using CRAB. The "input" for the analysis (~100TB)
 2. Calculate Luminosity - Dump the CRAB luminosity information for the PAT dataset and store the integrated luminosity to later scale the Monte Carlo background 
 3. PAT to EDNTuple - Stores simplified physics objects per event (eg Pt/eta/phi for leading jets). Generated using CRAB (~10TB)
