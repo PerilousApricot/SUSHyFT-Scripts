@@ -23,7 +23,6 @@ if [[ -e $NEW_PATH ]]; then
     >&2 echo "ERROR: Target config already exists"
     exit 1
 fi
-set -x
 
 # check the new one doesn't match anybody
 MISMATCH_COUNT=$(ls -d ${SUSHYFT_BASE}/config/* | grep ${2}_ | wc -l)
@@ -56,12 +55,20 @@ fi
 cp -a ${OLD_PATH} ${NEW_PATH}
 find ${NEW_PATH} -type f | xargs -n1 perl -pi -e "s,${OLD_NAME},${NEW_NAME},g"
 
-set +x
 GREP_OUTPUT1=$(grep -R ${OLD_NAME} ${NEW_PATH} 2>&1)
 GREP_OUTPUT2=$(grep -R ${OLD_NAME} ${NEW_PATH} 2>/dev/null | sed "s/${NEW_NAME}//g" | grep ${OLD_NAME})
 GREP_STATUS=$?
+
+
 if [ $GREP_STATUS -eq 0 ]; then
     >&2 echo "Failed to properly fix this file, manually touch it up:"
     >&2 echo "$GREP_OUTPUT1"
-    exit 0
+    >&2 echo " (please ensure that no instances of ${OLD_NAME} exist"
 fi
+
+>&/dev/null pushd ${SUSHYFT_BASE}
+git add ${NEW_PATH} 1>&/dev/null
+git commit -e -m "Making new configuration '${NEW_NAME}' from '${OLD_NAME}'"
+>&/dev/null popd
+
+
