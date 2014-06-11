@@ -41,16 +41,16 @@ for DIR in $(ls -d ${SUSHYFT_BASE}/config/* | xargs -n 1 basename); do
 done
 
 >&/dev/null pushd $SUSHYFT_BASE
-GIT_OUTPUT=$(git status 2>&1)
-GIT_STATUS=$?
->&/dev/null popd
+GIT_OUTPUT=$(git diff --shortstat 2>/dev/null | tail -n1)
 
-if [ $GIT_STATUS -ne 0 ]; then
+if [[ $GIT_OUTPUT != "" ]]; then
     >&2 echo "You need to have a clean git index to generate a config,"
     >&2 echo "please commit or stash your current index before continuing"
-    >&2 echo $GIT_OUTPUT
+    >&2 git status
+    >/dev/null popd
     exit 1
 fi
+>&/dev/null popd
 
 cp -a ${OLD_PATH} ${NEW_PATH}
 find ${NEW_PATH} -type f | xargs -n1 perl -pi -e "s,${OLD_NAME},${NEW_NAME},g"
@@ -68,7 +68,10 @@ fi
 
 >&/dev/null pushd ${SUSHYFT_BASE}
 git add ${NEW_PATH} 1>&/dev/null
-git commit -e -m "Making new configuration '${NEW_NAME}' from '${OLD_NAME}'"
+git commit -e -F- <<EOF
+Autogenerating new config
+Created '${NEW_NAME}' from '${OLD_NAME}'
+EOF
 >&/dev/null popd
 
 
