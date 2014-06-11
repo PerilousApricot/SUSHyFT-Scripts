@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # edmMakePhDThesis was a sham, this is the REAL thing.
-set -e
+set -ex
 if [[ -d ${SUSHYFT_EDNTUPLE_PATH} ]]; then
     makeAllFWLite.sh
 fi

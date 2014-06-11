@@ -2,7 +2,6 @@
 
 # hadds all the fwlite files together in a sensible way
 source $SUSHYFT_BASE/scripts/functions.sh
-
 toProcess=( )
 echo "Gathering jobs to process"
 while read DATASET; do

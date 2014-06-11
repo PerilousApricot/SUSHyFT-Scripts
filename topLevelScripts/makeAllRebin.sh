@@ -35,9 +35,8 @@ while read DATASET; do
         toProcess+=("runIfChanged.sh $SUSHYFT_REBIN_PATH/${SUSHYFT_MODE}_${SYSTEMATIC}_${DATASET}.root $HADD_INPUT_FILE -- rebinHists.py --tagMode=${SUSHYFT_MODE} --outDir=$SUSHYFT_REBIN_PATH $HADD_INPUT_FILE")
     done < $SUSHYFT_BASE/config/$SUSHYFT_MODE/fwliteSystematicsList.txt
 done < $SUSHYFT_BASE/config/$SUSHYFT_MODE/input_pat.txt
-
 echo "Executing ${#toProcess[@]} jobs"
 ( for ((i = 0; i < ${#toProcess[@]}; i++)); do
     echo "${toProcess[$i]}"
-done; ) | parallel -j $SUSHYFT_DOUBLE_CORE_COUNT --eta --progress
+done; )  | parallel -j $SUSHYFT_DOUBLE_CORE_COUNT --eta --progress
 
