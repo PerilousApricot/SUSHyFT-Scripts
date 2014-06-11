@@ -88,7 +88,7 @@ for oneFile in args:
         keyString = key.GetName()
         if options.tagMode == 'ttbar_notau':
             outputs = bin_ttbar_notau(keyString)
-        elif options.tagMode in ['ttbar_notau0jet', 'ttbar_1jet0b', 'ttbar_1jetwnob','ttbar_notauzerojet']:
+        elif options.tagMode in ['ttbar_notau0jet', 'ttbar_1jet0b', 'ttbar_1jetwnob','ttbar_notauzerojet', 'tt-012tag-qcd-nosyst']:
             outputs = bin_ttbar_notau0jet(keyString)
         else:
             raise RuntimeError, "Unknown binning strategy, (%s)" % (options.tagMode)
