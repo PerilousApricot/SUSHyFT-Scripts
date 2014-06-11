@@ -1,0 +1,49 @@
+# -*- conf -*-
+
+# names of templates
++ names = Data, Top, SingleTop, WJets, ZJets, QCD
+
+# names of the different groups
++ groupNames = _wMT_1j_0t
+
+# Display Names
++ groupStrings = 1_Jet__0_Tag
+
+# binning of templates
++ binsPerGroup = 10
+
+# How to throw PEs
++ peNames  =    Top,   SingleTop,   WJets,    QCD
++ peMeans  = 1.0,         1.0,   1.0,    1.0
++ peSigmas =  0.020,         0.1,   0.1,    0.2
+
+# defaults
++ defaultNames     =   Top,   ZJets,   QCD
++ defaultValues    =   1.00,  1.00,      1.0
+
+# colors
++ colorNames  = Data, Top, SingleTop, WJets, QCD, ZJets
++ colorValues =    1, 633,       616, 413,  400,     9
+
+# constraints
+#+ constraintNames  =    ZJets,  SingleTop, Wbx,  Wcx,  Wqq
+#+ constraintValues =    0.3,       0.30, 4.0,  2.0,  2.0
+
+# Ranges
++ rangeNames =    Top,   SingleTop,   WJets, QCD, ZJets
++ lowerRange =  -200000.,-200000.,-200000.,-200000.,-200000.
++ upperRange =   200000., 200000., 200000., 200000., 200000.
++ stepRange  =      0.1,    0.1,    0.1,   0.1,    0.1
+
+
+
+# legend coordiates
++ legendCoordinates = 0.285, 0.55, 0.365, 0.88
+
+# output file name
++ output = output/nominal_
+
+# turn on data error bars
++ dataErrorBars = 1
+
+#+ fixParameters=QCD

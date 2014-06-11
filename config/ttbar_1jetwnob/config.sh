@@ -1,0 +1,4 @@
+# Per-configuration variables
+
+SUSHYFT_SEPARATE_QCD_FIT=0
+SUSHYFT_ENABLE_SYSTEMATICS=0
