@@ -4,17 +4,13 @@
 + names = Data, Top, SingleTop, Wbx, Wcx, Wqq, ZJets, QCD
 
 # names of the different groups
-+ groupNames = _centrality_1j_0t, _centrality_2j_0t, _centrality_3j_0t, _centrality_4j_0t, _centrality_5j_0t
-+ groupNames = _svm_1j_1t, _svm_2j_1t, _svm_3j_1t, _svm_4j_1t, _svm_5j_1t
-+ groupNames =             _svm_2j_2t, _svm_3j_2t, _svm_4j_2t, _svm_5j_2t
++ groupNames = _wMT_1j_0t
 
 # Display Names
-+ groupStrings = 1_Jet__0_Tag,  2_Jets_0_Tag,  3_Jets_0_Tag,  4_Jets_0_Tag, 5_Jets_0_Tag
-+ groupStrings = 1_Jet__1_Tag,  2_Jets_1_Tag,  3_Jets_1_Tag,  4_Jets_1_Tag, 5_Jets_1_Tag
-+ groupStrings = 2_Jets_2_Tags, 3_Jets_2_Tags, 4_Jets_2_Tags, 5_Jets_2_Tags
++ groupStrings = 1_Jet__0_Tag
 
 # binning of templates
-+ binsPerGroup = 10, 10, 10, 10, 10, 10, 10, 10, 10 
++ binsPerGroup = 10
 
 # How to throw PEs
 + peNames  =    Top,   SingleTop,   Wbx,   Wcx,   Wqq,    QCD
@@ -34,10 +30,11 @@
 #+ constraintValues =    0.3,       0.30, 4.0,  2.0,  2.0
 
 # Ranges
-+ rangeNames =   Wcx,     Wbx,   SingleTop,    Wqq
-+ lowerRange =  -200.,   -100,        -40,    -20
-+ upperRange =   200.,    100,         40,     20
-+ stepRange  =  0.01,     0.1,       0.001,   0.01
++ rangeNames =    Top,   SingleTop,   Wbx,   Wcx,   Wqq,    QCD, ZJets
++ lowerRange =  -200000.,-200000.,-200000.,-200000.,-200000.,-200000.,-200000.
++ upperRange =   200000., 200000., 200000., 200000., 200000., 200000., 200000.
++ stepRange  =      0.1,    0.1,    0.1,    0.1,    0.1,    0.1,    0.1
+
 
 
 # legend coordiates
