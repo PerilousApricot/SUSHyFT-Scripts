@@ -9,6 +9,8 @@ export SUSHYFT_BASE="$(cd "$(dirname "${SCRIPTPATH}")" ; pwd)"
 # Which analysis are we doing? Determines input datasets, binning procedure
 if [[ -z "$SUSHYFT_MODE" ]]; then
     export SUSHYFT_MODE="ttbar_notau"
+else
+    echo "Overriding SUSHYFT_MODE to be $SUSHYFT_MODE"
 fi
 
 if [[ $(ls -d $SUSHYFT_BASE/config/$SUSHYFT_MODE | wc -l) -gt 1 ]]; then
