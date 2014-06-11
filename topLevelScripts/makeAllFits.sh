@@ -85,5 +85,5 @@ if [ $SUSHYFT_ENABLE_SYSTEMATICS -ne 0 ]; then
 
     multiRegionFitter.exe ${SUSHYFT_BASE}/config/${SUSHYFT_MODE}/fitConfigs/nominal.mrf templateFile=data/auto_copyhist/${SUSHYFT_MODE}_central_nominal.root includeFiles=state/${SUSHYFT_MODE}/btag_sf.mrf,state/${SUSHYFT_MODE}/qcd.mrf fitData=1 output=tagged_both savePlots=1 saveTemplates=1 showCorrelations=1 dominos=1 intlumi=$(cat ${LUMIFILE})
 else
-    multiRegionFitter.exe ${SUSHYFT_BASE}/config/${SUSHYFT_MODE}/fitConfigs/nominal.mrf templateFile=data/auto_copyhist/${SUSHYFT_MODE}_central_nominal.root fitData=1 output=${SUSHYFT_MODE}_output savePlots=1 saveTemplates=1 showCorrelations=1 dominos=1 intlumi=$(cat ${LUMIFILE})
+    multiRegionFitter.exe ${SUSHYFT_BASE}/config/${SUSHYFT_MODE}/fitConfigs/nominal.mrf templateFile=data/auto_copyhist/${SUSHYFT_MODE}_central_nominal.root fitData=1 output=${SUSHYFT_BASE}/output/${SUSHYFT_MODE} savePlots=1 saveTemplates=1 showCorrelations=1 dominos=1 intlumi=$(cat ${LUMIFILE})
 fi
