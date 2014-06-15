@@ -8,10 +8,25 @@ export SUSHYFT_BASE="$(cd "$(dirname "${SCRIPTPATH}")" ; pwd)"
 
 # Which analysis are we doing? Determines input datasets, binning procedure
 if [[ -z "$SUSHYFT_MODE" ]]; then
-    export SUSHYFT_MODE="ttbar_notau"
+    MODE_ARRAY=( )
+    for DIR in $(ls -d $SUSHYFT_BASE/config/*); do
+        if [ ! -d $DIR ]; then
+            continue
+        fi
+        CONFIG_CHOICE=$(basename $DIR)
+        MODE_ARRAY+=($CONFIG_CHOICE)
+    done
+    ARRAY_LENGTH="${#MODE_ARRAY[@]}"
+    PRINT_SIZE=${#ARRAY_LENGTH}
+    echo "The following configurations are defined, choose one"
+    for i in "${!MODE_ARRAY[@]}"; do
+        printf "  [%.${PRINT_SIZE}d] %s\n" ${i} "${MODE_ARRAY[$i]}"
+    done
+    return
 else
     echo "Overriding SUSHYFT_MODE to be $SUSHYFT_MODE"
 fi
+export SUSHYFT_MODE
 
 if [[ $(ls -d $SUSHYFT_BASE/config/${SUSHYFT_MODE}_ 2>/dev/null | wc -l) -gt 1 ]]; then
     >&2 echo "ERROR: Multiple substrings match the \$SUSHYFT_MODE. This is bad"
@@ -20,6 +35,17 @@ fi
 
 if [[ ! -e $SUSHYFT_BASE/config/$SUSHYFT_MODE ]]; then
     >&2 echo "ERROR: Configuration \"${SUSHYFT_MODE}\" not found"
+    return
+fi
+
+# What are the input datasets (starting from PAT)
+export SUSHYFT_DATASET_INPUT=$SUSHYFT_BASE/config/$SUSHYFT_MODE/input_pat.txt
+
+source ${SUSHYFT_BASE}/scripts/configDefaults.sh
+source ${SUSHYFT_BASE}/config/${SUSHYFT_MODE}/config.sh
+
+if [ ! -z "$SUSHYFT_STATE_PATH" ]; then
+    echo "Reconfiguring to new config mode. This should hopefully work."
     return
 fi
 
@@ -32,15 +58,8 @@ export SUSHYFT_REBIN_PATH=$SUSHYFT_DATA_BASE/auto_rebin
 export SUSHYFT_STITCHED_PATH=$SUSHYFT_DATA_BASE/auto_stitched
 export SUSHYFT_COPYHIST_PATH=$SUSHYFT_DATA_BASE/auto_copyhist
 
-# What are the input datasets (starting from PAT)
-export SUSHYFT_DATASET_INPUT=$SUSHYFT_BASE/config/$SUSHYFT_MODE/input_pat.txt
-
 # Where are we storing the state of processing?
 export SUSHYFT_STATE_PATH=$SUSHYFT_BASE/state
-
-# What are the versions of processing we'd like?
-export SUSHYFT_EDNTUPLE_VERSION="v2"
-export SUSHYFT_EDNTUPLE_CMSSW_BASE="FIXME123"
 
 # Where to put CRAB scratch stuff
 export SUSHYFT_SCRATCH_PATH=$SUSHYFT_BASE/scratch
