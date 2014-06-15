@@ -1,0 +1,14 @@
+nominal .* 1 nominal
+BTag090 .* 0 --btagSys=down
+BTag080 .* 0 --btagSys=down2
+BTag110 .* 0 --btagSys=up
+BTag120 .* 0 --btagSys=up2
+LFTag080 .* 0 --lftagSys=down2
+LFTag090 .* 0 --lftagSys=down
+LFTag110 .* 0 --lftagSys=up
+LFTag120 .* 0 --lftagSys=up2
+JES095 .* 0 --jecSys=down
+JES105 .* 0 --jecSys=up
+noMET .* 1 --noMET
+looseLep QCD.* 0 --useLoose
+noMET_looseLep QCD.* 0 --useLoose --noMET
