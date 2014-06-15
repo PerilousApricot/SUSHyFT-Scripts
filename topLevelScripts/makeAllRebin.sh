@@ -5,6 +5,7 @@
 source $SUSHYFT_BASE/scripts/functions.sh
 toProcess=( )
 echo "Gathering jobs to process"
+[ -d $SUSHYFT_REBIN_PATH ] || mkdir -p $SUSHYFT_REBIN_PATH
 while read DATASET; do
     SHORTNAME=$(getDatasetShortname $DATASET)
     FWLITE_DIR=$SUSHYFT_EDNTUPLE_PATH/crab_${SUSHYFT_EDNTUPLE_VERSION}_${SHORTNAME}
@@ -32,7 +33,7 @@ while read DATASET; do
         DATASET=$( echo $DATASET_WCRAB | perl -pe 's|crab_.*?_(.*)|\1|' )
         SYSTEMATIC=$( echo $DIR | tr '/' ' ' | awk '{ print $(NF) }' )
         HADD_INPUT_FILE=$SUSHYFT_HADD_PATH/${SYSTEMATIC}_${DATASET}.root
-        toProcess+=("runIfChanged.sh $SUSHYFT_REBIN_PATH/${SUSHYFT_MODE}_${SYSTEMATIC}_${DATASET}.root $HADD_INPUT_FILE -- rebinHists.py --tagMode=${SUSHYFT_MODE} --outDir=$SUSHYFT_REBIN_PATH $HADD_INPUT_FILE")
+        toProcess+=("runIfChanged.sh $SUSHYFT_REBIN_PATH/${SUSHYFT_MODE}/${SYSTEMATIC}_${DATASET}.root $HADD_INPUT_FILE -- rebinHists.py --tagMode=${SUSHYFT_MODE} --outDir=$SUSHYFT_REBIN_PATH/${SUSHYFT_MODE} $HADD_INPUT_FILE")
     done < $SUSHYFT_BASE/config/$SUSHYFT_MODE/fwliteSystematicsList.txt
 done < $SUSHYFT_BASE/config/$SUSHYFT_MODE/input_pat.txt
 echo "Executing ${#toProcess[@]} jobs"
