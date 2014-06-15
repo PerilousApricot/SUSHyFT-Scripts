@@ -21,14 +21,19 @@ if [[ ! -e ${LUMIFILE} ]];then
     exit 1
 fi
 
-for TAG in 1 2; do 
-    for JET in 5 4 3 2 1; do 
-        if [[ $TAG -gt $JET ]]; then
-            continue
-        fi
-        runIfChanged.sh ${SUSHYFT_BASE}/state/${SUSHYFT_MODE}_fit_output_${JET}j_${TAG}t.txt ${SUSHYFT_COPYHIST_PATH}/${SUSHYFT_MODE}_metfit.root `which handleQCDShapeAndNormalization.py` -- stdoutWrapper.sh ${SUSHYFT_BASE}/state/${SUSHYFT_MODE}_fit_output_${JET}j_${TAG}t.txt handleQCDShapeAndNormalization.py --stitched-input=${SUSHYFT_COPYHIST_PATH}/${SUSHYFT_MODE}_metfit.root --var=MET --minTags=$TAG --maxTags=$TAG --minJets=$JET --maxJets=$JET --fit --verbose --pretagMinTags=${TAG} --pretagMaxTags=${TAG} --shapeOutputVar=svm --lumi=$(cat ${LUMIFILE})
-    done
+OIFS=$IFS
+IFS=""
+for DIR in ${SUSHYFT_QCD_JETTAG[@]}; do
+    IFS=" "
+    read -a ONE_ROW <<< "$DIR"
+    JET=${ONE_ROW[0]}
+    TAG=${ONE_ROW[1]}
+    TAU=${ONE_ROW[2]}
+    SHAPE=${ONE_ROW[3]}
+    runIfChanged.sh ${SUSHYFT_BASE}/state/${SUSHYFT_MODE}/fit_output_${JET}j_${TAG}t.txt ${SUSHYFT_COPYHIST_PATH}/${SUSHYFT_MODE}/metfit.root `which handleQCDShapeAndNormalization.py` -- stdoutWrapper.sh ${SUSHYFT_BASE}/state/${SUSHYFT_MODE}/fit_output_${JET}j_${TAG}t.txt handleQCDShapeAndNormalization.py --stitched-input=${SUSHYFT_COPYHIST_PATH}/${SUSHYFT_MODE}/metfit.root --var=MET --minTags=$TAG --maxTags=$TAG --minJets=$JET --maxJets=$JET --fit --verbose --pretagMinTags=${TAG} --pretagMaxTags=${TAG} --shapeOutputVar=${SHAPE} --lumi=$(cat ${LUMIFILE})
+    IFS=""
 done
+IFS=$OIFS
 
 # this should write to an MRF file, not to stdout
 
@@ -36,18 +41,23 @@ done
 echo "# -*- conf -*-"
 echo "+ fixParamVal = QCD=1.0"
 
-for TAG in 1 2;do
-    for JET in 1 2 3 4 5; do
-        if [[ $TAG -eq 2 && $JET -eq 1 ]]; then
-            continue
-        fi
-        echo "#Results for QCD jet bin ${JET} tag ${TAG}"; 
-        TAGVAL=`grep -A 9 'INFO:Minization -- RooMinuit::optimizeConst: deactivating const optimization' ${SUSHYFT_BASE}/state/${SUSHYFT_MODE}_fit_output_${JET}j_${TAG}t.txt | grep qcdSF` 
-        SF=`echo $TAGVAL | awk '{print \$6}'`
-        echo "#$TAGVAL"
-        echo "#$SF"
-        echo "- qcdConstr_${JET}j_${TAG}t 0 1 0.0 0.0 1"
-        echo "-- _svm_${JET}j_${TAG}t           :  QCD: $SF 1.00"
-    done
+OIFS=$IFS
+IFS=""
+for DIR in ${SUSHYFT_QCD_JETTAG[@]}; do
+    IFS=" "
+    read -a ONE_ROW <<< "$DIR"
+    JET=${ONE_ROW[0]}
+    TAG=${ONE_ROW[1]}
+    TAU=${ONE_ROW[2]}
+    SHAPE=${ONE_ROW[3]}
+    echo "#Results for QCD jet bin ${JET} tag ${TAG}"; 
+    TAGVAL=`grep -A 9 'INFO:Minization -- RooMinuit::optimizeConst: deactivating const optimization' ${SUSHYFT_BASE}/state/${SUSHYFT_MODE}/fit_output_${JET}j_${TAG}t.txt | grep qcdSF` 
+    SF=`echo $TAGVAL | awk '{print \$6}'`
+    echo "#$TAGVAL"
+    echo "#$SF"
+    echo "- qcdConstr_${JET}j_${TAG}t 0 1 0.0 0.0 1"
+    echo "-- _${SHAPE}_${JET}j_${TAG}t           :  QCD: $SF 1.00"
+    IFS=""
 done
+IFS=$OIFS
 ) > ${SUSHYFT_BASE}/state/${SUSHYFT_MODE}/qcd.mrf

@@ -72,9 +72,7 @@ for oneFile in args:
     inFile = ROOT.TFile(oneFile)
     if not inFile or inFile.IsZombie():
         raise RuntimeError, "missing file"
-    outFileName = os.path.join(options.outDir,
-                                      "%s_%s" % (options.tagMode,
-                                                    os.path.basename(oneFile)))
+    outFileName = os.path.join(options.outDir, os.path.basename(oneFile))
     outFile = ROOT.TFile(outFileName, "RECREATE")
     if not outFile:
         raise RuntimeError, "Missing file"
