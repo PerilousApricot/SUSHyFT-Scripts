@@ -22,6 +22,7 @@ if [[ -z "$SUSHYFT_MODE" ]]; then
     for i in "${!MODE_ARRAY[@]}"; do
         printf "  [%.${PRINT_SIZE}d] %s\n" ${i} "${MODE_ARRAY[$i]}"
     done
+    echo "Export \$SUSHYFT_MODE to one of the strings above to choose a config"
     return
 else
     echo "Overriding SUSHYFT_MODE to be $SUSHYFT_MODE"
