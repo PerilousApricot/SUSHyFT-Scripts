@@ -24,5 +24,7 @@ if [[ -d ${SUSHYFT_COPYHIST_PATH} ]]; then
     makeAllQCDFits.sh
 fi
 
+makeAllSystematics.sh
+
 # If you're not making the histograms, what's the point?
 makeAllFits.sh
