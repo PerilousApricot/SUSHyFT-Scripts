@@ -68,10 +68,9 @@ fi
 
 >&/dev/null pushd ${SUSHYFT_BASE}
 git add ${NEW_PATH} 1>&/dev/null
-git commit -e -F- <<EOF
-Autogenerating new config
+git commit -e -m "Autogenerating new config
 Created '${NEW_NAME}' from '${OLD_NAME}'
-EOF
+"
 >&/dev/null popd
 
 
