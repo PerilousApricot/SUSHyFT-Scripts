@@ -4,29 +4,36 @@
 
 # Where are we? (Get right bash magic to autodetect)
 SCRIPTPATH="${BASH_SOURCE[0]}"
-export SUSHYFT_BASE="$(cd "$(dirname "${SCRIPTPATH}")" ; pwd)"
+SUSHYFT_BASE="$(cd "$(dirname "${SCRIPTPATH}")" ; pwd)"
 
 # Which analysis are we doing? Determines input datasets, binning procedure
 if [[ -z "$SUSHYFT_MODE" ]]; then
-    MODE_ARRAY=( )
-    for DIR in $(ls -d $SUSHYFT_BASE/config/*); do
-        if [ ! -d $DIR ]; then
-            continue
-        fi
-        CONFIG_CHOICE=$(basename $DIR)
-        MODE_ARRAY+=($CONFIG_CHOICE)
-    done
-    ARRAY_LENGTH="${#MODE_ARRAY[@]}"
-    PRINT_SIZE=${#ARRAY_LENGTH}
-    echo "The following configurations are defined, choose one"
-    for i in "${!MODE_ARRAY[@]}"; do
-        printf "  [%.${PRINT_SIZE}d] %s\n" ${i} "${MODE_ARRAY[$i]}"
-    done
-    echo "Export \$SUSHYFT_MODE to one of the strings above to choose a config"
+    >&2 echo "You didn't select a configuration mode, please either export
+\$SUSHYFT_MODE to your desired configuration mode or execute
+"
+    typedef -f sushyft &>/dev/null
+    if [ $? -ne 0 ]; then
+        >&2 echo "    source ${SUSHYFT_BASE}/scripts/setMode.sh
+        
+If you're using the One True Shell (bash), and you plan on only having one 
+checkout of SUSHyFT, you can use the handy 'sushyft' alias by first executing:
+
+    source ${SUSHYFT_BASE}/scripts/sushyft_source.sh
+
+and then executing
+
+    sushyft mode
+
+To add the 'sushyft' alias to your default profile, source 'sushyft_source.sh'
+in '~/.bash_profile'. At subsequent logins, you can simply use 'sushyft' to
+access various helper functions
+"
+    else
+        >&2 echo "    sushyft mode"
+    fi
     return
-else
-    echo "Overriding SUSHYFT_MODE to be $SUSHYFT_MODE"
 fi
+export SUSHYFT_BASE
 export SUSHYFT_MODE
 
 if [[ $(ls -d $SUSHYFT_BASE/config/${SUSHYFT_MODE}_ 2>/dev/null | wc -l) -gt 1 ]]; then
