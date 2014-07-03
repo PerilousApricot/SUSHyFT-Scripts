@@ -17,7 +17,7 @@ fi
 # fitter easily
 # SUSHYFT_SYST_LIST = ( btag.mrf ttag.mrf )
 # turns into includeFiles=${SUSHYFT_BASE}/state/${SUSHYFT_MODE}/btag.mrf,${SUSHYFT_BASE}/state/${SUSHYFT_MODE}
-set -x
+
 if [ -n "${SUSHYFT_SYSTEMATIC_LIST}" ]; then
     SYSTEMATIC_STRING="$(echo ${SUSHYFT_SYSTEMATIC_LIST[*]} | tr ' ' ',' )"
     CONSTRUCTED_ARRAY=( )
@@ -30,5 +30,5 @@ fi
 # All that for this. Run the fit.
 mkdir -p ${SUSHYFT_BASE}/output/${SUSHYFT_MODE}
 pushd ${SUSHYFT_BASE}
-multiRegionFitter.exe ${SUSHYFT_BASE}/config/${SUSHYFT_MODE}/fitConfigs/nominal.mrf templateFile=data/auto_copyhist/${SUSHYFT_MODE}/central_nominal.root fitData=1 output=${SUSHYFT_BASE}/output/${SUSHYFT_MODE}/central_nominal $SYSTEMATIC_STRING savePlots=1 saveTemplates=1 showCorrelations=1 dominos=1 intlumi=$(cat ${LUMIFILE})
+multiRegionFitter.exe ${SUSHYFT_BASE}/config/${SUSHYFT_MODE}/fitConfigs/nominal.mrf templateFile=data/auto_copyhist/${SUSHYFT_MODE}/central_nominal.root fitData=1 output=${SUSHYFT_BASE}/output/${SUSHYFT_MODE}/central_nominal $SYSTEMATIC_STRING savePlots=1 saveTemplates=1 showCorrelations=1 dominos=1 intlumi=$(cat ${LUMIFILE}) logplots=1
 popd
