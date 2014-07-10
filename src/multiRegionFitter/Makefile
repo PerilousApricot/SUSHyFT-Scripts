@@ -41,10 +41,6 @@ all: install
 $(EXECNAME): $(OBJS)
 	@echo "making stuff with $(OBJS) : $(SRCS)!"
 	$(LD) $(LDFLAGS) $(OBJS) $(LIBS) $(EXPLLINKLIBS) $(OutPutOpt) $(EXECNAME) 
-	$(CXX) $(CFLAGS) $(INCDIRS) -c $(OutPutOpt) runMultipleFits.o runMultipleFits.cc
-	$(LD) $(LDFLAGS) MRFitterNamespace.o PolyNoid.o runMultipleFits.o $(LIBS) $(EXPLLINKLIBS) $(OutPutOpt) runMultipleFits.exe 
-	$(CXX) $(CFLAGS) $(INCDIRS) -c $(OutPutOpt) multiRunRangeFitter.o multiRunRangeFitter.cc
-	$(LD) $(LDFLAGS) MRFitterNamespace.o PolyNoid.o multiRunRangeFitter.o $(LIBS) $(EXPLLINKLIBS) $(OutPutOpt) multiRunRangeFitter.exe 
 
 # Make the objects
 %.o: %.cc
@@ -78,7 +74,7 @@ echo:
 
 # Clean everythingg
 clean:
-	@rm -f core* $(EXECNAME) ${DEPS} ${OBJS} multiRunRangeFitter.exe multiRunRangeFitter.o runMultipleFits.exe runMultipleFits.o
+	@rm -f core* $(EXECNAME) ${DEPS} ${OBJS} multiRunRangeFitter.exe multiRunRangeFitter.o
 
 # If we aren't doing a 'gmake clean' then make the dependencies
 ifneq ($(MAKECMDGOALS),clean)

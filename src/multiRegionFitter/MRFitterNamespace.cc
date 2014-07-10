@@ -13,6 +13,7 @@
 #include "TROOT.h"
 #include "TLine.h"
 #include "TText.h"
+#include "TTree.h"
 #include "THStack.h"
 #include "TLegend.h"
 #include "TRandom.h"
@@ -868,6 +869,8 @@ void mrf::MRFitter::saveCanvasResult(std::string outputName,
             TFile::Open((outputName + "_templates.root").c_str(),
                     "recreate");
         assert(filePtr);
+        // Save various dumb bits of metadata
+        cout << "writing to file\n";
         for (TH1FPtrVecConstIter iter = histPtrVec.begin();
                 histPtrVec.end() != iter;
                 ++iter)
@@ -888,6 +891,19 @@ void mrf::MRFitter::saveCanvasResult(std::string outputName,
         {
             dataHist->Write();
         }
+        const char * siText = "map<string, int>";
+        const char * sdText = "map<string, double>";
+        // SDMap map<string, double>
+        filePtr->WriteObjectAny(&m_groupIndexMap, siText,  "groupIndexMap");
+        filePtr->WriteObjectAny(&m_groupBinsMap, siText, "groupBinsMap");
+        filePtr->WriteObjectAny(&m_groupLowerEdgeMap, sdText, "groupLowerEdgeMap");
+        filePtr->WriteObjectAny(&m_groupUpperEdgeMap, sdText, "groupUpperEdgeMap");
+        filePtr->WriteObjectAny(&m_colorMap, siText, "colorMap");
+        filePtr->WriteObjectAny(&m_nameFitterIndexMap , siText, "nameFitterIndexMap");
+        filePtr->WriteObjectAny(&m_numBinsVec , siText, "numBinsVec");
+        filePtr->WriteObjectAny(&m_lowerEdgeBinVec , siText, "lowerEdgeBinVec");
+        filePtr->WriteObjectAny(&m_upperEdgeBinVec , siText, "upperEdgeBinVec");
+        //filePtr->WriteObjectAny(&m_XX , siText, "XX");
         filePtr->Close();
         delete filePtr;
     } // if saving templates
