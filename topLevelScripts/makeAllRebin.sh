@@ -6,6 +6,12 @@ source $SUSHYFT_BASE/scripts/functions.sh
 toProcess=( )
 echo "Gathering jobs to process"
 [ -d $SUSHYFT_REBIN_PATH ] || mkdir -p $SUSHYFT_REBIN_PATH
+
+rebinHists.py --tagCheck --tagMode=${SUSHYFT_MODE}
+if [ $? -ne 0 ]; then
+    >&2 echo "ERROR: Update rebinHists.py to include this binning mode"
+    exit 1
+fi
 while read DATASET; do
     SHORTNAME=$(getDatasetShortname $DATASET)
     FWLITE_DIR=$SUSHYFT_EDNTUPLE_PATH/crab_${SUSHYFT_EDNTUPLE_VERSION}_${SHORTNAME}

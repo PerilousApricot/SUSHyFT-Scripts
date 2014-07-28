@@ -10,6 +10,8 @@ sys.argv = oldArgv[:]
 
 from optparse import OptionParser
 parser = OptionParser()
+parser.add_option('--tagCheck', action='store_true',
+              default=False, help="Check if the binning strategy is added")
 parser.add_option('--tagMode', metavar='F', type='string', action='store',
               dest='tagMode',
               help='Which rebinning pattern should we use')
@@ -66,6 +68,25 @@ def bin_ttbar_notau0jet(inputTitle):
             result.append("%s_pretag_%sj_%st%s" % (name, jets, tag, postfix))
     return result
 
+def getBinFunction(tagMode):
+    if tagMode == 'ttbar_notau':
+        return bin_ttbar_notau
+    elif tagMode in ['ttbar_notau0jet', 'ttbar_1jet0b', 'ttbar_1jetwnob','ttbar_notauzerojet'] or tagMode.startswith('tt-012tag'):
+        return bin_ttbar_notau0jet
+    else:
+        raise RuntimeError, "Unknown binning strategy, (%s)" % (tagMode)
+
+if options.tagMode.startswith('test_'):
+        options.tagMode = options.tagMode[len('test_'):]
+
+if options.tagCheck:
+    try:
+        getBinFunction(options.tagMode)
+        sys.exit(0)
+    except RuntimeError:
+        print "Unsupported config: %s" % options.tagMode
+        sys.exit(1)
+
 for oneFile in args:
     additionDict = {}
     print "Processing %s" % oneFile
@@ -80,16 +101,10 @@ for oneFile in args:
     outDir = outFile.GetDirectory('')
     missingHists = []
     histList     = []
-    if options.tagMode.startswith('test_'):
-        options.tagMode = options.tagMode[len('test_'):]
     for key in inFile.GetListOfKeys():
         keyString = key.GetName()
-        if options.tagMode == 'ttbar_notau':
-            outputs = bin_ttbar_notau(keyString)
-        elif options.tagMode in ['ttbar_notau0jet', 'ttbar_1jet0b', 'ttbar_1jetwnob','ttbar_notauzerojet', 'tt-012tag-qcd-nosyst']:
-            outputs = bin_ttbar_notau0jet(keyString)
-        else:
-            raise RuntimeError, "Unknown binning strategy, (%s)" % (options.tagMode)
+        binFunc = getBinFunction(options.tagMode)
+        outputs = binFunc(keyString)
         if outputs == None:
             continue
         theirHist = inFile.Get(keyString)

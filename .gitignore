@@ -9,3 +9,4 @@ src/shlib/*
 bin/*
 *.root
 crab.history
+*.un~

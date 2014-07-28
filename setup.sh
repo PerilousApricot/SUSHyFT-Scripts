@@ -4,14 +4,37 @@
 
 # Where are we? (Get right bash magic to autodetect)
 SCRIPTPATH="${BASH_SOURCE[0]}"
-export SUSHYFT_BASE="$(cd "$(dirname "${SCRIPTPATH}")" ; pwd)"
+SUSHYFT_BASE="$(cd "$(dirname "${SCRIPTPATH}")" ; pwd)"
 
 # Which analysis are we doing? Determines input datasets, binning procedure
 if [[ -z "$SUSHYFT_MODE" ]]; then
-    export SUSHYFT_MODE="ttbar_notau"
-else
-    echo "Overriding SUSHYFT_MODE to be $SUSHYFT_MODE"
+    >&2 echo "You didn't select a configuration mode, please either export
+\$SUSHYFT_MODE to your desired configuration mode or execute
+"
+    typedef -f sushyft &>/dev/null
+    if [ $? -ne 0 ]; then
+        >&2 echo "    source ${SUSHYFT_BASE}/scripts/setMode.sh
+        
+If you're using the One True Shell (bash), and you plan on only having one 
+checkout of SUSHyFT, you can use the handy 'sushyft' alias by first executing:
+
+    source ${SUSHYFT_BASE}/scripts/sushyft_source.sh
+
+and then executing
+
+    sushyft mode
+
+To add the 'sushyft' alias to your default profile, source 'sushyft_source.sh'
+in '~/.bash_profile'. At subsequent logins, you can simply use 'sushyft' to
+access various helper functions
+"
+    else
+        >&2 echo "    sushyft mode"
+    fi
+    return
 fi
+export SUSHYFT_BASE
+export SUSHYFT_MODE
 
 if [[ $(ls -d $SUSHYFT_BASE/config/${SUSHYFT_MODE}_ 2>/dev/null | wc -l) -gt 1 ]]; then
     >&2 echo "ERROR: Multiple substrings match the \$SUSHYFT_MODE. This is bad"
@@ -23,6 +46,17 @@ if [[ ! -e $SUSHYFT_BASE/config/$SUSHYFT_MODE ]]; then
     return
 fi
 
+# What are the input datasets (starting from PAT)
+export SUSHYFT_DATASET_INPUT=$SUSHYFT_BASE/config/$SUSHYFT_MODE/input_pat.txt
+
+source ${SUSHYFT_BASE}/scripts/configDefaults.sh
+source ${SUSHYFT_BASE}/config/${SUSHYFT_MODE}/config.sh
+
+if [ ! -z "$SUSHYFT_STATE_PATH" ]; then
+    echo "Reconfiguring to new config mode. This should hopefully work."
+    return
+fi
+
 # Where are we storing our output datasets?
 SUSHYFT_DATA_BASE=$SUSHYFT_BASE/data
 export SUSHYFT_EDNTUPLE_PATH=$SUSHYFT_DATA_BASE/auto_edntuple
@@ -31,9 +65,6 @@ export SUSHYFT_HADD_PATH=$SUSHYFT_DATA_BASE/auto_hadd
 export SUSHYFT_REBIN_PATH=$SUSHYFT_DATA_BASE/auto_rebin
 export SUSHYFT_STITCHED_PATH=$SUSHYFT_DATA_BASE/auto_stitched
 export SUSHYFT_COPYHIST_PATH=$SUSHYFT_DATA_BASE/auto_copyhist
-
-# What are the input datasets (starting from PAT)
-export SUSHYFT_DATASET_INPUT=$SUSHYFT_BASE/config/$SUSHYFT_MODE/input_pat.txt
 
 # Where are we storing the state of processing?
 export SUSHYFT_STATE_PATH=$SUSHYFT_BASE/state
