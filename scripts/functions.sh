@@ -3,9 +3,9 @@ function getDatasetEventsFromDAS {
     # the dataset is stored in
     # $1 - dataset name
     if [[ $1 =~ 'StoreResults' ]]; then
-        local INSTANCELIST=("" "instance=cms_dbs_ph_analysis_02" "instance=cms_dbs_ph_analysis_03")
+        local INSTANCELIST=("" "instance=analysis02" "instance=analysis03" "instance=analysis01")
     else
-        local INSTANCELIST=("instance=cms_dbs_ph_analysis_02" "instance=cms_dbs_ph_analysis_03" "")
+        local INSTANCELIST=("instance=analysis02" "instance=analysis03" "instance=analysis01" "")
     fi
     for INSTANCE in $INSTANCELIST; do
         local VAL=$(das.py --query "dataset dataset=$1 $INSTANCE | grep dataset.nevents" | grep -o [0-9]*)

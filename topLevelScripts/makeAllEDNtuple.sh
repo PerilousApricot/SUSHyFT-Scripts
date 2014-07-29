@@ -1,14 +1,19 @@
 #!/bin/bash
 
+set -x
+source $SUSHYFT_BASE/scripts/functions.sh
+declare -f getDatasetEventsFromDAS
 CHANGES_FOUND=0
 DATASETS_TO_RUN=(  )
 while read DATASET; do
 # Foreach dataset in _pat.txt
 #   pull eventCount from DAS
     # might have to try a couple of times to find the right instance
-    DAS_EVENT_COUNT=getDatasetEventsFromDAS $DATASET
-    if [[ $DAS_EVENT_COUNT -lte 0 ]]; then
-        break
+    echo "event get!"
+    DAS_EVENT_COUNT=$(getDatasetEventsFromDAS $DATASET)
+    echo "got event!"
+    if [ "$DAS_EVENT_COUNT" -lte 0 ]; then
+        continue
     fi
     STATE_EVENT_COUNT=$(grep $DATASET $SUSHYFT_STATE_PATH/EDNtuple/inputs.txt | awk '{ print $2 }')
     if [[ "X$DAS_EVENT_COUNT" != "X$STATE_EVENT_COUNT" ]]; then
@@ -19,7 +24,7 @@ while read DATASET; do
         DATASETS_TO_RUN=( "${DATASETS_TO_RUN[@]}" "$DATASET" )
         CHANGES_FOUND=1
     fi
-done < $SUSHYFT_DATASET_INPUT
+done <${SUSHYFT_DATASET_INPUT}
 
 if [[ $CHANGES_FOUND -eq 0 ]]; then
     echo "No changes found. Exiting"
@@ -39,8 +44,11 @@ popd
 
 run=$SUSHYFT_EDNTUPLE_VERSION
 # Looks like we were successful. Party hard and fire off the processing
-CRAB_BASE=$SUSHYFT_SCRATCH_PATH
+CRAB_BASE=$SUSHYFT_SCRATCH_PATH/edntuple
 SUSHYFT_BASE=$SUSHYFT_EDNTUPLE_CMSSW_BASE
+if [ ! -d $CRAB_BASE ]; then
+    mkdir -p $CRAB_BASE
+fi
 
 cp $SUSHYFT_BASE/*.py $CRAB_BASE
 for LINE in "${DATASETS_TO_RUN[@]}"; do
