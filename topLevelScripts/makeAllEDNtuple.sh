@@ -5,14 +5,16 @@ source $SUSHYFT_BASE/scripts/functions.sh
 declare -f getDatasetEventsFromDAS
 CHANGES_FOUND=0
 DATASETS_TO_RUN=(  )
+if [ ! -d $SUSHYFT_STATE_PATH/EDNtuple/ ]; then
+    mkdir -p $SUSHYFT_STATE_PATH/EDNtuple
+fi
 while read DATASET; do
 # Foreach dataset in _pat.txt
 #   pull eventCount from DAS
     # might have to try a couple of times to find the right instance
-    echo "event get!"
-    DAS_EVENT_COUNT=$(getDatasetEventsFromDAS $DATASET)
-    echo "got event!"
-    if [ "$DAS_EVENT_COUNT" -lte 0 ]; then
+    DAS_VALUE=($(getDatasetEventsFromDAS $DATASET))
+    DAS_EVENT_COUNT=${DAS_VALUE[0]}
+    if [ "$DAS_EVENT_COUNT" -le 0 ]; then
         continue
     fi
     STATE_EVENT_COUNT=$(grep $DATASET $SUSHYFT_STATE_PATH/EDNtuple/inputs.txt | awk '{ print $2 }')
@@ -20,7 +22,7 @@ while read DATASET; do
         echo "Found a changed dataset, time to reprocess it: $DATASET"
         sed -i '/$DATASET/d' $SUSHYFT_STATE_PATH/EDNtuple/inputs.txt
         echo "$DATASET $DAS_EVENT_COUNT" >> $SUSHYFT_STATE_PATH/EDNtuple/inputs.txt
-        echo "$(date) $DATASET" >> $SUSHYFT_STATE_PATH/EDNtuple/inProgress.txt
+        echo "$(date) $DATASET ${DAS_VALUE[1]}" >> $SUSHYFT_STATE_PATH/EDNtuple/inProgress.txt
         DATASETS_TO_RUN=( "${DATASETS_TO_RUN[@]}" "$DATASET" )
         CHANGES_FOUND=1
     fi
@@ -28,16 +30,16 @@ done <${SUSHYFT_DATASET_INPUT}
 
 if [[ $CHANGES_FOUND -eq 0 ]]; then
     echo "No changes found. Exiting"
-    rm -rf $SUSHYFT_STATE_PATH
+    rm -rf $SUSHYFT_STATE_PATH/EDNtuple
     exit 0
 fi
 echo "Attempting to grab lock"
-pushd $SUSHYFT_STATE_PATH
+pushd $SUSHYFT_STATE_PATH/EDNtuple
 git commit -am "Locking EDNtuple"
 #git push origin
 if [[ $? -ne 0 ]]; then
     echo "Couldn't grab lock, aborting"
-    rm -rf $SUSHYFT_STATE_PATH
+    rm -rf $SUSHYFT_STATE_PATH/EDNtuple
     exit 1
 fi
 popd
@@ -81,4 +83,4 @@ done
 # foreach dataset in prodlist
 #   add state/ENDTuple/locks/production_HASH(dataset name)
 #
-rm -rf $SUSHYFT_STATE_PATH
+#rm -rf $SUSHYFT_STATE_PATH/EDNtuple

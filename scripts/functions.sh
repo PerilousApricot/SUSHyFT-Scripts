@@ -3,19 +3,22 @@ function getDatasetEventsFromDAS {
     # the dataset is stored in
     # $1 - dataset name
     if [[ $1 =~ 'StoreResults' ]]; then
-        local INSTANCELIST=("" "instance=analysis02" "instance=analysis03" "instance=analysis01")
+        local INSTANCELIST=("global" "phys02" "phys03" "phys01")
     else
-        local INSTANCELIST=("instance=analysis02" "instance=analysis03" "instance=analysis01" "")
+        local INSTANCELIST=("phys02" "phys03" "phys01" "global")
     fi
     for INSTANCE in $INSTANCELIST; do
-        local VAL=$(das.py --query "dataset dataset=$1 $INSTANCE | grep dataset.nevents" | grep -o [0-9]*)
+        local VAL=$(das.py --query="dataset dataset=$1 instance=prod/$INSTANCE | grep dataset.nevents" | grep -o [0-9]*)
+        if [ $? -ne 0 ]; then
+            continue
+        fi
         # need to get something to test if this is actually numeric
         if [[ ! -z $VAL && $VAL -gt 0 ]]; then
-            echo $VAL
+            echo "$VAL $INSTANCE"
             return
         fi
     done
-    echo 0
+    echo "0 0"
 }
 
 function getDatasetShortname () {
