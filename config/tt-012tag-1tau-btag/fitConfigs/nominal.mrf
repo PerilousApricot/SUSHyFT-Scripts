@@ -4,9 +4,9 @@
 + names = Data, Top, SingleTop, Wbx, Wcx, Wqq, ZJets, QCD
 
 # names of the different groups
-+ groupNames = _wMT_1j_0t, _wMT_2j_0t, _wMT_3j_0t, _wMT_4j_0t, _wMT_5j_0t
-+ groupNames = _svm_1j_1t, _svm_2j_1t, _svm_3j_1t, _svm_4j_1t, _svm_5j_1t
-+ groupNames =             _svm_2j_2t, _svm_3j_2t, _svm_4j_2t, _svm_5j_2t
++ groupNames = _wMT_1j_0b_1t, _wMT_2j_0b_1t, _wMT_3j_0b_1t, _wMT_4j_0b_1t, _wMT_5j_0b_1t
++ groupNames = _svm_1j_1b_1t, _svm_2j_1b_1t, _svm_3j_1b_1t, _svm_4j_1b_1t, _svm_5j_1b_1t
++ groupNames =             _svm_2j_2b_1t, _svm_3j_2b_1t, _svm_4j_2b_1t, _svm_5j_2b_1t
 
 # Display Names
 + groupStrings = 1_Jet__0_Tag,  2_Jets_0_Tag,  3_Jets_0_Tag,  4_Jets_0_Tag, 5_Jets_0_Tag

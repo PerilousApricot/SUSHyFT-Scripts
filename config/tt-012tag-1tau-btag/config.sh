@@ -1,6 +1,6 @@
 # Per-configuration variables
 
-SUSHYFT_SEPARATE_QCD_FIT=1
+SUSHYFT_SEPARATE_QCD_FIT=0
 SUSHYFT_ENABLE_SYSTEMATICS=1
 
 # What are the versions of processing we'd like?
@@ -24,6 +24,5 @@ SUSHYFT_QCD_JETTAG=(
                     "4 2 0 svm"
                     "5 2 0 svm"
                     )
-
-
-SUSHYFT_SYSTEMATIC_LIST=( "qcd.mrf" "btag_sf.mrf" )
+SUSHYFT_SYST_BTAG_COMBINE="2jet:_svm_2j_1b_1t+_svm_2j_2b_1t,3jet:_svm_3j_1b_1t+_svm_3j_2b_1t,4jet:_svm_4j_1b_1t+_svm_4j_2b_1t,5t:_svm_5j_1b_1t+_svm_5j_2b_1t,1jet:_svm_1j_1b_1t"
+SUSHYFT_SYSTEMATIC_LIST=( "btag_sf.mrf" )
