@@ -18,10 +18,10 @@ INCDIRS = -I$(ROOTSYS)/include \
 include ${ROOTSYS}/etc/Makefile.arch
 
 # Here's where you'd want to define any #define with -DVariableName
-CFLAGS += $(INCDIRS)
+CFLAGS += $(INCDIRS) -g
 
 # Everything it needs to know about libraries
-LIBS =  $(USERLIBDIRS) $(USERLIBS) $(shell root-config --glibs)
+LIBS =  $(USERLIBDIRS) $(USERLIBS) $(shell root-config --glibs) -g
 
 # Define what to compile as well as the necessary dependencies and
 # object names.
@@ -40,7 +40,7 @@ all: install
 # Make the executable
 $(EXECNAME): $(OBJS)
 	@echo "making stuff with $(OBJS) : $(SRCS)!"
-	$(LD) $(LDFLAGS) $(OBJS) $(LIBS) $(EXPLLINKLIBS) $(OutPutOpt) $(EXECNAME) 
+	$(LD) $(LDFLAGS) $(OBJS) $(LIBS) $(EXPLLINKLIBS) -g $(OutPutOpt) $(EXECNAME) 
 
 # Make the objects
 %.o: %.cc

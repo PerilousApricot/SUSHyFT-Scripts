@@ -870,11 +870,11 @@ void mrf::MRFitter::saveCanvasResult(std::string outputName,
                     "recreate");
         assert(filePtr);
         // Save various dumb bits of metadata
-        cout << "writing to file\n";
         for (TH1FPtrVecConstIter iter = histPtrVec.begin();
                 histPtrVec.end() != iter;
                 ++iter)
         {
+            
             CLPTemplateMorph *morphPtr = dynamic_cast< CLPTemplateMorph* >(*iter);
             if ( morphPtr )
             {
@@ -886,6 +886,7 @@ void mrf::MRFitter::saveCanvasResult(std::string outputName,
 (*iter)->Write();
             }
         }
+        
         // save the data too unless we were asked not to
         if (! boolValue("dontPlotData"))
         {
@@ -893,6 +894,7 @@ void mrf::MRFitter::saveCanvasResult(std::string outputName,
         }
         const char * siText = "map<string, int>";
         const char * sdText = "map<string, double>";
+        const char * ivecText = "vector<int>";
         // SDMap map<string, double>
         filePtr->WriteObjectAny(&m_groupIndexMap, siText,  "groupIndexMap");
         filePtr->WriteObjectAny(&m_groupBinsMap, siText, "groupBinsMap");
@@ -900,9 +902,9 @@ void mrf::MRFitter::saveCanvasResult(std::string outputName,
         filePtr->WriteObjectAny(&m_groupUpperEdgeMap, sdText, "groupUpperEdgeMap");
         filePtr->WriteObjectAny(&m_colorMap, siText, "colorMap");
         filePtr->WriteObjectAny(&m_nameFitterIndexMap , siText, "nameFitterIndexMap");
-        filePtr->WriteObjectAny(&m_numBinsVec , siText, "numBinsVec");
-        filePtr->WriteObjectAny(&m_lowerEdgeBinVec , siText, "lowerEdgeBinVec");
-        filePtr->WriteObjectAny(&m_upperEdgeBinVec , siText, "upperEdgeBinVec");
+        filePtr->WriteObjectAny(&m_numBinsVec , ivecText, "numBinsVec");
+        filePtr->WriteObjectAny(&m_lowerEdgeBinVec , ivecText, "lowerEdgeBinVec");
+        filePtr->WriteObjectAny(&m_upperEdgeBinVec , ivecText, "upperEdgeBinVec");
         //filePtr->WriteObjectAny(&m_XX , siText, "XX");
         filePtr->Close();
         delete filePtr;

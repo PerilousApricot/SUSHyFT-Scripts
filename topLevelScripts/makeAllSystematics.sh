@@ -2,6 +2,10 @@
 
 source ${SUSHYFT_BASE}/config/${SUSHYFT_MODE}/config.sh
 
+if [[ -z "${SUSHYFT_SYST_BTAG_COMBINE}" ]];then
+    SUSHYFT_SYST_BTAG_COMBINE="2jet:_svm_2j_1t+_svm_2j_2t,3jet:_svm_3j_1t+_svm_3j_2t,4jet:_svm_4j_1t+_svm_4j_2t,5jet:_svm_5j_1t+_svm_5j_2t,1jet:_svm_1j_1t"
+fi
+
 # The big kahoona - runs the fits
 mkdir -p ${SUSHYFT_BASE}/state/${SUSHYFT_MODE}
 if [ $SUSHYFT_ENABLE_SYSTEMATICS -ne 0 ]; then
@@ -43,7 +47,7 @@ if [ $SUSHYFT_ENABLE_SYSTEMATICS -ne 0 ]; then
                 --func=pol2 --name=JES_SF --legend --samples=Top,SingleTop,ZJets,WJets \
                 --writeConfig=${SUSHYFT_BASE}/state/${SUSHYFT_MODE}/jes_sf.mrf:jes,0,1 \
                 --combineSamples=WJets:Wbx+Wcx+Wqq \
-                --combineGroups=2jet:_svm_2j_1t+_svm_2j_2t,3jet:_svm_3j_1t+_svm_3j_2t,4jet:_svm_4j_1t+_svm_4j_2t,5jet:_svm_5j_1t+_svm_5j_2t,1jet:_svm_1j_1t \
+                --combineGroups=${SUSHYFT_SYST_BTAG_COMBINE} \
                 --onlyCombinedGroups \
                 ${SUSHYFT_COPYHIST_PATH}/${SUSHYFT_MODE}/central_nominal.root:0 \
                 ${SUSHYFT_COPYHIST_PATH}/${SUSHYFT_MODE}/central_JES095.root:-1 \
@@ -57,7 +61,7 @@ if [ $SUSHYFT_ENABLE_SYSTEMATICS -ne 0 ]; then
                 ${SUSHYFT_BASE}/config/${SUSHYFT_MODE}/fitConfigs/nominal.mrf \
                 --func=pol2 --name=Q2 --legend --samples=WJets \
                 --writeConfig=${SUSHYFT_BASE}/state/${SUSHYFT_MODE}/Q2.mrf:Q2,0,1 \
-                --combineGroups=2jet:_svm_2j_1t+_svm_2j_2t,3jet:_svm_3j_1t+_svm_3j_2t,4jet:_svm_4j_1t+_svm_4j_2t,5jet:_svm_5j_1t+_svm_5j_2t,1jet:_svm_1j_1t \
+                --combineGroups=${SUSHYFT_SYST_BTAG_COMBINE} \
                 --combineSamples=WJets:Wbx+Wcx+Wqq \
                 --onlyCombinedGroups \
                 ${SUSHYFT_COPYHIST_PATH}/${SUSHYFT_MODE}/central_nominal.root:0 \
