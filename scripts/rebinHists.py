@@ -105,7 +105,9 @@ for oneFile in args:
         keyString = key.GetName()
         binFunc = getBinFunction(options.tagMode)
         outputs = binFunc(keyString)
-        if outputs == None:
+        if keyString == 'nEvents':
+            outputs = ['nEvents']
+        elif outputs == None:
             continue
         theirHist = inFile.Get(keyString)
         if not theirHist:

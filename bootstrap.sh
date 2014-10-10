@@ -20,15 +20,30 @@ if [[ -z ${CMS_PATH} ]]; then
     fi
 fi
 
-# Get the analysis checkout
-(
-    # In a subshell to not mix environments
-    cd $HERE/checkouts
-    cmsset
-    scramv1 project -n analyzer CMSSW CMSSW_5_3_15
-    cd analyzer/src
-    eval `scramv1 runtime -sh`
-    git cms-init
-    git cms-addpkg EgammaAnalysis
-)
-
+if [ ! -e $HERE/checkouts/analyzer ]; then
+    mkdir -p $HERE/checkouts/analyzer
+    # Get the analysis checkout
+    (
+        # In a subshell to not mix environments
+        cd $HERE/checkouts
+        cmsset
+        scramv1 project -n analyzer CMSSW CMSSW_5_3_15
+        cd analyzer/src
+        eval `scramv1 runtime -sh`
+        git cms-init
+        git cms-addpkg EgammaAnalysis
+    )
+fi
+if [ ! -e $HERE/checkouts/pat ]; then
+    # Get the analysis checkout
+    (
+        # In a subshell to not mix environments
+        cd $HERE/checkouts
+        cmsset
+        scramv1 project -n pat CMSSW CMSSW_5_3_11_patch6
+        cd analyzer/src
+        eval `scramv1 runtime -sh`
+        git cms-init
+        git cms-addpkg EgammaAnalysis
+    )
+fi

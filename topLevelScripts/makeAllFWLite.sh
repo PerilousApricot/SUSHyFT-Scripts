@@ -6,7 +6,7 @@ source $SUSHYFT_BASE/scripts/functions.sh
 run=$SUSHYFT_EDNTUPLE_VERSION
 # Looks like we were successful. Party hard and fire off the processing
 CRAB_BASE=$SUSHYFT_FWLITE_PATH
-cp $SUSHYFT_EDNTUPLE_CMSSW_BASE/*.py $CRAB_BASE
+cp $SUSHYFT_EDNTUPLE_CMSSW_BASE/src/Analysis/EDSHyFT/test/SUSHyFT/*.py $CRAB_BASE
 
 SCHEDULER_STATUS=$(qstat | grep `whoami` | grep -e ' R ' -e ' Q ' )
 # choose systematics
@@ -24,11 +24,6 @@ fi
 # loop over all the samples
 while read DATASET; do
     SHORTNAME=$(getDatasetShortname $DATASET)
-    case $SHORTNAME in
-        DY?Je*)
-            continue
-            ;;
-    esac
     DIR=$SUSHYFT_EDNTUPLE_PATH/crab_${run}_${SHORTNAME}
     DIR_OUT=$DIR
     # I named some directories with a different system, for some dumb reason
@@ -45,8 +40,8 @@ while read DATASET; do
         fi
     done
     if [[ ! -d $DIR/res ]]; then
-        echo "CAN'T FIND $SHORTNAME"
-        exit 1
+        echo "CAN'T FIND $SHORTNAME at $DIR"
+        continue
     fi
     BASEDIR=$(basename $DIR)
     BASEDIR_OUT=$(basename $DIR_OUT)
@@ -92,6 +87,9 @@ while read DATASET; do
             DY*)
                 SAMPLENAME='dyjets'
                 ;;
+            N1*)
+                SAMPLENAME='signal'
+                ;;
             *)
                 echo "Error, unknown samplename $DIR"
                 exit 1
@@ -103,8 +101,16 @@ while read DATASET; do
     # crabhash.txt keeps the hash of the FJR. the file list is in hash-crabhash.txt
     [[ -d $TARGET_DIR ]] && mkdir -p $TARGET_DIR
     CRAB_HASH_POINTER=$TARGET_DIR/crabhash.txt
-    OLDCRAB_HASH=$(cat $CRAB_HASH_POINTER)
-    NEWCRAB_HASH=$(ls -l $DIR/res/crab_fjr*.xml 2>/dev/null | sort | md5sum | awk '{ print $1 }')
+    if [[ ! -e $CRAB_HASH_POINTER  ]]; then
+        OLDCRAB_HASH="unknown"
+    else
+        OLDCRAB_HASH=$(cat $CRAB_HASH_POINTER)
+    fi
+    if ! test -n "$(shopt -s nullglob; echo $DIR/res/crab_*.xml)"; then
+        echo "No completed jobs found for $DATASET, $DIR"
+        continue
+    fi
+    NEWCRAB_HASH=$(ls -l --time-style=long-iso $DIR/res/crab_fjr*.xml 2>/dev/null | sort | md5sum | awk '{ print $1 }')
     INPUT_MISSING=""
     MISSING_COUNT=0
     # Possibly cache file list
@@ -121,7 +127,8 @@ while read DATASET; do
                 echo "Failed FJR: $XML" | tee -a $DIR/failed-autofwlite.txt 
             fi
         done
-        CURRENT_INPUT_SOURCE=$TARGET_DIR/${OLDCRAB_HASH}-crabhash.txt
+        CURRENT_INPUT_SOURCE=$TARGET_DIR/${NEWCRAB_HASH}-crabhash.txt
+        echo "$CURRENT_INPUT" > $CURRENT_INPUT_SOURCE
         echo ${NEWCRAB_HASH} > $CRAB_HASH_POINTER
     else
         # it was already cached
@@ -132,6 +139,7 @@ while read DATASET; do
             exit 1
         fi
         CURRENT_INPUT=$(cat $CURRENT_INPUT_SOURCE 2>/dev/null)
+        echo ${NEWCRAB_HASH} > $CRAB_HASH_POINTER
     fi
 
     if [[ -z $CURRENT_INPUT ]]; then
@@ -183,8 +191,14 @@ while read DATASET; do
 
         # compare input and output files to see if we need to either add to fwlite or
         # blow away everything and start over
-        INPUT_MISSING=$( diff -- $SYSTEMATIC_PATH/processed.txt $CURRENT_INPUT_SOURCE  | egrep '^>' | perl -pe 's/^[<>] //' | egrep -v '^$')
-        OUTPUT_INVALID=$( diff -- $SYSTEMATIC_PATH/processed.txt $CURRENT_INPUT_SOURCE  | egrep '^<' | perl -pe 's/^[<>] //' | egrep -v '^$')
+        if [[ ! -e $CURRENT_INPUT_SOURCE ]]; then
+            echo "No input was found, processing it all"
+            INPUT_MISSING=$CURRENT_INPUT
+            OUTPUT_INVALID=""
+        else
+            INPUT_MISSING=$( diff -- $SYSTEMATIC_PATH/processed.txt $CURRENT_INPUT_SOURCE  | egrep '^>' | perl -pe 's/^[<>] //' | egrep -v '^$')
+            OUTPUT_INVALID=$( diff -- $SYSTEMATIC_PATH/processed.txt $CURRENT_INPUT_SOURCE  | egrep '^<' | perl -pe 's/^[<>] //' | egrep -v '^$')
+        fi
 
         if [[ ! -z $OUTPUT_INVALID ]]; then
             echo "Got an invalid file in the output, blow it all away"
@@ -197,7 +211,7 @@ while read DATASET; do
         fi
         MISSING_COUNT=$( echo -n "$INPUT_MISSING" | wc -l )
         if [[ $MISSING_COUNT -ne 0 ]]; then
-            echo "Missing $MISSING_COUNT files"
+            echo "Missing $MISSING_COUNT files in $DIR"
         else
             continue
         fi

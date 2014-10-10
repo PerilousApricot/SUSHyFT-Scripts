@@ -3,8 +3,10 @@
 source ${SUSHYFT_BASE}/config/${SUSHYFT_MODE}/config.sh
 
 # This really really depends on having the proper data lumi set
-if [[ ! -e ${SUSHYFT_BASE}/state/lumisum_${SUSHYFT_EDNTUPLE_VERSION}_SingleMu.txt ]];then
+LUMI_FILE=${SUSHYFT_BASE}/state/lumisum_${SUSHYFT_EDNTUPLE_VERSION}_SingleMu.txt
+if [[ ! -e ${LUMI_FILE} ]];then
     echo "You need to run makeAllLumiCalc.sh to get an accurate lumi calculation!"
+    echo "  (Searched for ${LUMI_FILE})"
     exit 1
 fi
 
@@ -30,5 +32,6 @@ fi
 # All that for this. Run the fit.
 mkdir -p ${SUSHYFT_BASE}/output/${SUSHYFT_MODE}
 pushd ${SUSHYFT_BASE}
-multiRegionFitter.exe ${SUSHYFT_BASE}/config/${SUSHYFT_MODE}/fitConfigs/nominal.mrf templateFile=data/auto_copyhist/${SUSHYFT_MODE}/central_nominal.root fitData=1 output=${SUSHYFT_BASE}/output/${SUSHYFT_MODE}/central_nominal $SYSTEMATIC_STRING savePlots=1 saveTemplates=1 showCorrelations=1 dominos=1 intlumi=$(cat ${LUMIFILE})
+multiRegionFitter.exe ${SUSHYFT_BASE}/config/${SUSHYFT_MODE}/fitConfigs/nominal.mrf templateFile=data/auto_copyhist/${SUSHYFT_MODE}/central_nominal.root fitData=1 output=${SUSHYFT_BASE}/output/${SUSHYFT_MODE}/central_nominal savePlots=1 saveTemplates=1 showCorrelations=1 dominos=1 intlumi=$(cat ${LUMIFILE}) | tee ${SUSHYFT_BASE}/output/${SUSHYFT_MODE}/fit_nominal.txt
+#multiRegionFitter.exe ${SUSHYFT_BASE}/config/${SUSHYFT_MODE}/fitConfigs/nominal.mrf templateFile=data/auto_copyhist/${SUSHYFT_MODE}/central_nominal.root fitData=1 output=${SUSHYFT_BASE}/output/${SUSHYFT_MODE}/central_nominal $SYSTEMATIC_STRING savePlots=1 saveTemplates=1 showCorrelations=1 dominos=1 intlumi=$(cat ${LUMIFILE})
 popd

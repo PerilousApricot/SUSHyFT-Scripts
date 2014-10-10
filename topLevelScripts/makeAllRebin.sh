@@ -39,7 +39,7 @@ while read DATASET; do
         DATASET=$( echo $DATASET_WCRAB | perl -pe 's|crab_.*?_(.*)|\1|' )
         SYSTEMATIC=$( echo $DIR | tr '/' ' ' | awk '{ print $(NF) }' )
         HADD_INPUT_FILE=$SUSHYFT_HADD_PATH/${SYSTEMATIC}_${DATASET}.root
-        toProcess+=("runIfChanged.sh $SUSHYFT_REBIN_PATH/${SUSHYFT_MODE}/${SYSTEMATIC}_${DATASET}.root $HADD_INPUT_FILE -- rebinHists.py --tagMode=${SUSHYFT_MODE} --outDir=$SUSHYFT_REBIN_PATH/${SUSHYFT_MODE} $HADD_INPUT_FILE")
+        toProcess+=("runIfChanged.sh $SUSHYFT_REBIN_PATH/${SUSHYFT_MODE}/${SYSTEMATIC}_${DATASET}.root $HADD_INPUT_FILE `which rebinHists.py` -- rebinHists.py --tagMode=${SUSHYFT_MODE} --outDir=$SUSHYFT_REBIN_PATH/${SUSHYFT_MODE} $HADD_INPUT_FILE")
     done < $SUSHYFT_BASE/config/$SUSHYFT_MODE/fwliteSystematicsList.txt
 done < $SUSHYFT_BASE/config/$SUSHYFT_MODE/input_pat.txt
 echo "Executing ${#toProcess[@]} jobs"

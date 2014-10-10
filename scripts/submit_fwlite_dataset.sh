@@ -39,7 +39,7 @@ while [[ -e $WORKDIR/input_$COUNT.txt ]]; do
     COUNT=$((COUNT + 1))
 done
 while true; do
-    FILELIST=$( split_file.sh $USERSLIST 40 $SPLITCOUNT )
+    FILELIST=$( split_file.sh $USERSLIST 30 $SPLITCOUNT )
     if [[ "X$FILELIST" = 'X' ]]; then
         break
     fi
@@ -49,7 +49,7 @@ while true; do
 #PBS -M andrew.m.melo@vanderbilt.edu
 #PBS -l nodes=1:ppn=1
 #PBS -l mem=1900mb
-#PBS -l walltime=9:00:00
+#PBS -l walltime=12:00:00
 #PBS -o $WORKDIR/stdout_$COUNT.txt
 #PBS -j oe
 #PBS -W group_list=jswhep
@@ -70,7 +70,7 @@ rm $WORKDIR/$COUNT.root
 echo "Started at \$(date)" >> $WORKDIR/FAILED.$COUNT
 echo "At dir: \$(pwd)"
 ls -lah
-time python2.6 shyft_fwlite.py --inputListFile=$WORKDIR/input_$COUNT.txt --sampleName=$SAMPLE $OURDATA --lepType=0 --outname=$WORKDIR/$COUNT $@
+time python2.6 sushyft_fwlite.py --inputListFile=$WORKDIR/input_$COUNT.txt --sampleName=$SAMPLE $OURDATA --lepType=0 --outname=$WORKDIR/$COUNT $@
 RETVAL=\$?
 ls -lah
 ls -lah $WORKDIR
