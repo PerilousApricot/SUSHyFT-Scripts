@@ -1,12 +1,14 @@
 # -*- conf -*-
 
 # names of templates
-+ names = Data, Top, SingleTop, Wbx, Wcx, Wqq, ZJets, QCD
++ names = Data, Top, Wbx, Wcx, Wqq, ZJets, QCD, ZZ, WZ, ZInv, WW, SingleTS, SingleTbarS, SingleTT, SingleTbarT, SingleTTW, SingleTbarTW
+
+
 
 # names of the different groups
 + groupNames = _wMT_1j_0t, _wMT_2j_0t, _wMT_3j_0t, _wMT_4j_0t, _wMT_5j_0t
-+ groupNames = _svm_1j_1t, _svm_2j_1t, _svm_3j_1t, _svm_4j_1t, _svm_5j_1t
-+ groupNames =             _svm_2j_2t, _svm_3j_2t, _svm_4j_2t, _svm_5j_2t
++ groupNames = _std_1j_1t, _std_2j_1t, _std_3j_1t, _std_4j_1t, _std_5j_1t
++ groupNames =             _wMT_2j_2t, _wMT_3j_2t, _wMT_4j_2t, _wMT_5j_2t
 
 # Display Names
 + groupStrings = 1_Jet__0_Tag,  2_Jets_0_Tag,  3_Jets_0_Tag,  4_Jets_0_Tag, 5_Jets_0_Tag
@@ -29,15 +31,26 @@
 + colorNames  = Data, Top, SingleTop, Wbx, Wcx, Wqq, QCD, ZJets
 + colorValues =    1, 633,       616, 413, 411, 407, 400,     9
 
++ colorNames = Data, Top, Wbx, Wcx, Wqq, ZJets, QCD, ZZ, WZ, ZInv, WW, SingleTS, SingleTbarS, SingleTT, SingleTbarT, SingleTTW, SingleTbarTW
++ colorValues =   1, 633, 413, 411, 407, 400,     9, 403, 406, 409,415, 605,             608,      611,         614,       617,  620
+
 # constraints
 #+ constraintNames  =    ZJets,  SingleTop, Wbx,  Wcx,  Wqq
 #+ constraintValues =    0.3,       0.30, 4.0,  2.0,  2.0
 
 # Ranges
-+ rangeNames =   Wcx,     Wbx,   SingleTop,    Wqq
-+ lowerRange =  -200.,   -100,        -40,    -20
-+ upperRange =   200.,    100,         40,     20
-+ stepRange  =  0.01,     0.1,       0.001,   0.01
++ rangeNames = Top, Wbx, Wcx, Wqq, ZJets, QCD, ZZ
++ lowerRange =  -200000.,-200000.,-200000.,-200000.,-200000.,-200000.,-200000.
++ upperRange =   200000., 200000., 200000., 200000., 200000., 200000., 200000.
++ stepRange  =      0.1,    0.1,    0.1,    0.1,    0.1,    0.1,    0.1
++ rangeNames = WZ, ZInv, WW, SingleTS, SingleTbarS, SingleTT, SingleTbarT
++ lowerRange =  -200000.,-200000.,-200000.,-200000.,-200000.,-200000.,-200000.
++ upperRange =   200000., 200000., 200000., 200000., 200000., 200000., 200000.
++ stepRange  =      0.1,    0.1,    0.1,    0.1,    0.1,    0.1,    0.1
++ rangeNames = SingleTTW, SingleTbarTW
++ lowerRange =  -200000.,-200000.
++ upperRange =   200000., 200000.
++ stepRange  =      0.1,    0.1
 
 
 # legend coordiates
