@@ -69,6 +69,10 @@ export SUSHYFT_COPYHIST_PATH=$SUSHYFT_DATA_BASE/auto_copyhist
 # Where are we storing the state of processing?
 export SUSHYFT_STATE_PATH=$SUSHYFT_BASE/state
 
+# What are the versions of processing we'd like?
+export SUSHYFT_EDNTUPLE_VERSION="v4"
+export SUSHYFT_EDNTUPLE_CMSSW_BASE="$SUSHYFT_BASE/checkouts/analyzer"
+
 # Where to put CRAB scratch stuff
 export SUSHYFT_SCRATCH_PATH=$SUSHYFT_BASE/scratch
 

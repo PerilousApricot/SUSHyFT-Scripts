@@ -4,7 +4,7 @@ SUSHYFT_SEPARATE_QCD_FIT=1
 SUSHYFT_ENABLE_SYSTEMATICS=1
 
 # What are the versions of processing we'd like?
-export SUSHYFT_EDNTUPLE_VERSION="v2"
+export SUSHYFT_EDNTUPLE_VERSION="v4"
 export SUSHYFT_EDNTUPLE_CMSSW_BASE="FIXME123"
 
 # jet tag tau

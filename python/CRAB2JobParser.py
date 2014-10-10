@@ -3,7 +3,7 @@ import pprint
 import xml.dom.minidom
 
 class CRAB2JobParser:
-    def __init__(self, inputFile):
+    def __init__(self, inputFile, argsFile):
         doc = xml.dom.minidom.parse(inputFile)
         task = doc.getElementsByTagName('Task')[0]
         taskAttributes = task.getElementsByTagName('TaskAttributes')[0]
@@ -32,9 +32,16 @@ class CRAB2JobParser:
                     if runningJob.hasAttribute(k):
                         currJob[k] = runningJob.getAttribute(k)
             self.jobs[currJob['jobId']] = currJob
-        pprint.pprint(self.jobs)
+
+    def getBadJobs(self):
+        for k,job in self.jobs.items():
+            if job['applicationReturnCode'] != u'0' or job['wrapperReturnCode'] != u'0':
+                print "%s - %s %s" % (job['jobId'],
+                                      job['applicationReturnCode'],
+                                      job['wrapperReturnCode'])
 
 
 
-
-d = CRAB2JobParser('data/auto_edntuple/crab_v2_ZZJetsTo4L_TuneZ2star_8TeV-madgraph-tauola/share/machine.xml')
+d = CRAB2JobParser('data/auto_edntuple/crab_v2_ZZJetsTo4L_TuneZ2star_8TeV-madgraph-tauola/share/machine.xml',
+                   'data/auto_edntuple/crab_v2_ZZJetsTo4L_TuneZ2star_8TeV-madgraph-tauola/share/arguments.xml')
+d.getBadJobs()

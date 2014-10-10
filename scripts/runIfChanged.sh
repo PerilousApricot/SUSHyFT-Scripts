@@ -24,7 +24,7 @@ done
 shift # jump past the --
 
 ARGHASH=$(echo "$@" | sed "s#${SUSHYFT_BASE}##g" | md5sum | awk '{ print $1 }')
-CURRSTATE="$(ls -l $INPUTS 2>/dev/null | sort | md5sum | awk '{ print $1 }')-$ARGHASH"
+CURRSTATE="$(ls -l --time-style=long-iso $INPUTS 2>/dev/null | sort | md5sum | awk '{ print $1 }')-$ARGHASH"
 if [[ -e $STATEFILE && -e $OUTPUTFILE ]]; then
     # don't jump past the "--", we need it for below
     OLDSTATE=$(cat $STATEFILE 2>/dev/null)

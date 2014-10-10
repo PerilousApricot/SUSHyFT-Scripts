@@ -10,13 +10,14 @@ fi
 mkdir -p ${SUSHYFT_BASE}/state/${SUSHYFT_MODE}
 if [ $SUSHYFT_ENABLE_SYSTEMATICS -ne 0 ]; then
     # First, get the systematic variations
+    # -unc=pol2 --name=BTag_PF --legend --samples=Top,SingleTop,Wbx,Wcx \
     runIfChanged.sh  ${SUSHYFT_BASE}/state/${SUSHYFT_MODE}/btag_sf.mrf  \
                      `which configFitVariations.py` \
                      ${SUSHYFT_BASE}/config/${SUSHYFT_MODE}/fitConfigs/floatall.mrf \
                      ${SUSHYFT_COPYHIST_PATH}/${SUSHYFT_MODE}/central_{nom,BTag}* -- \
         configFitVariations.py \
             ${SUSHYFT_BASE}/config/${SUSHYFT_MODE}/fitConfigs/floatall.mrf \
-            --func=pol2 --name=BTag_PF --legend --samples=Top,SingleTop,Wbx,Wcx \
+            --func=pol2 --name=BTag_PF --legend --samples=Top,Wbx,Wcx \
             --writeConfig=${SUSHYFT_BASE}/state/${SUSHYFT_MODE}/btag_sf.mrf:btag,0,1 \
             ${SUSHYFT_COPYHIST_PATH}/${SUSHYFT_MODE}/central_nominal.root:0 \
             ${SUSHYFT_COPYHIST_PATH}/${SUSHYFT_MODE}/central_BTag090.root:-1 \
@@ -24,7 +25,7 @@ if [ $SUSHYFT_ENABLE_SYSTEMATICS -ne 0 ]; then
             ${SUSHYFT_COPYHIST_PATH}/${SUSHYFT_MODE}/central_BTag110.root:1  \
             ${SUSHYFT_COPYHIST_PATH}/${SUSHYFT_MODE}/central_BTag120.root:2
 
-    if [[ ! ${SUSHYFT_MODE} == test_* ]];then
+    if [[ ! ${SUSHYFT_MODE} == test_* && /bin/false ]];then
         runIfChanged.sh  ${SUSHYFT_BASE}/state/${SUSHYFT_MODE}/lftag_sf.mrf  \
                          `which configFitVariations.py` \
                          ${SUSHYFT_BASE}/config/${SUSHYFT_MODE}/fitConfigs/nominal.mrf \
@@ -38,6 +39,7 @@ if [ $SUSHYFT_ENABLE_SYSTEMATICS -ne 0 ]; then
                 ${SUSHYFT_COPYHIST_PATH}/${SUSHYFT_MODE}/central_LFTag090.root:-1 \
                 ${SUSHYFT_COPYHIST_PATH}/${SUSHYFT_MODE}/central_LFTag110.root:1 \
                 ${SUSHYFT_COPYHIST_PATH}/${SUSHYFT_MODE}/central_LFTag120.root:2
+        #--func=pol2 --name=JES_SF --legend --samples=Top,SingleTop,ZJets,WJets \
        runIfChanged.sh  ${SUSHYFT_BASE}/state/${SUSHYFT_MODE}/jes_sf.mrf  \
                          `which configFitVariations.py` \
                          ${SUSHYFT_BASE}/config/${SUSHYFT_MODE}/fitConfigs/nominal.mrf \

@@ -137,7 +137,7 @@ def recombineName(name,prefix,suffix):
 # sections that have 'Data' or 'QCD' in their names have special treatment - they are not rescaled
 # in case of QCD it is needed to deal with externally produced templates
 histogramList = {}
-def getScaleHistogram(hclone, config, section):
+def getScaleHistogram(hclone, nEvents, config, section):
     sf=1.0
     global histogramList
     if 'Data' in section or \
@@ -154,7 +154,10 @@ def getScaleHistogram(hclone, config, section):
         #print 'xs ', xs
         globalSF = config.getfloat(section, 'globalSF')
         lum = config.getfloat(section, 'lum')
-        n_gen = config.getfloat(section, 'n_gen')
+        if config.has_option(section, 'n_gen'):
+            n_gen = config.getfloat(section, 'n_gen')
+        else:
+            n_gen = nEvents
         #print 'SF ',globalSF, ',lum ', lum, ',n_gen' , n_gen
         sf*=xs*globalSF*lum/n_gen
         #print "Scale factor for %s is %s" % (section, sf)
@@ -198,6 +201,8 @@ for section in config.sections():
     print config.items(section)
     toOpen = config.get(section,'input_folder')+'/'+config.get(section,'input_file')
     infile = ROOT.TFile(toOpen,'READONLY')
+    eventHist = infile.Get('nEvents')
+    nEvents = eventHist.GetEntries()
     if infile.IsZombie():
         raise RuntimeError, "Couldn't open %s" % toOpen
 
@@ -246,7 +251,7 @@ for section in config.sections():
             #print 'raw integral ', hclone.Integral()
             #print 'raw entries ', hclone.GetEntries()
             # get the scale to use
-            scale = getScaleHistogram(hclone, config, section)
+            scale = getScaleHistogram(hclone, nEvents, config, section)
             #print 'scale ', scale
             outhname = recombineName(hname, prefix, suffix)
 
