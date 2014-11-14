@@ -11,8 +11,8 @@ fi
 OLD_NAME=$1
 NEW_NAME=$2
 
-OLD_PATH=${SUSHYFT_BASE}/config/$1
-NEW_PATH=${SUSHYFT_BASE}/config/$2
+OLD_PATH=${SHYFT_BASE}/config/$1
+NEW_PATH=${SHYFT_BASE}/config/$2
 
 if [[ ! -d $OLD_PATH ]]; then
     >&2 echo "ERROR: Can't find old config $OLD_NAME"
@@ -25,7 +25,7 @@ if [[ -e $NEW_PATH ]]; then
 fi
 
 # check the new one doesn't match anybody
-MISMATCH_COUNT=$(ls -d ${SUSHYFT_BASE}/config/* | grep ${2}_ | wc -l)
+MISMATCH_COUNT=$(ls -d ${SHYFT_BASE}/config/* | grep ${2}_ | wc -l)
 if [[ $MISMATCH_COUNT -ne 0 ]]; then
     >&2 echo "ERROR: Target name is too close to existing name(s)"
     >&2 ls -d ${NEW_PATH}_
@@ -33,14 +33,14 @@ if [[ $MISMATCH_COUNT -ne 0 ]]; then
 fi
 
 # check anybody doesn't match us
-for DIR in $(ls -d ${SUSHYFT_BASE}/config/* | xargs -n 1 basename); do
+for DIR in $(ls -d ${SHYFT_BASE}/config/* | xargs -n 1 basename); do
     if [[ ${2} == ${DIR}_* ]]; then
         >&2 echo "ERROR: Target name is too close to existing name ${DIR}"
         exit 1
     fi
 done
 
->&/dev/null pushd $SUSHYFT_BASE
+>&/dev/null pushd $SHYFT_BASE
 GIT_OUTPUT=$(git diff --shortstat 2>/dev/null | tail -n1)
 
 if [[ $GIT_OUTPUT != "" ]]; then
@@ -66,7 +66,7 @@ if [ $GREP_STATUS -eq 0 ]; then
     >&2 echo " (please ensure that no instances of ${OLD_NAME} exist"
 fi
 
->&/dev/null pushd ${SUSHYFT_BASE}
+>&/dev/null pushd ${SHYFT_BASE}
 git add ${NEW_PATH} 1>&/dev/null
 git commit -e -m "Autogenerating new config
 Created '${NEW_NAME}' from '${OLD_NAME}'

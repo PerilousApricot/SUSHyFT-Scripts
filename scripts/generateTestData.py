@@ -6,7 +6,7 @@
 import glob
 import itertools
 import sys
-from SUSHyFT.HistogramDumper import HistogramDumper
+from SHyFT.HistogramDumper import HistogramDumper
 oldarg = sys.argv[:]
 sys.argv = [oldarg[0], '-b']
 import ROOT

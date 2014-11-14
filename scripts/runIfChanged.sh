@@ -10,12 +10,12 @@ if [[ $? -ne 0 ]]; then
 fi
 
 OUTPUTFILE=$1
-[[ -d `dirname $OUTPUTFILE`/.sushyft-state ]] || mkdir -p `dirname $OUTPUTFILE`/.sushyft-state
-[[ -d `dirname $OUTPUTFILE`/.sushyft-output ]] || mkdir -p `dirname $OUTPUTFILE`/.sushyft-output
+[[ -d `dirname $OUTPUTFILE`/.shyft-state ]] || mkdir -p `dirname $OUTPUTFILE`/.shyft-state
+[[ -d `dirname $OUTPUTFILE`/.shyft-output ]] || mkdir -p `dirname $OUTPUTFILE`/.shyft-output
 #echo "args are $@"
 shift
-STATEFILE=`dirname $OUTPUTFILE`/.sushyft-state/`basename $OUTPUTFILE`.state
-COMMANDOUTPUT=`dirname $OUTPUTFILE`/.sushyft-output/`basename $OUTPUTFILE`.txt
+STATEFILE=`dirname $OUTPUTFILE`/.shyft-state/`basename $OUTPUTFILE`.state
+COMMANDOUTPUT=`dirname $OUTPUTFILE`/.shyft-output/`basename $OUTPUTFILE`.txt
 INPUTS=""
 while [[ $1 != "--" ]]; do
     INPUTS="$1 $INPUTS"
@@ -23,7 +23,7 @@ while [[ $1 != "--" ]]; do
 done
 shift # jump past the --
 
-ARGHASH=$(echo "$@" | sed "s#${SUSHYFT_BASE}##g" | md5sum | awk '{ print $1 }')
+ARGHASH=$(echo "$@" | sed "s#${SHYFT_BASE}##g" | md5sum | awk '{ print $1 }')
 CURRSTATE="$(ls -l --time-style=long-iso $INPUTS 2>/dev/null | sort | md5sum | awk '{ print $1 }')-$ARGHASH"
 if [[ -e $STATEFILE && -e $OUTPUTFILE ]]; then
     # don't jump past the "--", we need it for below

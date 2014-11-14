@@ -1,20 +1,20 @@
 #!/bin/bash
 
-source ${SUSHYFT_BASE}/config/${SUSHYFT_MODE}/config.sh
+source ${SHYFT_BASE}/config/${SHYFT_MODE}/config.sh
 
-if [ $SUSHYFT_SEPARATE_QCD_FIT -eq 0 ]; then
+if [ $SHYFT_SEPARATE_QCD_FIT -eq 0 ]; then
     exit 0
 fi
 
-if [[ ! -d ${SUSHFYT_BASE}/state/${SUSHYFT_MODE} ]]; then
-    mkdir -p ${SUSHYFT_BASE}/state/${SUSHYFT_MODE}
+if [[ ! -d ${SUSHFYT_BASE}/state/${SHYFT_MODE} ]]; then
+    mkdir -p ${SHYFT_BASE}/state/${SHYFT_MODE}
 fi
 
 # This really really depends on having the proper data lumi set
 
-LUMIFILE=${SUSHYFT_BASE}/state/lumisum_${SUSHYFT_EDNTUPLE_VERSION}_SingleMu.txt
-if [[ ${SUSHYFT_MODE} == test_* ]]; then
-    LUMIFILE=${SUSHYFT_BASE}/config/${SUSHYFT_MODE}/lumi.txt
+LUMIFILE=${SHYFT_BASE}/state/lumisum_${SHYFT_EDNTUPLE_VERSION}_SingleMu.txt
+if [[ ${SHYFT_MODE} == test_* ]]; then
+    LUMIFILE=${SHYFT_BASE}/config/${SHYFT_MODE}/lumi.txt
 fi
 if [[ ! -e ${LUMIFILE} ]];then
     echo "You need to run makeAllLumiCalc.sh to get an accurate lumi calculation!"
@@ -23,14 +23,14 @@ fi
 
 OIFS=$IFS
 IFS=""
-for DIR in ${SUSHYFT_QCD_JETTAG[@]}; do
+for DIR in ${SHYFT_QCD_JETTAG[@]}; do
     IFS=" "
     read -a ONE_ROW <<< "$DIR"
     JET=${ONE_ROW[0]}
     TAG=${ONE_ROW[1]}
     TAU=${ONE_ROW[2]}
     SHAPE=${ONE_ROW[3]}
-    runIfChanged.sh ${SUSHYFT_BASE}/state/${SUSHYFT_MODE}/fit_output_${JET}j_${TAG}t.txt ${SUSHYFT_COPYHIST_PATH}/${SUSHYFT_MODE}/metfit.root `which handleQCDShapeAndNormalization.py` -- stdoutWrapper.sh ${SUSHYFT_BASE}/state/${SUSHYFT_MODE}/fit_output_${JET}j_${TAG}t.txt handleQCDShapeAndNormalization.py --stitched-input=${SUSHYFT_COPYHIST_PATH}/${SUSHYFT_MODE}/metfit.root --var=MET --minTags=$TAG --maxTags=$TAG --minJets=$JET --maxJets=$JET --fit --verbose --pretagMinTags=${TAG} --pretagMaxTags=${TAG} --shapeOutputVar=${SHAPE} --lumi=$(cat ${LUMIFILE})
+    runIfChanged.sh ${SHYFT_BASE}/state/${SHYFT_MODE}/fit_output_${JET}j_${TAG}t.txt ${SHYFT_COPYHIST_PATH}/${SHYFT_MODE}/metfit.root `which handleQCDShapeAndNormalization.py` -- stdoutWrapper.sh ${SHYFT_BASE}/state/${SHYFT_MODE}/fit_output_${JET}j_${TAG}t.txt handleQCDShapeAndNormalization.py --stitched-input=${SHYFT_COPYHIST_PATH}/${SHYFT_MODE}/metfit.root --var=MET --minTags=$TAG --maxTags=$TAG --minJets=$JET --maxJets=$JET --fit --verbose --pretagMinTags=${TAG} --pretagMaxTags=${TAG} --shapeOutputVar=${SHAPE} --lumi=$(cat ${LUMIFILE})
     IFS=""
 done
 IFS=$OIFS
@@ -43,7 +43,7 @@ echo "+ fixParamVal = QCD=1.0"
 
 OIFS=$IFS
 IFS=""
-for DIR in ${SUSHYFT_QCD_JETTAG[@]}; do
+for DIR in ${SHYFT_QCD_JETTAG[@]}; do
     IFS=" "
     read -a ONE_ROW <<< "$DIR"
     JET=${ONE_ROW[0]}
@@ -51,7 +51,7 @@ for DIR in ${SUSHYFT_QCD_JETTAG[@]}; do
     TAU=${ONE_ROW[2]}
     SHAPE=${ONE_ROW[3]}
     echo "#Results for QCD jet bin ${JET} tag ${TAG}"; 
-    TAGVAL=`grep -A 9 'INFO:Minization -- RooMinuit::optimizeConst: deactivating const optimization' ${SUSHYFT_BASE}/state/${SUSHYFT_MODE}/fit_output_${JET}j_${TAG}t.txt | grep qcdSF` 
+    TAGVAL=`grep -A 9 'INFO:Minization -- RooMinuit::optimizeConst: deactivating const optimization' ${SHYFT_BASE}/state/${SHYFT_MODE}/fit_output_${JET}j_${TAG}t.txt | grep qcdSF` 
     SF=`echo $TAGVAL | awk '{print \$6}'`
     echo "#$TAGVAL"
     echo "#$SF"
@@ -60,4 +60,4 @@ for DIR in ${SUSHYFT_QCD_JETTAG[@]}; do
     IFS=""
 done
 IFS=$OIFS
-) > ${SUSHYFT_BASE}/state/${SUSHYFT_MODE}/qcd.mrf
+) > ${SHYFT_BASE}/state/${SHYFT_MODE}/qcd.mrf

@@ -6,7 +6,7 @@ if [[ -z ${CRABDIR} ]]; then
 else
     # get the json from crab
     toProcess=( )
-    for DIR in ${SUSHYFT_EDNTUPLE_PATH}/*{MET,SingleMu}*; do
+    for DIR in ${SHYFT_EDNTUPLE_PATH}/*{MET,SingleMu}*; do
         if [[ ! -d $DIR/res || ! -d $DIR/share ]]; then
             continue
         fi
@@ -20,7 +20,7 @@ fi
 
 # extract the lumi
 toProcess=( )
-for DIR in ${SUSHYFT_EDNTUPLE_PATH}/*{MET,SingleMu}*; do
+for DIR in ${SHYFT_EDNTUPLE_PATH}/*{MET,SingleMu}*; do
     if [[ ! -d $DIR/res || ! -d $DIR/share ]]; then
         continue
     fi
@@ -32,5 +32,5 @@ echo "Executing ${#toProcess[@]} jobs"
 done; ) | parallel -j 16 --eta --progress --verbose
 
 for PD in MET SingleMu; do
-    runIfChanged.sh $SUSHYFT_STATE_PATH/lumisum_${SUSHYFT_EDNTUPLE_VERSION}_${PD}.txt `which sumLumisFromLumiCalcOutput.py` ${SUSHYFT_EDNTUPLE_PATH}/crab_${SUSHYFT_EDNTUPLE_VERSION}_${PD}*/pixelLumiCalc.txt -- stdoutWrapper.sh $SUSHYFT_STATE_PATH/lumisum_${SUSHYFT_EDNTUPLE_VERSION}_${PD}.txt sumLumisFromLumiCalcOutput.py ${SUSHYFT_EDNTUPLE_PATH}/crab_${SUSHYFT_EDNTUPLE_VERSION}_${PD}*/pixelLumiCalc.txt
+    runIfChanged.sh $SHYFT_STATE_PATH/lumisum_${SHYFT_EDNTUPLE_VERSION}_${PD}.txt `which sumLumisFromLumiCalcOutput.py` ${SHYFT_EDNTUPLE_PATH}/crab_${SHYFT_EDNTUPLE_VERSION}_${PD}*/pixelLumiCalc.txt -- stdoutWrapper.sh $SHYFT_STATE_PATH/lumisum_${SHYFT_EDNTUPLE_VERSION}_${PD}.txt sumLumisFromLumiCalcOutput.py ${SHYFT_EDNTUPLE_PATH}/crab_${SHYFT_EDNTUPLE_VERSION}_${PD}*/pixelLumiCalc.txt
 done

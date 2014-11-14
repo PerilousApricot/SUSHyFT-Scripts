@@ -70,7 +70,7 @@ rm $WORKDIR/$COUNT.root
 echo "Started at \$(date)" >> $WORKDIR/FAILED.$COUNT
 echo "At dir: \$(pwd)"
 ls -lah
-time python2.6 sushyft_fwlite.py --inputListFile=$WORKDIR/input_$COUNT.txt --sampleName=$SAMPLE $OURDATA --lepType=0 --outname=$WORKDIR/$COUNT $@
+time python2.6 shyft_fwlite.py --inputListFile=$WORKDIR/input_$COUNT.txt --sampleName=$SAMPLE $OURDATA --lepType=0 --outname=$WORKDIR/$COUNT $@
 RETVAL=\$?
 ls -lah
 ls -lah $WORKDIR
