@@ -18,10 +18,10 @@ INCDIRS = -I$(ROOTSYS)/include \
 include ${ROOTSYS}/etc/Makefile.arch
 
 # Here's where you'd want to define any #define with -DVariableName
-CFLAGS += $(INCDIRS)
+CFLAGS += $(INCDIRS) -g
 
 # Everything it needs to know about libraries
-LIBS =  $(USERLIBDIRS) $(USERLIBS) $(shell root-config --glibs)
+LIBS =  $(USERLIBDIRS) $(USERLIBS) $(shell root-config --glibs) -g
 
 # Define what to compile as well as the necessary dependencies and
 # object names.
@@ -40,11 +40,7 @@ all: install
 # Make the executable
 $(EXECNAME): $(OBJS)
 	@echo "making stuff with $(OBJS) : $(SRCS)!"
-	$(LD) $(LDFLAGS) $(OBJS) $(LIBS) $(EXPLLINKLIBS) $(OutPutOpt) $(EXECNAME) 
-	$(CXX) $(CFLAGS) $(INCDIRS) -c $(OutPutOpt) runMultipleFits.o runMultipleFits.cc
-	$(LD) $(LDFLAGS) MRFitterNamespace.o PolyNoid.o runMultipleFits.o $(LIBS) $(EXPLLINKLIBS) $(OutPutOpt) runMultipleFits.exe 
-	$(CXX) $(CFLAGS) $(INCDIRS) -c $(OutPutOpt) multiRunRangeFitter.o multiRunRangeFitter.cc
-	$(LD) $(LDFLAGS) MRFitterNamespace.o PolyNoid.o multiRunRangeFitter.o $(LIBS) $(EXPLLINKLIBS) $(OutPutOpt) multiRunRangeFitter.exe 
+	$(LD) $(LDFLAGS) $(OBJS) $(LIBS) $(EXPLLINKLIBS) -g $(OutPutOpt) $(EXECNAME) 
 
 # Make the objects
 %.o: %.cc
@@ -78,7 +74,7 @@ echo:
 
 # Clean everythingg
 clean:
-	@rm -f core* $(EXECNAME) ${DEPS} ${OBJS} multiRunRangeFitter.exe multiRunRangeFitter.o runMultipleFits.exe runMultipleFits.o
+	@rm -f core* $(EXECNAME) ${DEPS} ${OBJS} multiRunRangeFitter.exe multiRunRangeFitter.o
 
 # If we aren't doing a 'gmake clean' then make the dependencies
 ifneq ($(MAKECMDGOALS),clean)

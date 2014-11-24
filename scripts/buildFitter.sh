@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd ${SUSHYFT_BASE}/src
+cd ${SHYFT_BASE}/src
 cd CLPTemplateMorph/ ; make -j8
 cd ../CLPTemplateFitter/ ; make  -j8
 cd ../OptionUtils/ ; make -j8

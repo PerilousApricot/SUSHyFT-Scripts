@@ -1,106 +1,106 @@
 #!/bin/bash
 
-# ››› SUSHyFT - Andrew Melo, on the shoulders of others
+# ››› shyft - Andrew Melo, on the shoulders of others
 
 # Where are we? (Get right bash magic to autodetect)
 SCRIPTPATH="${BASH_SOURCE[0]}"
-SUSHYFT_BASE="$(cd "$(dirname "${SCRIPTPATH}")" ; pwd)"
+SHYFT_BASE="$(cd "$(dirname "${SCRIPTPATH}")" ; pwd)"
 
 # Which analysis are we doing? Determines input datasets, binning procedure
-if [[ -z "$SUSHYFT_MODE" ]]; then
+if [[ -z "$SHYFT_MODE" ]]; then
     >&2 echo "You didn't select a configuration mode, please either export
-\$SUSHYFT_MODE to your desired configuration mode or execute
+\$SHYFT_MODE to your desired configuration mode or execute
 "
-    typedef -f sushyft &>/dev/null
+    typedef -f shyft &>/dev/null
     if [ $? -ne 0 ]; then
-        >&2 echo "    source ${SUSHYFT_BASE}/scripts/setMode.sh
+        >&2 echo "    source ${SHYFT_BASE}/scripts/setMode.sh
         
 If you're using the One True Shell (bash), and you plan on only having one 
-checkout of SUSHyFT, you can use the handy 'sushyft' alias by first executing:
+checkout of shyft, you can use the handy 'shyft' alias by first executing:
 
-    source ${SUSHYFT_BASE}/scripts/sushyft_source.sh
+    source ${SHYFT_BASE}/scripts/shyft_source.sh
 
 and then executing
 
-    sushyft mode
+    shyft mode
 
-To add the 'sushyft' alias to your default profile, source 'sushyft_source.sh'
-in '~/.bash_profile'. At subsequent logins, you can simply use 'sushyft' to
+To add the 'shyft' alias to your default profile, source 'shyft_source.sh'
+in '~/.bash_profile'. At subsequent logins, you can simply use 'shyft' to
 access various helper functions
 "
     else
-        >&2 echo "    sushyft mode"
+        >&2 echo "    shyft mode"
     fi
     return
 fi
-export SUSHYFT_BASE
-export SUSHYFT_MODE
+export SHYFT_BASE
+export SHYFT_MODE
 
-if [[ $(ls -d $SUSHYFT_BASE/config/${SUSHYFT_MODE}_ 2>/dev/null | wc -l) -gt 1 ]]; then
-    >&2 echo "ERROR: Multiple substrings match the \$SUSHYFT_MODE. This is bad"
+if [[ $(ls -d $SHYFT_BASE/config/${SHYFT_MODE}_ 2>/dev/null | wc -l) -gt 1 ]]; then
+    >&2 echo "ERROR: Multiple substrings match the \$SHYFT_MODE. This is bad"
     return
 fi
 
-if [[ ! -e $SUSHYFT_BASE/config/$SUSHYFT_MODE ]]; then
-    >&2 echo "ERROR: Configuration \"${SUSHYFT_MODE}\" not found"
+if [[ ! -e $SHYFT_BASE/config/$SHYFT_MODE ]]; then
+    >&2 echo "ERROR: Configuration \"${SHYFT_MODE}\" not found"
     return
 fi
 
 # What are the input datasets (starting from PAT)
-export SUSHYFT_DATASET_INPUT=$SUSHYFT_BASE/config/$SUSHYFT_MODE/input_pat.txt
+export SHYFT_DATASET_INPUT=$SHYFT_BASE/config/$SHYFT_MODE/input_pat.txt
 
-source ${SUSHYFT_BASE}/scripts/configDefaults.sh
-source ${SUSHYFT_BASE}/config/${SUSHYFT_MODE}/config.sh
+source ${SHYFT_BASE}/scripts/configDefaults.sh
+source ${SHYFT_BASE}/config/${SHYFT_MODE}/config.sh
 
-if [ ! -z "$SUSHYFT_STATE_PATH" ]; then
+if [ ! -z "$SHYFT_STATE_PATH" ]; then
     echo "Reconfiguring to new config mode. This should hopefully work."
     return
 fi
 
 # Where are we storing our output datasets?
-SUSHYFT_DATA_BASE=$SUSHYFT_BASE/data
-export SUSHYFT_EDNTUPLE_PATH=$SUSHYFT_DATA_BASE/auto_edntuple
-export SUSHYFT_FWLITE_PATH=$SUSHYFT_DATA_BASE/auto_fwlite
-export SUSHYFT_HADD_PATH=$SUSHYFT_DATA_BASE/auto_hadd
-export SUSHYFT_REBIN_PATH=$SUSHYFT_DATA_BASE/auto_rebin
-export SUSHYFT_STITCHED_PATH=$SUSHYFT_DATA_BASE/auto_stitched
-export SUSHYFT_COPYHIST_PATH=$SUSHYFT_DATA_BASE/auto_copyhist
+SHYFT_DATA_BASE=$SHYFT_BASE/data
+export SHYFT_EDNTUPLE_PATH=$SHYFT_DATA_BASE/auto_edntuple
+export SHYFT_FWLITE_PATH=$SHYFT_DATA_BASE/auto_fwlite
+export SHYFT_HADD_PATH=$SHYFT_DATA_BASE/auto_hadd
+export SHYFT_REBIN_PATH=$SHYFT_DATA_BASE/auto_rebin
+export SHYFT_STITCHED_PATH=$SHYFT_DATA_BASE/auto_stitched
+export SHYFT_COPYHIST_PATH=$SHYFT_DATA_BASE/auto_copyhist
 
 # Where are we storing the state of processing?
-export SUSHYFT_STATE_PATH=$SUSHYFT_BASE/state
+export SHYFT_STATE_PATH=$SHYFT_BASE/state
 
 # What are the versions of processing we'd like?
-export SUSHYFT_EDNTUPLE_VERSION="v4"
-export SUSHYFT_EDNTUPLE_CMSSW_BASE="$SUSHYFT_BASE/checkouts/analyzer"
+export SHYFT_EDNTUPLE_VERSION="v4"
+export SHYFT_EDNTUPLE_CMSSW_BASE="$SHYFT_BASE/checkouts/analyzer"
 
 # Where to put CRAB scratch stuff
-export SUSHYFT_SCRATCH_PATH=$SUSHYFT_BASE/scratch
+export SHYFT_SCRATCH_PATH=$SHYFT_BASE/scratch
 
 # Set some variables for the number of cores
 # this works in linux and OSX
-export SUSHYFT_CORE_COUNT=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || sysctl -n hw.ncpu)
+export SHYFT_CORE_COUNT=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || sysctl -n hw.ncpu)
 # We know some things will be very I/O bound
-export SUSHYFT_DOUBLE_CORE_COUNT=$(echo "${SUSHYFT_CORE_COUNT}*2" | bc)
+export SHYFT_DOUBLE_CORE_COUNT=$(echo "${SHYFT_CORE_COUNT}*2" | bc)
 
 # Convenient for syncing
-export SUSHYFT_REMOTE_PATH="vmplogin.accre.vanderbilt.edu:/scratch/meloam/SUSHyFT-Scripts"
+export SHYFT_REMOTE_PATH="vmplogin.accre.vanderbilt.edu:/scratch/meloam/shyft-Scripts"
 
 # Export some path variables
-EXTRA_PATH="$SUSHYFT_BASE/scripts:$SUSHYFT_BASE/bin:$SUSHYFT_BASE/topLevelScripts"
-if [[ -d $SUSHYFT_BASE/src/parallel/local/bin ]];then
-    EXTRA_PATH="$EXTRA_PATH:$SUSHYFT_BASE/src/parallel/local/bin"
+EXTRA_PATH="$SHYFT_BASE/scripts:$SHYFT_BASE/bin:$SHYFT_BASE/topLevelScripts"
+if [[ -d $SHYFT_BASE/src/parallel/local/bin ]];then
+    EXTRA_PATH="$EXTRA_PATH:$SHYFT_BASE/src/parallel/local/bin"
 fi
 
 if [[ $PATH != *$EXTRA_PATH* ]]; then
     export PATH=$PATH:$EXTRA_PATH
 fi
 
-EXTRA_PYTHONPATH="$SUSHYFT_BASE/python"
+EXTRA_PYTHONPATH="$SHYFT_BASE/python"
 if [[ $PYTHONPATH != *$EXTRA_PYTHONPATH* ]]; then
     export PYTHONPATH=$PYTHONPATH:$EXTRA_PYTHONPATH
 fi
 
-EXTRA_LD_LIBRARY_PATH="$SUSHYFT_BASE/src/shlib"
+EXTRA_LD_LIBRARY_PATH="$SHYFT_BASE/src/shlib"
 if [[ $LD_LIBRARY_PATH != *$EXTRA_LD_LIBRARY_PATH* ]]; then
     export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$EXTRA_LD_LIBRARY_PATH
 fi

@@ -1,9 +1,9 @@
 #!/bin/bash
 set -x
-if [[ ! -d ${SUSHYFT_COPYHIST_PATH} ]];then
-    mkdir -p ${SUSHYFT_COPYHIST_PATH}
+if [[ ! -d ${SHYFT_COPYHIST_PATH} ]];then
+    mkdir -p ${SHYFT_COPYHIST_PATH}
 fi
 
-multi.pl --match ${SUSHYFT_STITCHED_PATH}/${SUSHYFT_MODE}/%.root runIfChanged.sh ${SUSHYFT_COPYHIST_PATH}/${SUSHYFT_MODE}/central_%.root ${SUSHYFT_STITCHED_PATH}/${SUSHYFT_MODE}/%.root ${SUSHYFT_BASE}/config/${SUSHYFT_MODE}/copyHistConfigs/nominal.config -- copyHistograms.py ${SUSHYFT_BASE}/config/${SUSHYFT_MODE}/copyHistConfigs/nominal.config ${SUSHYFT_COPYHIST_PATH}/${SUSHYFT_MODE}/central_%.root file=${SUSHYFT_STITCHED_PATH}/${SUSHYFT_MODE}/%.root
+multi.pl --match ${SHYFT_STITCHED_PATH}/${SHYFT_MODE}/%.root runIfChanged.sh ${SHYFT_COPYHIST_PATH}/${SHYFT_MODE}/central_%.root ${SHYFT_STITCHED_PATH}/${SHYFT_MODE}/%.root ${SHYFT_BASE}/config/${SHYFT_MODE}/copyHistConfigs/nominal.config -- copyHistograms.py ${SHYFT_BASE}/config/${SHYFT_MODE}/copyHistConfigs/nominal.config ${SHYFT_COPYHIST_PATH}/${SHYFT_MODE}/central_%.root file=${SHYFT_STITCHED_PATH}/${SHYFT_MODE}/%.root
 
-runIfChanged.sh ${SUSHYFT_COPYHIST_PATH}/${SUSHYFT_MODE}/metfit.root ${SUSHYFT_BASE}/config/${SUSHYFT_MODE}/copyHistConfigs/metfit.config ${SUSHYFT_STITCHED_PATH}/${SUSHYFT_MODE}/metfit.root -- copyHistograms.py ${SUSHYFT_BASE}/config/${SUSHYFT_MODE}/copyHistConfigs/metfit.config ${SUSHYFT_COPYHIST_PATH}/${SUSHYFT_MODE}/metfit.root file=${SUSHYFT_STITCHED_PATH}/${SUSHYFT_MODE}/metfit.root
+runIfChanged.sh ${SHYFT_COPYHIST_PATH}/${SHYFT_MODE}/metfit.root ${SHYFT_BASE}/config/${SHYFT_MODE}/copyHistConfigs/metfit.config ${SHYFT_STITCHED_PATH}/${SHYFT_MODE}/metfit.root -- copyHistograms.py ${SHYFT_BASE}/config/${SHYFT_MODE}/copyHistConfigs/metfit.config ${SHYFT_COPYHIST_PATH}/${SHYFT_MODE}/metfit.root file=${SHYFT_STITCHED_PATH}/${SHYFT_MODE}/metfit.root

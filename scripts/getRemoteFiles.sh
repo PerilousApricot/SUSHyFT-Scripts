@@ -1,3 +1,3 @@
 #!/bin/bash
-rsync -avh --progress --exclude ".sushyft-*" ${SUSHYFT_REMOTE_PATH}/data/auto_hadd ${SUSHYFT_HADD_PATH}
-rsync -avh ${SUSHYFT_REMOTE_PATH}/state/lumisum* ${SUSHYFT_STATE_PATH}
+rsync -avh --progress --exclude ".shyft-*" --delete -c ${SHYFT_REMOTE_PATH}/data/auto_hadd/ ${SHYFT_HADD_PATH}
+rsync -avh ${SHYFT_REMOTE_PATH}/state/lumisum* ${SHYFT_STATE_PATH}

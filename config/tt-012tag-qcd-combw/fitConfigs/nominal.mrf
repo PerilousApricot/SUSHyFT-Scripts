@@ -1,7 +1,7 @@
 # -*- conf -*-
 
 # names of templates
-+ names = Data, Top, SingleTop, Wbx, Wcx, Wqq, ZJets, QCD
++ names = Data, Top, SingleTop, WJets, ZJets, QCD
 
 # names of the different groups
 + groupNames = _wMT_1j_0t, _wMT_2j_0t, _wMT_3j_0t, _wMT_4j_0t, _wMT_5j_0t
@@ -17,7 +17,7 @@
 + binsPerGroup = 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10 
 
 # How to throw PEs
-+ peNames  =    Top,   SingleTop,   Wbx,   Wcx,   Wqq,    QCD
++ peNames  =    Top,   SingleTop,   WJets,    QCD
 + peMeans  = 1.0,         1.0,   1.0,   1.0,   1.0,    1.0
 + peSigmas =  0.020,         0.1,   0.1,   0.1,   0.1,    0.2
 
@@ -26,18 +26,18 @@
 + defaultValues    =   1.00,  1.00,      1.0
 
 # colors
-+ colorNames  = Data, Top, SingleTop, Wbx, Wcx, Wqq, QCD, ZJets
-+ colorValues =    1, 633,       616, 413, 411, 407, 400,     9
++ colorNames  = Data, Top, SingleTop, WJets, QCD, ZJets
++ colorValues =    1, 633,       616, 413, 400,     9
 
 # constraints
 #+ constraintNames  =    ZJets,  SingleTop, Wbx,  Wcx,  Wqq
 #+ constraintValues =    0.3,       0.30, 4.0,  2.0,  2.0
 
 # Ranges
-+ rangeNames =   Wcx,     Wbx,   SingleTop,    Wqq
-+ lowerRange =  -200.,   -100,        -40,    -20
-+ upperRange =   200.,    100,         40,     20
-+ stepRange  =  0.01,     0.1,       0.001,   0.01
++ rangeNames =   WJets,  SingleTop
++ lowerRange =  -200.,      -40 
++ upperRange =   200.,       40   
++ stepRange  =  0.01,      0.001  
 
 
 # legend coordiates

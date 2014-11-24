@@ -5,4 +5,4 @@
 while read DATASET; do
 
 
-done < $SUSHYFT_DATASET_INPUT
+done < $SHYFT_DATASET_INPUT

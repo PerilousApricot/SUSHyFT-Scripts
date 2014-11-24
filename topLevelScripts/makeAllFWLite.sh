@@ -1,12 +1,12 @@
 #!/bin/bash
 
-source $SUSHYFT_BASE/scripts/functions.sh
+source $SHYFT_BASE/scripts/functions.sh
 
 # set the input version
-run=$SUSHYFT_EDNTUPLE_VERSION
+run=$SHYFT_EDNTUPLE_VERSION
 # Looks like we were successful. Party hard and fire off the processing
-CRAB_BASE=$SUSHYFT_FWLITE_PATH
-cp $SUSHYFT_EDNTUPLE_CMSSW_BASE/src/Analysis/EDSHyFT/test/SUSHyFT/*.py $CRAB_BASE
+CRAB_BASE=$SHYFT_FWLITE_PATH
+cp $SHYFT_EDNTUPLE_CMSSW_BASE/src/Analysis/EDSHyFT/test/SHyFT/*.py $CRAB_BASE
 
 SCHEDULER_STATUS=$(qstat | grep `whoami` | grep -e ' R ' -e ' Q ' )
 # choose systematics
@@ -19,18 +19,18 @@ CHANGES_FOUND=0
 
 DATASETS_TO_RUN=(  )
 
-if [[ ! -d $SUSHYFT_FWLITE_PATH ]]; then
-    mkdir -p $SUSHYFT_FWLITE_PATH
+if [[ ! -d $SHYFT_FWLITE_PATH ]]; then
+    mkdir -p $SHYFT_FWLITE_PATH
 fi
 
-FWLITE_LOG=$SUSHYFT_BASE/output/$SUSHYFT_MODE/fwlite_summary.txt
+FWLITE_LOG=$SHYFT_BASE/output/$SHYFT_MODE/fwlite_summary.txt
 if [ -e $FWLITE_LOG ]; then
     rm $FWLITE_LOG
 fi
 # loop over all the samples
 while read DATASET; do
     SHORTNAME=$(getDatasetShortname $DATASET)
-    DIR=$SUSHYFT_EDNTUPLE_PATH/crab_${run}_${SHORTNAME}
+    DIR=$SHYFT_EDNTUPLE_PATH/crab_${run}_${SHORTNAME}
     DIR_OUT=$DIR
     # I named some directories with a different system, for some dumb reason
     SHORTNAME_BAK=$SHORTNAME
@@ -40,7 +40,7 @@ while read DATASET; do
             break
         fi
         SHORTNAME=$(echo $SHORTNAME_BAK | sed $PATTERN)
-        DIR=$SUSHYFT_EDNTUPLE_PATH/crab_${run}_${SHORTNAME}
+        DIR=$SHYFT_EDNTUPLE_PATH/crab_${run}_${SHORTNAME}
         if [[ -d $DIR/res ]]; then
             break
         fi
@@ -54,7 +54,7 @@ while read DATASET; do
     BASEDIR_OUT=$(basename $DIR_OUT)
     BASEDIR_IN=$(basename $DIR)
     SHORTNAME_IN=$SHORTNAME
-    TARGET_DIR=$SUSHYFT_FWLITE_PATH/$BASEDIR_OUT
+    TARGET_DIR=$SHYFT_FWLITE_PATH/$BASEDIR_OUT
     case $SHORTNAME in
         Single*)
             IS_DATA=1
@@ -240,8 +240,8 @@ while read DATASET; do
         fi
         # We have no choice but to process some extra things
         # First cull out files that don't exist, this is bad
-        echo "$INPUT_MISSING" > $SUSHYFT_FWLITE_PATH/$BASEDIR_OUT/tempinput_pre.txt
-        SUBMIT_INPUT=$SUSHYFT_FWLITE_PATH/$BASEDIR_OUT/tempinput.txt
+        echo "$INPUT_MISSING" > $SHYFT_FWLITE_PATH/$BASEDIR_OUT/tempinput_pre.txt
+        SUBMIT_INPUT=$SHYFT_FWLITE_PATH/$BASEDIR_OUT/tempinput.txt
         if [ -e $SUBMIT_INPUT ]; then
             rm $SUBMIT_INPUT
         fi
@@ -251,10 +251,10 @@ while read DATASET; do
             else
                 echo "$DATASET - $OUTNAME - Replace $LINE" >> $FWLITE_LOG
             fi
-        done < $SUSHYFT_FWLITE_PATH/$BASEDIR_OUT/tempinput_pre.txt
+        done < $SHYFT_FWLITE_PATH/$BASEDIR_OUT/tempinput_pre.txt
 
         # This script hardcodes set-analysis.sh to find the python files. fix that.
         echo "DOING SUBMIT"
         submit_fwlite_dataset.sh $SUBMIT_INPUT $SYSTEMATIC_PATH $IS_DATA $SAMPLENAME $SYSTLINE
-    done < $SUSHYFT_BASE/config/$SUSHYFT_MODE/fwliteSystematicsList.txt
-done < $SUSHYFT_BASE/config/$SUSHYFT_MODE/input_pat.txt
+    done < $SHYFT_BASE/config/$SHYFT_MODE/fwliteSystematicsList.txt
+done < $SHYFT_BASE/config/$SHYFT_MODE/input_pat.txt

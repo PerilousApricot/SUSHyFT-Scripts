@@ -2,19 +2,19 @@
 
 # To keep the FWLite files as broad as possible, they keep all of the bings
 # this script removes/combines unneeded bins
-source $SUSHYFT_BASE/scripts/functions.sh
+source $SHYFT_BASE/scripts/functions.sh
 toProcess=( )
 echo "Gathering jobs to process"
-[ -d $SUSHYFT_REBIN_PATH ] || mkdir -p $SUSHYFT_REBIN_PATH
+[ -d $SHYFT_REBIN_PATH ] || mkdir -p $SHYFT_REBIN_PATH
 
-rebinHists.py --tagCheck --tagMode=${SUSHYFT_MODE}
+rebinHists.py --tagCheck --tagMode=${SHYFT_MODE}
 if [ $? -ne 0 ]; then
     >&2 echo "ERROR: Update rebinHists.py to include this binning mode"
     exit 1
 fi
 while read DATASET; do
     SHORTNAME=$(getDatasetShortname $DATASET)
-    FWLITE_DIR=$SUSHYFT_EDNTUPLE_PATH/crab_${SUSHYFT_EDNTUPLE_VERSION}_${SHORTNAME}
+    FWLITE_DIR=$SHYFT_EDNTUPLE_PATH/crab_${SHYFT_EDNTUPLE_VERSION}_${SHORTNAME}
     BASEDIR=$(basename $FWLITE_DIR)
     case $SHORTNAME in
         Single*)
@@ -34,16 +34,16 @@ while read DATASET; do
         if [[ ! $BASEDIR =~ ${TESTREGEX} ]]; then
             continue
         fi
-        DIR=$SUSHYFT_FWLITE_PATH/$BASEDIR/$OUTNAME
+        DIR=$SHYFT_FWLITE_PATH/$BASEDIR/$OUTNAME
         DATASET_WCRAB=$( echo $DIR | tr '/' ' ' | awk '{ print $(NF-1) }' )
         DATASET=$( echo $DATASET_WCRAB | perl -pe 's|crab_.*?_(.*)|\1|' )
         SYSTEMATIC=$( echo $DIR | tr '/' ' ' | awk '{ print $(NF) }' )
-        HADD_INPUT_FILE=$SUSHYFT_HADD_PATH/${SYSTEMATIC}_${DATASET}.root
-        toProcess+=("runIfChanged.sh $SUSHYFT_REBIN_PATH/${SUSHYFT_MODE}/${SYSTEMATIC}_${DATASET}.root $HADD_INPUT_FILE `which rebinHists.py` -- rebinHists.py --tagMode=${SUSHYFT_MODE} --outDir=$SUSHYFT_REBIN_PATH/${SUSHYFT_MODE} $HADD_INPUT_FILE")
-    done < $SUSHYFT_BASE/config/$SUSHYFT_MODE/fwliteSystematicsList.txt
-done < $SUSHYFT_BASE/config/$SUSHYFT_MODE/input_pat.txt
+        HADD_INPUT_FILE=$SHYFT_HADD_PATH/${SYSTEMATIC}_${DATASET}.root
+        toProcess+=("runIfChanged.sh $SHYFT_REBIN_PATH/${SHYFT_MODE}/${SYSTEMATIC}_${DATASET}.root $HADD_INPUT_FILE `which rebinHists.py` -- rebinHists.py --tagMode=${SHYFT_MODE} --outDir=$SHYFT_REBIN_PATH/${SHYFT_MODE} $HADD_INPUT_FILE")
+    done < $SHYFT_BASE/config/$SHYFT_MODE/fwliteSystematicsList.txt
+done < $SHYFT_BASE/config/$SHYFT_MODE/input_pat.txt
 echo "Executing ${#toProcess[@]} jobs"
 ( for ((i = 0; i < ${#toProcess[@]}; i++)); do
     echo "${toProcess[$i]}"
-done; )  | parallel -j $SUSHYFT_DOUBLE_CORE_COUNT --eta --progress
+done; )  | parallel -j $SHYFT_DOUBLE_CORE_COUNT --eta --progress
 
