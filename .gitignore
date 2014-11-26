@@ -10,3 +10,5 @@ bin/*
 *.root
 crab.history
 *.un~
+.shyft-state/*
+.shyft-output/*
