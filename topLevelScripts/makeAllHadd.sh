@@ -24,7 +24,7 @@ while read DATASET; do
         if [[ $IS_DATA -eq 1 && $SYSTDATA -eq 0 ]]; then
             continue
         fi
-        if [[ ! $BASEDIR =~ "$TESTREGEX" ]]; then
+        if [[ ! $BASEDIR =~ $TESTREGEX ]]; then
             continue
         fi
         DIR=$SHYFT_FWLITE_PATH/$BASEDIR/$OUTNAME
@@ -39,6 +39,7 @@ while read DATASET; do
 done < $SHYFT_BASE/config/$SHYFT_MODE/input_pat.txt
 
 echo "Executing ${#toProcess[@]} jobs"
+echo "${toProcess[0]}"
 ( for ((i = 0; i < ${#toProcess[@]}; i++)); do
     echo "${toProcess[$i]}"
 done; ) | parallel -j 30 --eta --progress

@@ -12,6 +12,8 @@ SCHEDULER_STATUS=$(qstat | grep `whoami` | grep -e ' R ' -e ' Q ' )
 # choose systematics
 SYSTEMATICS_SELECTOR=""
 
+declare -A MISSING_FILES
+
 # Pull the state repository
 CHANGES_FOUND=0
 
@@ -21,6 +23,10 @@ if [[ ! -d $SHYFT_FWLITE_PATH ]]; then
     mkdir -p $SHYFT_FWLITE_PATH
 fi
 
+FWLITE_LOG=$SHYFT_BASE/output/$SHYFT_MODE/fwlite_summary.txt
+if [ -e $FWLITE_LOG ]; then
+    rm $FWLITE_LOG
+fi
 # loop over all the samples
 while read DATASET; do
     SHORTNAME=$(getDatasetShortname $DATASET)
@@ -41,6 +47,7 @@ while read DATASET; do
     done
     if [[ ! -d $DIR/res ]]; then
         echo "CAN'T FIND $SHORTNAME at $DIR"
+        echo "$DATASET - Missing EDNTuple" >> $FWLITE_LOG
         continue
     fi
     BASEDIR=$(basename $DIR)
@@ -99,7 +106,7 @@ while read DATASET; do
     # First, get the list of files to process from CRAB
     # TODO: refactor this so it's a separate script
     # crabhash.txt keeps the hash of the FJR. the file list is in hash-crabhash.txt
-    [[ -d $TARGET_DIR ]] && mkdir -p $TARGET_DIR
+    [[ -d $TARGET_DIR ]] || mkdir -p $TARGET_DIR
     CRAB_HASH_POINTER=$TARGET_DIR/crabhash.txt
     if [[ ! -e $CRAB_HASH_POINTER  ]]; then
         OLDCRAB_HASH="unknown"
@@ -108,6 +115,7 @@ while read DATASET; do
     fi
     if ! test -n "$(shopt -s nullglob; echo $DIR/res/crab_*.xml)"; then
         echo "No completed jobs found for $DATASET, $DIR"
+        echo "$DATASET - No jobs complete" >> $FWLITE_LOG
         continue
     fi
     NEWCRAB_HASH=$(ls -l --time-style=long-iso $DIR/res/crab_fjr*.xml 2>/dev/null | sort | md5sum | awk '{ print $1 }')
@@ -144,6 +152,7 @@ while read DATASET; do
 
     if [[ -z $CURRENT_INPUT ]]; then
         echo "No EDNTuples found for $DIR"
+        echo "$DATASET - No jobs succeeded" >> $FWLITE_LOG
         mkdir -p $DIR
         echo "$DATASET" > $DIR/failed-no-ntuple.txt
         continue
@@ -151,10 +160,11 @@ while read DATASET; do
 
     # Have the input files, compare against what we allegedly processed over
     while read  OUTNAME TESTREGEX SYSTDATA SYSTLINE; do
+        echo "Examining output $OUTNAME"
         if [[ $IS_DATA -eq 1 && $SYSTDATA -eq 0 ]]; then
             continue
         fi
-        if [[ ! $BASEDIR =~ "$TESTREGEX" ]]; then
+        if [[ ! $BASEDIR =~ $TESTREGEX ]]; then
             continue
         fi
         SYSTEMATIC_PATH=$TARGET_DIR/$OUTNAME
@@ -172,23 +182,35 @@ while read DATASET; do
                 SYSTEMATIC_OUTPUT=$SYSTEMATIC_PATH/output_${SYSTEMATIC_COUNTER}.root
                 SYSTEMATIC_STDOUT=$SYSTEMATIC_PATH/stdout_${SYSTEMATIC_COUNTER}.txt
                 SYSTEMATIC_MARKER=$SYSTEMATIC_PATH/marker_${SYSTEMATIC_COUNTER}.txt
+                SYSTEMATIC_FILE_MISSING=$SYSTEMATIC_PATH/missing_${SYSTEMATIC_COUNTER}.txt
                 SYSTEMATIC_FAILED=$SYSTEMATIC_PATH/FAILED.${SYSTEMATIC_COUNTER}
+                if [ -e $SYSTEMATIC_FILE_MISSING ]; then
+                    SYSTEMATIC_INPUT_CULLED=$SYSTEMATIC_PATH/culled_${SYSTEMATIC_COUNTER}.txt
+                    echo "$DATASET - $OUTNAME - Missing Files" >> $FWLITE_LOG
+                    awk "{ print \"$DATASET - $OUTNAME - Missing:\" \$0 }" $SYSTEMATIC_FILE_MISSING >> $FWLITE_LOG
+                    sort $SYSTEMATIC_INPUT | uniq | sort - $SYSTEMATIC_FILE_MISSING $SYSTEMATIC_FILE_MISSING | uniq -u > $SYSTEMATIC_INPUT_CULLED
+                    SYSTEMATIC_INPUT=$SYSTEMATIC_INPUT_CULLED
+                fi
                 # if there's a root file there, we did a good job
                 if [[ -e $SYSTEMATIC_OUTPUT && ! -e $SYSTEMATIC_FAILED ]]; then
                     [ -e $SYSTEMATIC_MARKER ] && rm $SYSTEMATIC_MARKER
+                    echo "$DATASET - $OUTNAME - Complete" >> $FWLITE_LOG
+                    cat $SYSTEMATIC_INPUT >> $SYSTEMATIC_PATH/processed.txt
                     continue
                 fi
 
                 # might still be running
                 if [[ -e $SYSTEMATIC_MARKER && "$SCHEDULER_STATUS" == *$(cat $SYSTEMATIC_MARKER)* ]]; then
+                    echo "$DATASET - $OUTNAME - Running" >> $FWLITE_LOG
+                    cat $SYSTEMATIC_INPUT >> $SYSTEMATIC_PATH/processed.txt
                     continue
                 fi
                 # beats me, we can probably delete something
+                echo "$DATASET - $OUTNAME - Resetting" >> $FWLITE_LOG
                 rm -f $SYSTEMATIC_INPUT $SYSTEMATIC_MARKER $SYSTEMATIC_STDOUT $SYSTEMATIC_OUTPUT $SYSTEMATIC_FAILED
             done
-            cat $SYSTEMATIC_PATH/input_*.txt | sort > $SYSTEMATIC_PATH/processed.txt
         fi
-
+        { rm $SYSTEMATIC_PATH/processed.txt && sort > $SYSTEMATIC_PATH/processed.txt; } < $SYSTEMATIC_PATH/processed.txt
         # compare input and output files to see if we need to either add to fwlite or
         # blow away everything and start over
         if [[ ! -e $CURRENT_INPUT_SOURCE ]]; then
@@ -213,11 +235,26 @@ while read DATASET; do
         if [[ $MISSING_COUNT -ne 0 ]]; then
             echo "Missing $MISSING_COUNT files in $DIR"
         else
+            echo "$DATASET - $OUTNAME All files processed" >> $FWLITE_LOG
             continue
         fi
         # We have no choice but to process some extra things
-        echo "$INPUT_MISSING" > $SHYFT_FWLITE_PATH/$BASEDIR_OUT/tempinput.txt
+        # First cull out files that don't exist, this is bad
+        echo "$INPUT_MISSING" > $SHYFT_FWLITE_PATH/$BASEDIR_OUT/tempinput_pre.txt
+        SUBMIT_INPUT=$SHYFT_FWLITE_PATH/$BASEDIR_OUT/tempinput.txt
+        if [ -e $SUBMIT_INPUT ]; then
+            rm $SUBMIT_INPUT
+        fi
+        while read LINE; do
+            if [ -e "/cms/$LINE" ];then
+                echo $LINE >> $SUBMIT_INPUT
+            else
+                echo "$DATASET - $OUTNAME - Replace $LINE" >> $FWLITE_LOG
+            fi
+        done < $SHYFT_FWLITE_PATH/$BASEDIR_OUT/tempinput_pre.txt
+
         # This script hardcodes set-analysis.sh to find the python files. fix that.
-        submit_fwlite_dataset.sh $SHYFT_FWLITE_PATH/$BASEDIR_OUT/tempinput.txt $SYSTEMATIC_PATH $IS_DATA $SAMPLENAME $SYSTLINE
+        echo "DOING SUBMIT"
+        submit_fwlite_dataset.sh $SUBMIT_INPUT $SYSTEMATIC_PATH $IS_DATA $SAMPLENAME $SYSTLINE
     done < $SHYFT_BASE/config/$SHYFT_MODE/fwliteSystematicsList.txt
 done < $SHYFT_BASE/config/$SHYFT_MODE/input_pat.txt
