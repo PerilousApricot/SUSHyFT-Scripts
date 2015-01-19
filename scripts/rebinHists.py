@@ -46,7 +46,7 @@ def bin_ttbar_notau(inputTitle):
     return result
 
 def bin_ttbar_notau0jet(inputTitle):
-    matches = re.search(r"(.*)_(\d)j_(\d)t(_[bcq])?", inputTitle)
+    matches = re.search(r"(.*)_(\d)j_(\d)b_\dt(_[bcq])?", inputTitle)
     if matches == None:
         if inputTitle.find('Tau') == -1:
             pass
@@ -127,6 +127,7 @@ for oneFile in args:
     histList     = []
     for key in inFile.GetListOfKeys():
         keyString = key.GetName()
+        print "Examining: %s" % keyString
         binFunc = getBinFunction(options.tagMode)
         outputs = binFunc(keyString)
         if keyString == 'nEvents':
