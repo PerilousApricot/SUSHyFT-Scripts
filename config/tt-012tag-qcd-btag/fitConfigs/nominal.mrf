@@ -7,7 +7,7 @@
 
 # names of the different groups
 + groupNames = _wMT_1j_0t, _wMT_2j_0t, _wMT_3j_0t, _wMT_4j_0t, _wMT_5j_0t
-+ groupNames = _std_1j_1t, _std_2j_1t, _std_3j_1t, _std_4j_1t, _std_5j_1t
++ groupNames = _stdt_1j_1t, _stdt_2j_1t, _stdt_3j_1t, _stdt_4j_1t, _stdt_5j_1t
 + groupNames =             _wMT_2j_2t, _wMT_3j_2t, _wMT_4j_2t, _wMT_5j_2t
 
 # Display Names
@@ -16,7 +16,7 @@
 + groupStrings = 2_Jets_2_Tags, 3_Jets_2_Tags, 4_Jets_2_Tags, 5_Jets_2_Tags
 
 # binning of templates
-+ binsPerGroup = 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10 
+#+ binsPerGroup = 10, 10, 10, 10, 10, 240, 240, 240, 240, 240, 10, 10, 10, 10 
 
 # How to throw PEs
 + peNames  =    Top,   SingleTop,   Wbx,   Wcx,   Wqq,    QCD
