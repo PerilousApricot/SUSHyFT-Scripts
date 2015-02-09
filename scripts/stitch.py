@@ -10,11 +10,7 @@
 
 import ConfigParser, re, sys
 
-# fuck you, root
-oldArgs = sys.argv[:]
-sys.argv = ['-b']
-import ROOT
-sys.argv = oldArgs[:]
+from SHyFT.ROOTWrap import ROOT
 
 inputFileMode = False
 if '--getInputFiles' in sys.argv:
@@ -93,22 +89,21 @@ def listDirsNames(tfile, rootdir):
 # returns list of names to consider in stitching
 def selectDirNames(names, hist_to_read, suffix):
     filtered = []
-    #print 'search string: ',hist_to_read+suffix+'$'
-    valid = re.compile(hist_to_read+suffix+'$')
+    if suffix:
+        valid = re.compile(hist_to_read+suffix+'$')
+    else:
+        valid = re.compile(hist_to_read)
     for n in names:
         if valid.search(n):
             filtered.append(n)
     return filtered
 
-def getHist(tfile, root_dir, tdir, name):
+def getHist(tfile, root_dir, name):
     readname=''
     if root_dir!='':
         readname = root_dir + '/'
 
-    if tdir=='':
-        readname += name
-    else:
-        readname += tdir + '/' + name
+    readname += name
     #print 'getting ',readname
     th1 = tfile.Get(readname)
     if th1.IsZombie():
@@ -117,8 +112,8 @@ def getHist(tfile, root_dir, tdir, name):
     return th1
 
 # get a clone of the histogram, considering its location
-def getClone(tfile, root_dir, tdir, name):
-    th1 = getHist(tfile, root_dir, tdir, name)
+def getClone(tfile, root_dir, name):
+    th1 = getHist(tfile, root_dir, name)
     cloned = th1.Clone()
     cloned.Sumw2()
     return cloned
@@ -128,10 +123,12 @@ def getClone(tfile, root_dir, tdir, name):
 def recombineName(name,prefix,suffix):
     out = '_'
     l = name.split('_')
-    l[0]=prefix
-    if suffix!='':
+    l.insert(0,prefix)
+    if l[-1] in ('b','c','q'):
         l.pop()
-    return out.join(l)
+    retval = out.join(l)
+    #print "popping %s, %s, %s to %s" % (name, prefix, suffix, retval)
+    return retval
 
 # scale histogram using all information provided in the config
 # sections that have 'Data' or 'QCD' in their names have special treatment - they are not rescaled
@@ -192,15 +189,22 @@ def getTemplate(infile, config, section):
 # ------------
 # main part
 # ------------
+inputFiles = {}
+outputFiles = {}
 
 # loop over sections (samples)
-for section in config.sections():
+for section in sorted(config.sections()):
     print '========================='
     print 'Section: ',section
     print '========================='
     print config.items(section)
     toOpen = config.get(section,'input_folder')+'/'+config.get(section,'input_file')
-    infile = ROOT.TFile(toOpen,'READONLY')
+    if toOpen in inputFiles:
+        infile = inputFiles[toOpen]
+    else:
+        infile = ROOT.TFile(toOpen,'READONLY')
+        inputFiles[toOpen] = infile
+
     eventHist = infile.Get('nEvents')
     nEvents = eventHist.GetEntries()
     if infile.IsZombie():
@@ -215,7 +219,7 @@ for section in config.sections():
 
     suffix=''
     if config.has_option(section,'suffix'):
-        suffix = config.get(section,'suffix')
+        suffix = config.get(section,'suffix','')
 
     prefix=section
     if config.has_option(section,'prefix'):
@@ -235,54 +239,54 @@ for section in config.sections():
 
     good_names = selectDirNames(th1s, config.get(section,'hist_to_read'), suffix)
     # loop over histograms, read them, scale, save to the output file
-    dirs.insert(0,'') # also work with root_dir
-    for d in dirs:
-        # ==== do not go into subfolders for now ====
-        if d!='': continue
-        # ===========================================
-        outfname = config.get(section,'output_folder') + '/' + outfile_prefix + root_dir + outfile_suffix + d + '.root'
-        outfile = ROOT.TFile(outfname, 'UPDATE')
-        outdir = outfile.GetDirectory('')
-        (existing_dirs,existing_names) = listDirsNames(outfile, '')
+    # ===========================================
+    outfname = config.get(section,'output_folder') + '/' + outfile_prefix + root_dir + outfile_suffix + '.root'
+    if outfname in outputFiles:
+        outfile = outputFiles[outfname]
+        outfile.cd()
+    else:
+        outfile = ROOT.TFile(outfname, 'NEW')
+        outputFiles[outfname] = outfile
 
-        for hname in good_names:
-            hclone = getClone(infile, root_dir, d, hname)
-            # save event counts for future reference
-            #print 'raw integral ', hclone.Integral()
-            #print 'raw entries ', hclone.GetEntries()
-            # get the scale to use
-            scale = getScaleHistogram(hclone, nEvents, config, section)
-            #print 'scale ', scale
-            outhname = recombineName(hname, prefix, suffix)
+    outdir = outfile.GetDirectory('')
+    (existing_dirs,existing_names) = listDirsNames(outfile, '')
+    for hname in good_names:
+        hclone = getClone(infile, root_dir, hname)
+        # save event counts for future reference
+        #print 'raw integral ', hclone.Integral()
+        #print 'raw entries ', hclone.GetEntries()
+        # get the scale to use
+        scale = getScaleHistogram(hclone, nEvents, config, section)
+        #print 'scale ', scale
+        outhname = recombineName(hname, prefix, suffix)
+        hclone.Scale(scale)
+        #print 'scaled integral ', hclone.Integral()
+        # here we should be able to use templates if needed
+        if template != None:
+            new_clone = template.Clone()
+            new_clone.Scale(hclone.Integral())
+            hclone = new_clone
 
-            hclone.Scale(scale)
-            #print 'scaled integral ', hclone.Integral()
-            # here we should be able to use templates if needed
-            if template != None:
-                new_clone = template.Clone()
-                new_clone.Scale(hclone.Integral())
-                hclone = new_clone
+        if outhname in existing_names:
+            # add new histogram to existing one
+            oldhist = getHist(outfile, "", outhname)
+            ##print 'integral before addition ', oldhist.Integral()
+            oldhist.Add(hclone)
+            ##print 'integral after addition ', oldhist.Integral()
+            oldhist.Write(oldhist.GetName(), ROOT.TH1F.kOverwrite)
+            #oldhist.Write()
+        else:
+            # store this histogram in the output file
+            hclone.SetName(outhname)
+            hclone.SetDirectory(outdir)
+            hclone.Write()
+            existing_names.append(outhname)
 
-            if outhname in existing_names:
-                if config.has_option(section,'prefix') or True:
-                    # FIXME: do we need this block?
-                    # add new histogram to existing one
-                    oldhist = getHist(outfile, '', '', outhname)
-                    ##print 'integral before addition ', oldhist.Integral()
-                    oldhist.Add(hclone)
-                    ##print 'integral after addition ', oldhist.Integral()
-                    oldhist.Write(oldhist.GetName(), ROOT.TH1F.kOverwrite)
-                else:
-                    print 'you seem to be running stitching more than once, clean the output folder!!!'
-                    sys.exit(1)
-            else:
-                # store this histogram in the output file
-                hclone.SetName(outhname)
-                hclone.SetDirectory(outdir)
-                hclone.Write()
-
-        outfile.Close()
-    infile.Close()
+for outfile in outputFiles:
+    #outputFiles[outfile].Write()
+    outputFiles[outfile].Close()
+for infile in inputFiles:
+    inputFiles[infile].Close()
 
 for k in sorted(histogramList):
     currHist = histogramList[k]
