@@ -32,6 +32,9 @@ SYSTEMATIC_STRING=""
 # All that for this. Run the fit.
 mkdir -p ${SHYFT_BASE}/output/${SHYFT_MODE}
 pushd ${SHYFT_BASE}
-multiRegionFitter.exe ${SHYFT_BASE}/config/${SHYFT_MODE}/fitConfigs/nominal.mrf templateFile=data/auto_copyhist/${SHYFT_MODE}/central_nominal.root fitData=1 output=${SHYFT_BASE}/output/${SHYFT_MODE}/central_nominal $SYSTEMATIC_STRING savePlots=1 saveTemplates=1 showCorrelations=1 dominos=1 intlumi=$(cat ${LUMIFILE}) logplots=1
+#multiRegionFitter.exe ${SHYFT_BASE}/config/${SHYFT_MODE}/fitConfigs/nominal.mrf templateFile=data/auto_copyhist/${SHYFT_MODE}/central_nominal.root fitData=1 output=${SHYFT_BASE}/output/${SHYFT_MODE}/central_nominal $SYSTEMATIC_STRING savePlots=1 saveTemplates=1 showCorrelations=1 dominos=1 intlumi=$(cat ${LUMIFILE}) logplots=1
+multiRegionFitter.exe ${SHYFT_BASE}/config/${SHYFT_MODE}/fitConfigs/nominal.mrf templateFile=data/auto_copyhist/${SHYFT_MODE}/central_nominal.root fitData=1 output=${SHYFT_BASE}/output/${SHYFT_MODE}/central_nominal $SYSTEMATIC_STRING savePlots=1 saveTemplates=1 showCorrelations=1 dominos=1 logplots=1
+
+
 #multiRegionFitter.exe ${SHYFT_BASE}/config/${SHYFT_MODE}/fitConfigs/nominal.mrf templateFile=data/auto_copyhist/${SHYFT_MODE}/central_nominal.root fitData=1 output=${SHYFT_BASE}/output/${SHYFT_MODE}/central_nominal $SYSTEMATIC_STRING savePlots=1 saveTemplates=1 showCorrelations=1 dominos=1 intlumi=$(cat ${LUMIFILE})
 popd

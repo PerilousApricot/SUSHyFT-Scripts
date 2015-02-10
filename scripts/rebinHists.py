@@ -45,6 +45,67 @@ def bin_ttbar_notau(inputTitle):
             result.append("%s_pretag_%sj_%st%s" % (name, jets, tag, postfix))
     return result
 
+def bin_st_0tau(inputTitle):
+    matches = re.search(r"(.*)_(\d)j_(\d)b_(\d)t(_[bcq])?", inputTitle)
+    if matches == None:
+        return None
+    name, jets, tags, taus, postfix = matches.group(1,2,3,4,5)
+    jets = int(jets)
+    tags = int(tags)
+    taus = int(taus)
+    if taus != 0:
+        return None
+    if not postfix:
+        postfix = ""
+    if jets >= 5:
+        jets = 5
+    if tags >= 2:
+        tags = 2
+    result = ["%s_%sj_%sb_%st%s" % (name, jets, tags, taus, postfix)]
+    return result
+
+
+def bin_st_eq1tau(inputTitle):
+    matches = re.search(r"(.*)_(\d)j_(\d)b_(\d)t(_[bcq])?", inputTitle)
+    if matches == None:
+        return None
+    name, jets, tags, taus, postfix = matches.group(1,2,3,4,5)
+    jets = int(jets)
+    tags = int(tags)
+    taus = int(taus)
+    if taus != 1:
+        return None
+    if not postfix:
+        postfix = ""
+    if jets >= 5:
+        jets = 5
+    if tags >= 2:
+        tags = 2
+    result = ["%s_%sj_%sb_%st%s" % (name, jets, tags, taus, postfix)]
+    return result
+
+
+def bin_st_gt2tau(inputTitle):
+    matches = re.search(r"(.*)_(\d)j_(\d)b_(\d)t(_[bcq])?", inputTitle)
+    if matches == None:
+        return None
+    name, jets, tags, taus, postfix = matches.group(1,2,3,4,5)
+    jets = int(jets)
+    tags = int(tags)
+    taus = int(taus)
+    if taus < 2:
+        return None
+    if not postfix:
+        postfix = ""
+    if jets >= 5:
+        jets = 5
+    if tags >= 2:
+        tags = 2
+    taus = 2
+    result = ["%s_%sj_%sb_%st%s" % (name, jets, tags, taus, postfix)]
+    return result
+
+
 def bin_ttbar_notau0jet(inputTitle):
     matches = re.search(r"(.*)_(\d)j_(\d)b_\dt(_[bcq])?", inputTitle)
     if matches == None:
@@ -97,6 +158,12 @@ def getBinFunction(tagMode):
         return bin_012345jet_012tag_01tau
     elif tagMode in ['ttbar_notau0jet', 'ttbar_1jet0b', 'ttbar_1jetwnob','ttbar_notauzerojet'] or tagMode.startswith('tt-012tag'):
         return bin_ttbar_notau0jet
+    elif tagMode == 'st-0tau':
+        return bin_st_0tau
+    elif tagMode == 'st-eq1tau':
+        return bin_st_eq1tau
+    elif tagMode == 'st-gt2tau':
+        return bin_st_gt2tau
     else:
         raise RuntimeError, "Unknown binning strategy, (%s)" % (tagMode)
 

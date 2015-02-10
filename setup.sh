@@ -83,7 +83,7 @@ export SHYFT_CORE_COUNT=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || sysctl
 export SHYFT_DOUBLE_CORE_COUNT=$(echo "${SHYFT_CORE_COUNT}*2" | bc)
 
 # Convenient for syncing
-export SHYFT_REMOTE_PATH="vmplogin.accre.vanderbilt.edu:/scratch/meloam/shyft-Scripts"
+export SHYFT_REMOTE_PATH="vmplogin.accre.vanderbilt.edu:/scratch/meloam/SUSHyFT-Scripts"
 
 # Export some path variables
 EXTRA_PATH="$SHYFT_BASE/scripts:$SHYFT_BASE/bin:$SHYFT_BASE/topLevelScripts"
