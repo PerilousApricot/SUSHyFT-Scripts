@@ -6,7 +6,7 @@ source $SHYFT_BASE/scripts/functions.sh
 run=$SHYFT_EDNTUPLE_VERSION
 # Looks like we were successful. Party hard and fire off the processing
 CRAB_BASE=$SHYFT_FWLITE_PATH
-cp $SHYFT_EDNTUPLE_CMSSW_BASE/src/Analysis/EDSHyFT/test/SHyFT/*.py $CRAB_BASE
+cp $SHYFT_EDNTUPLE_CMSSW_BASE/src/Analysis/EDSHyFT/test/SUSHyFT/*.py $CRAB_BASE
 
 SCHEDULER_STATUS=$(qstat | grep `whoami` | grep -e ' R ' -e ' Q ' )
 # choose systematics

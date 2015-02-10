@@ -12,7 +12,7 @@ function getDatasetEventsFromDAS {
         local INSTANCELIST=( $2 )
     fi
     for INSTANCE in ${INSTANCELIST[@]}; do
-        local VAL=$(set -o pipefail ; das.py --query="dataset dataset=$1 instance=prod/$INSTANCE | grep dataset.nevents" | grep -o [0-9]*)
+        local VAL=$(set -o pipefail ; das.py --query="dataset dataset=$1 instance=prod/$INSTANCE | grep dataset.nevents" | grep -o '^[0-9]*$')
         if [ $? -ne 0 ]; then
             continue
         fi

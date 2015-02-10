@@ -70,7 +70,7 @@ rm $WORKDIR/$COUNT.root
 echo "Started at \$(date)" >> $WORKDIR/FAILED.$COUNT
 echo "At dir: \$(pwd)"
 ls -lah
-time python2.6 shyft_fwlite.py --inputListFile=$WORKDIR/input_$COUNT.txt --sampleName=$SAMPLE $OURDATA --lepType=0 --outname=$WORKDIR/$COUNT $@
+time python2.6 refactor_fwlite.py --inputListFile=$WORKDIR/input_$COUNT.txt $OURDATA --outname=$WORKDIR/$COUNT $@
 RETVAL=\$?
 ls -lah
 ls -lah $WORKDIR
@@ -79,6 +79,7 @@ if [[ ! \$RETVAL -eq 0 || ! -e $WORKDIR/$COUNT.root ]]; then
     cat \$INPUTLIST >> $WORKDIR/FAILED.$COUNT
     # make later hadds bomb
     rm $WORKDIR/$COUNT.root
+    mv $WORKDIR/input_$COUNT.txt $WORKDIR/failed_input_$COUNT.txt
 else
     mv $WORKDIR/$COUNT.root $WORKDIR/output_$COUNT.root
     rm $WORKDIR/FAILED.$COUNT
