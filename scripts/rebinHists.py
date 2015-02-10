@@ -84,6 +84,26 @@ def bin_st_eq1tau(inputTitle):
     result = ["%s_%sj_%sb_%st%s" % (name, jets, tags, taus, postfix)]
     return result
 
+def bin_st_gt1tau(inputTitle):
+    matches = re.search(r"(.*)_(\d)j_(\d)b_(\d)t(_[bcq])?", inputTitle)
+    if matches == None:
+        return None
+    name, jets, tags, taus, postfix = matches.group(1,2,3,4,5)
+    jets = int(jets)
+    tags = int(tags)
+    taus = int(taus)
+    if taus == 0:
+        return None
+    if not postfix:
+        postfix = ""
+    if jets >= 5:
+        jets = 5
+    if tags >= 2:
+        tags = 2
+    taus = 1
+    result = ["%s_%sj_%sb_%st%s" % (name, jets, tags, taus, postfix)]
+    return result
+
 
 def bin_st_gt2tau(inputTitle):
     matches = re.search(r"(.*)_(\d)j_(\d)b_(\d)t(_[bcq])?", inputTitle)
@@ -164,6 +184,8 @@ def getBinFunction(tagMode):
         return bin_st_eq1tau
     elif tagMode == 'st-gt2tau':
         return bin_st_gt2tau
+    elif tagMode == 'st-gt1tau':
+        return bin_st_gt1tau
     else:
         raise RuntimeError, "Unknown binning strategy, (%s)" % (tagMode)
 
