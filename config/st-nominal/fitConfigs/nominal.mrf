@@ -1,19 +1,19 @@
 # -*- conf -*-
 
 # names of templates
-+ names = Data, Top, Wbx, Wcx, Wqq, ZJets, QCD, ZZ, WZ, ZInv, WW, SingleTS, SingleTbarS, SingleTT, SingleTbarT, SingleTTW, SingleTbarTW
++ names = Data, Stop450, Top, Wbx, Wcx, Wqq, ZJets, QCD, DiBoson , SingleTop
 
 
 
 # names of the different groups
-+ groupNames = _wMT_1j_0t, _wMT_2j_0t, _wMT_3j_0t, _wMT_4j_0t, _wMT_5j_0t
-+ groupNames = _stdt_1j_1t, _stdt_2j_1t, _stdt_3j_1t, _stdt_4j_1t, _stdt_5j_1t
-+ groupNames =             _wMT_2j_2t, _wMT_3j_2t, _wMT_4j_2t, _wMT_5j_2t
++ groupNames = _wMT_1j_0b_1t,_hT_2j_0b_1t,_wMT_3j_0b_1t,_wMT_4j_0b_1t,_wMT_5j_2b_1t
++ groupNames = _stdt_1j_1b_0t,_sumEt_2j_1b_0t,_stdt_3j_1b_1t,_stdt_4j_1b_1t,_stdt_5j_2b_1t
++ groupNames =             _wMT_2j_2b_0t,_wMT_3j_2b_1t,_wMT_4j_2b_1t,_MET_5j_2b_1t,_MET_5j_2b_0t
 
 # Display Names
-+ groupStrings = 1_Jet__0_Tag,  2_Jets_0_Tag,  3_Jets_0_Tag,  4_Jets_0_Tag, 5_Jets_0_Tag
-+ groupStrings = 1_Jet__1_Tag,  2_Jets_1_Tag,  3_Jets_1_Tag,  4_Jets_1_Tag, 5_Jets_1_Tag
-+ groupStrings = 2_Jets_2_Tags, 3_Jets_2_Tags, 4_Jets_2_Tags, 5_Jets_2_Tags
++ groupStrings = 1_Jet__0_B_1_Tau,  2_Jets_0_B_1_Tau,  3_Jets_0_B_1_Tau,  4_Jets_0_B_1_Tau, 5_Jets_0_B_1_Tau
++ groupStrings = 1_Jet__1_B_1_Tau,  2_Jets_1_B_1_Tau,  3_Jets_1_B_1_Tau,  4_Jets_1_B_1_Tau, 5_Jets_1_B_1_Tau
++ groupStrings = 2_Jets_2_B_1_Tau, 3_Jets_2_B_1_Tau, 4_Jets_2_B_1_Tau, 5_Jets_2_B_1_Tau, 5_Jets_2_B_0_Tau
 
 # binning of templates
 #+ binsPerGroup = 10, 10, 10, 10, 10, 240, 240, 240, 240, 240, 10, 10, 10, 10 
@@ -23,16 +23,8 @@
 + peMeans  = 1.0,         1.0,   1.0,   1.0,   1.0,    1.0
 + peSigmas =  0.020,         0.1,   0.1,   0.1,   0.1,    0.2
 
-# defaults
-+ defaultNames     =   Top,   ZJets,   QCD
-+ defaultValues    =   1.00,  1.00,      1.0
-
-# colors
-+ colorNames  = Data, Top, SingleTop, Wbx, Wcx, Wqq, QCD, ZJets
-+ colorValues =    1, 633,       616, 413, 411, 407, 400,     9
-
-+ colorNames = Data, Top, Wbx, Wcx, Wqq, ZJets, QCD, ZZ, WZ, ZInv, WW, SingleTS, SingleTbarS, SingleTT, SingleTbarT, SingleTTW, SingleTbarTW
-+ colorValues =   1, 633, 413, 411, 407, 400,     9, 403, 406, 409,415, 605,             608,      611,         614,       617,  620
++ colorNames = Data, Stop450, Top, Wbx, Wcx, Wqq, ZJets, QCD, DiBoson, SingleTop
++ colorValues =   1, 4,       633, 413, 411, 407, 400,     9, 403, 605
 
 # constraints
 #+ constraintNames  =    ZJets,  SingleTop, Wbx,  Wcx,  Wqq
@@ -43,14 +35,14 @@
 + lowerRange =  -200000.,-200000.,-200000.,-200000.,-200000.,-200000.,-200000.
 + upperRange =   200000., 200000., 200000., 200000., 200000., 200000., 200000.
 + stepRange  =      0.1,    0.1,    0.1,    0.1,    0.1,    0.1,    0.1
-+ rangeNames = WZ, ZInv, WW, SingleTS, SingleTbarS, SingleTT, SingleTbarT
-+ lowerRange =  -200000.,-200000.,-200000.,-200000.,-200000.,-200000.,-200000.
-+ upperRange =   200000., 200000., 200000., 200000., 200000., 200000., 200000.
-+ stepRange  =      0.1,    0.1,    0.1,    0.1,    0.1,    0.1,    0.1
-+ rangeNames = SingleTTW, SingleTbarTW
-+ lowerRange =  -200000.,-200000.
-+ upperRange =   200000., 200000.
-+ stepRange  =      0.1,    0.1
++ rangeNames = WZ, WW, SingleTS, SingleTbarS, SingleTT, SingleTbarT
++ lowerRange =  -200000.,-200000.,-200000.,-200000.,-200000.,-200000.
++ upperRange =   200000., 200000., 200000., 200000., 200000., 200000.
++ stepRange  =      0.1,     0.1,    0.1,    0.1,    0.1,    0.1
++ rangeNames = SingleTTW, SingleTbarTW, Stop450
++ lowerRange =  -200000.,-200000.,-200000.
++ upperRange =   200000., 200000., 200000.
++ stepRange  =      0.1,    0.1 , 0.1
 
 
 # legend coordiates
