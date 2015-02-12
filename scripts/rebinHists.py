@@ -171,6 +171,35 @@ def bin_012345jet_012tag_01tau(inputTitle):
             result.append("%s_pretag_%sj_%sb_%st%s" % (name, jets, tag, taus, postfix))
     return result
 
+def bin_st_nominal(inputTitle):
+    matches = re.search(r"(.*)_(\d)j_(\d)b_(\d)t(_[bcq])?", inputTitle)
+    if matches == None:
+        return None
+    name, jets, tags, taus, postfix = matches.group(1,2,3,4,5)
+    jets = int(jets)
+    tags = int(tags)
+    taus = int(taus)
+    if not postfix:
+        postfix = ""
+    if jets >= 5:
+        jets = 5
+    if tags >= 2:
+        tags = 2
+    if taus >= 1:
+        taus = 1
+    result = ["%s_%sj_%sb_%st%s" % (name, jets, tags, taus, postfix)]
+    return result
+
+def bin_onebin(inputTitle):
+    matches = re.search(r"(.*)_(\d)j_(\d)b_(\d)t(_[bcq])?", inputTitle)
+    if matches == None:
+        return None
+    name, postfix = matches.group(1,5)
+    if not postfix:
+        postfix = ""
+    result = ["%s_0j_0b_0t%s" % (name, postfix)]
+    return result
+
 def getBinFunction(tagMode):
     if tagMode == 'ttbar_notau':
         return bin_ttbar_notau
@@ -186,6 +215,10 @@ def getBinFunction(tagMode):
         return bin_st_gt2tau
     elif tagMode == 'st-gt1tau':
         return bin_st_gt1tau
+    elif tagMode == 'st-nominal':
+        return bin_st_nominal
+    elif tagMode == 'onebin':
+        return bin_onebin
     else:
         raise RuntimeError, "Unknown binning strategy, (%s)" % (tagMode)
 
