@@ -199,11 +199,7 @@ for section in sorted(config.sections()):
     print '========================='
     print config.items(section)
     toOpen = config.get(section,'input_folder')+'/'+config.get(section,'input_file')
-    if toOpen in inputFiles:
-        infile = inputFiles[toOpen]
-    else:
-        infile = ROOT.TFile(toOpen,'READONLY')
-        inputFiles[toOpen] = infile
+    infile = ROOT.TFile(toOpen,'READONLY')
 
     eventHist = infile.Get('nEvents')
     nEvents = eventHist.GetEntries()
@@ -281,12 +277,11 @@ for section in sorted(config.sections()):
             hclone.SetDirectory(outdir)
             hclone.Write()
             existing_names.append(outhname)
+    infile.Close()
 
 for outfile in outputFiles:
     #outputFiles[outfile].Write()
     outputFiles[outfile].Close()
-for infile in inputFiles:
-    inputFiles[infile].Close()
 
 for k in sorted(histogramList):
     currHist = histogramList[k]
