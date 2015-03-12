@@ -1,1 +1,4 @@
 nominal .* 1 nominal
+noMET .* 1 --noMET
+flipIso .* 1 --invertTauCut
+QCDMode .* 1 --noMET --invertTauCut
