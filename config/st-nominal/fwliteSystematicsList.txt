@@ -2,3 +2,7 @@ nominal .* 1 nominal
 noMET .* 1 --noMET
 flipIso .* 1 --invertTauCut
 qcdMode .* 1 --noMET --invertTauCut
+jetpt40 .* 1 --jetPt=40
+met80 .* 1 --metMin=80
+met120 .* 1 --metMin=120
+met40 .* 1 --metMin=40
