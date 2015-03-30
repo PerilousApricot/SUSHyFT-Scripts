@@ -4,7 +4,9 @@
 #include <iostream>
 #include <iomanip>
 #include <fstream>
+#include <sstream>
 #include <cmath>
+#include <cstdlib>
 #include <algorithm>
 
 #include "TCanvas.h"
@@ -77,6 +79,12 @@ mrf::MRFitter::MRFitter(const std::string &configFilename,
     {
         m_parser.printOptionValues();
     }
+}
+
+inline bool ends_with(std::string const & value, std::string const & ending)
+{
+    if (ending.size() > value.size()) return false;
+    return std::equal(ending.rbegin(), ending.rend(), value.rbegin());
 }
 
 bool mrf::MRFitter::_loadConfigFile(const std::string &configFilename,
@@ -198,10 +206,10 @@ bool mrf::MRFitter::_loadConfigFile(const std::string &configFilename,
                         stringVector("groupNames").end() != groupIter;
                         ++groupIter,++groupBin)
                 {
-                    if (*iter == *groupIter)
+                    if (ends_with(*groupIter, *iter))
                     {
                         found = true;
-                        break;
+                        groupVec.push_back(groupBin);
                     }
                 }
                 if (! found)
@@ -213,7 +221,6 @@ bool mrf::MRFitter::_loadConfigFile(const std::string &configFilename,
                     //exit(-1);
                     continue;
                 }
-                groupVec.push_back(groupBin);
             } // for iter
             // samples
             SVec samplesWords;
@@ -657,6 +664,53 @@ void mrf::addToHistogram(TH1F *outputPtr, TH1F *inputPtr,
     } // for bin
 }
 
+std::string intVectorToJson(std::vector<int> in) {
+    std::string retval = "[";
+    for (std::vector<int>::const_iterator i = in.begin(); i != in.end(); ) {
+        std::ostringstream os;
+        os << *i;
+        retval += os.str();
+        if (++i != in.end()) {
+            retval += ",";
+        }
+    }
+    retval += "]";
+    return retval;
+}
+std::string stringIntMapToJson(std::map<std::string, int> in) {
+    std::string retval = "{";
+    for (std::map<std::string, int>::const_iterator i = in.begin(); i != in.end(); ) {
+        retval += "\"";
+        retval += i->first;
+        retval += "\":";
+        std::ostringstream os;
+        os << i->second;
+        retval += os.str();
+        if (++i != in.end()) {
+            retval += ",";
+        }
+    }
+    retval += "}";
+    return retval;
+}
+std::string stringDoubleMapToJson(std::map<std::string, double> in) {
+    std::string retval = "{";
+    for (std::map<std::string, double>::const_iterator i = in.begin(); i != in.end(); ) {
+        retval += "\"";
+        retval += i->first;
+        retval += "\":";
+        std::ostringstream os;
+        os << i->second;
+        retval += os.str();
+        if (++i != in.end()) {
+            retval += ",";
+        }
+    }
+    retval += "}";
+    return retval;
+}
+
+
 
 void mrf::MRFitter::_initializeFitter()
 {
@@ -822,8 +876,8 @@ void mrf::MRFitter::saveCanvasResult(std::string outputName,
     // For data, we want to clone it since we're going to be deleting
     // all of the histograms at the end.
     int dataIndex = 0;
-    TH1F *dataHist = histPtrVec.at(dataIndex) =
-(TH1F*) m_fitter.getData()->Clone("newdata");
+    TH1F *dataHist = histPtrVec.at(dataIndex) = \
+                                (TH1F*) m_fitter.getData()->Clone("newdata");
     // don't try and get data, so start at 1
     for (int histIndex = 1; histIndex < kNumTemplates; ++histIndex)
     {
@@ -869,6 +923,10 @@ void mrf::MRFitter::saveCanvasResult(std::string outputName,
             TFile::Open((outputName + "_templates.root").c_str(),
                     "recreate");
         assert(filePtr);
+        std::ofstream outFile((outputName + "_meta.json").c_str(), 
+                                                        std::fstream::out |
+                                                        std::fstream::trunc);
+        
         // Save various dumb bits of metadata
         for (TH1FPtrVecConstIter iter = histPtrVec.begin();
                 histPtrVec.end() != iter;
@@ -896,17 +954,29 @@ void mrf::MRFitter::saveCanvasResult(std::string outputName,
         const char * sdText = "map<string, double>";
         const char * ivecText = "vector<int>";
         // SDMap map<string, double>
+        outFile << "{\n";
         filePtr->WriteObjectAny(&m_groupIndexMap, siText,  "groupIndexMap");
+        outFile << "\"groupIndexMap\":" << stringIntMapToJson(m_groupIndexMap) << ",\n";
         filePtr->WriteObjectAny(&m_groupBinsMap, siText, "groupBinsMap");
+        outFile << "\"groupBinsMap\":" << stringIntMapToJson(m_groupBinsMap) << ",\n";
         filePtr->WriteObjectAny(&m_groupLowerEdgeMap, sdText, "groupLowerEdgeMap");
+        outFile << "\"groupLowerEdgeMap\":" << stringDoubleMapToJson(m_groupLowerEdgeMap) << ",\n";
         filePtr->WriteObjectAny(&m_groupUpperEdgeMap, sdText, "groupUpperEdgeMap");
+        outFile << "\"groupUpperEdgeMap\":" << stringDoubleMapToJson(m_groupUpperEdgeMap) << ",\n";
         filePtr->WriteObjectAny(&m_colorMap, siText, "colorMap");
+        outFile << "\"colorMap\":" << stringIntMapToJson(m_colorMap) << ",\n";
         filePtr->WriteObjectAny(&m_nameFitterIndexMap , siText, "nameFitterIndexMap");
+        outFile << "\"nameFitterIndexMap\":" << stringIntMapToJson(m_nameFitterIndexMap) << ",\n";
         filePtr->WriteObjectAny(&m_numBinsVec , ivecText, "numBinsVec");
+        outFile << "\"numBinsVec\":" << intVectorToJson(m_numBinsVec) << ",\n"; 
         filePtr->WriteObjectAny(&m_lowerEdgeBinVec , ivecText, "lowerEdgeBinVec");
+        outFile << "\"lowerEdgeBinVec\":" << intVectorToJson(m_lowerEdgeBinVec) << ",\n";
         filePtr->WriteObjectAny(&m_upperEdgeBinVec , ivecText, "upperEdgeBinVec");
+        outFile << "\"upperEdgeBinVec\":" << intVectorToJson(m_upperEdgeBinVec) << "\n";
+        outFile << "}";
         //filePtr->WriteObjectAny(&m_XX , siText, "XX");
         filePtr->Close();
+        outFile.close();
         delete filePtr;
     } // if saving templates
     drawLines(maxHeight);
