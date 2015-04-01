@@ -1,0 +1,13 @@
+# names of the different groups
++ groupNames = _wMT_5j_0b_0t
++ groupNames = _stdt_5j_1b_0t
++ groupNames = _MET_5j_2b_0t
++ groupNames = _wMT_5j_2b_1t
++ groupNames = _stdt_5j_2b_1t
++ groupNames = _MET_5j_2b_1t
++ groupStrings = 5_Jets_0_B_0_Tau
++ groupStrings = 5_Jets_1_B_0_Tau
++ groupStrings = 5_Jets_2_B_0_Tau
++ groupStrings = 5_Jets_0_B_1_Tau
++ groupStrings = 5_Jets_1_B_1_Tau
++ groupStrings = 5_Jets_2_B_1_Tau
