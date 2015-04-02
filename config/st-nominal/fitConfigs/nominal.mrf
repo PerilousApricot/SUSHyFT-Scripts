@@ -6,7 +6,7 @@
 
 
 # names of the different groups
-#+ groupNames = _wMT_1j_0b_0t,_dPhi2JetMET_2j_0b_0t,_dPhi2JetMET_3j_0b_0t,_dPhi2JetMET_4j_0b_0t,_wMT_5j_0b_0t
++ groupNames = _centrality_1j_0b_0t,_centrality_2j_0b_0t,_centrality_3j_0b_0t,_centrality_4j_0b_0t,_centrality_5j_0b_0t
 + groupNames = _stdt_1j_1b_0t,_sumEt_2j_1b_0t,_stdt_3j_1b_0t,_stdt_4j_1b_0t,_stdt_5j_1b_0t
 + groupNames =             _wMT_2j_2b_0t,_wMT_3j_2b_0t,_wMT_4j_2b_0t,_MET_5j_2b_0t
 + groupNames = _wMT_1j_0b_1t,_dPhi2JetMET_2j_0b_1t,_dPhi2JetMET_3j_0b_1t,_dPhi2JetMET_4j_0b_1t,_wMT_5j_2b_1t
@@ -15,7 +15,7 @@
 
 
 # Display Names
-#+ groupStrings = 1_Jet__0_B_0_Tau,  2_Jets_0_B_0_Tau,  3_Jets_0_B_0_Tau,  4_Jets_0_B_0_Tau, 5_Jets_0_B_0_Tau
++ groupStrings = 1_Jet__0_B_0_Tau,  2_Jets_0_B_0_Tau,  3_Jets_0_B_0_Tau,  4_Jets_0_B_0_Tau, 5_Jets_0_B_0_Tau
 + groupStrings = 1_Jet__1_B_0_Tau,  2_Jets_1_B_0_Tau,  3_Jets_1_B_0_Tau,  4_Jets_1_B_0_Tau, 5_Jets_1_B_0_Tau
 + groupStrings = 2_Jets_2_B_0_Tau, 3_Jets_2_B_0_Tau, 4_Jets_2_B_0_Tau, 5_Jets_2_B_0_Tau
 + groupStrings = 1_Jet__0_B_1_Tau,  2_Jets_0_B_1_Tau,  3_Jets_0_B_1_Tau,  4_Jets_0_B_1_Tau, 5_Jets_0_B_1_Tau
