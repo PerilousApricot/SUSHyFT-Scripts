@@ -18,6 +18,8 @@ parser.add_option('--tagMode', metavar='F', type='string', action='store',
 parser.add_option('--outDir', metavar='F', type='string', action='store',
               dest='outDir',
               help='What output directory should we use')
+parser.add_option('--qcd', action='store_true',
+              help='Do pretagged QCD distributions too')
 (options, args) = parser.parse_args()
 
 def bin_ttbar_notau(inputTitle):
@@ -172,6 +174,7 @@ def bin_012345jet_012tag_01tau(inputTitle):
     return result
 
 def bin_st_nominal(inputTitle):
+    global options
     matches = re.search(r"(.*)_(\d)j_(\d)b_(\d)t(_[bcq])?", inputTitle)
     if matches == None:
         return None
@@ -188,6 +191,13 @@ def bin_st_nominal(inputTitle):
     if taus >= 1:
         taus = 1
     result = ["%s_%sj_%sb_%st%s" % (name, jets, tags, taus, postfix)]
+    if options.qcd:
+        for tags in (0,1,2):
+            for taus in (0,1):
+                if (tags + taus) > jets:
+                    continue
+                result.append("%spre_%sj_%sb_%st%s" %
+                                (name, jets, tags, taus, postfix))
     return result
 
 def bin_onebin(inputTitle):
