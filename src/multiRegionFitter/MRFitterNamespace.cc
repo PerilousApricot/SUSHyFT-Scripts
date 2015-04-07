@@ -286,7 +286,7 @@ bool mrf::MRFitter::_loadConfigFile(const std::string &configFilename,
                 }
             } // for iter
             continue;
-        } // if *
+        } // if @
         if ("+" == command)
         {
             // we're setting a variable
