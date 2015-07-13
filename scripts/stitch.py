@@ -92,7 +92,7 @@ def selectDirNames(names, hist_to_read, suffix):
     if suffix:
         valid = re.compile(hist_to_read+suffix+'$')
     else:
-        valid = re.compile(hist_to_read)
+        valid = re.compile(hist_to_read+"_[bcq]$")
     for n in names:
         if valid.search(n):
             filtered.append(n)
@@ -106,8 +106,8 @@ def getHist(tfile, root_dir, name):
     readname += name
     #print 'getting ',readname
     th1 = tfile.Get(readname)
-    if th1.IsZombie():
-        print 'no such histogram!'
+    if not th1 or th1.IsZombie():
+        print 'no such histogram: %s!' % readname
         return None
     return th1
 
@@ -241,8 +241,9 @@ for section in sorted(config.sections()):
         outfile = outputFiles[outfname]
         outfile.cd()
     else:
-        outfile = ROOT.TFile(outfname, 'NEW')
+        outfile = ROOT.TFile(outfname, 'RECREATE')
         outputFiles[outfname] = outfile
+        outfile.cd()
 
     outdir = outfile.GetDirectory('')
     (existing_dirs,existing_names) = listDirsNames(outfile, '')
@@ -266,10 +267,18 @@ for section in sorted(config.sections()):
         if outhname in existing_names:
             # add new histogram to existing one
             oldhist = getHist(outfile, "", outhname)
+            #print "mixing %s with %s (existing %s)" % (hname, outhname, existing_names)
+            if not oldhist and not suffix:
+                break
+                # try loading the non-suffixed version
+                print outfile.GetListOfKeys()
+                for x in outfile.GetListOfKeys():
+                    print x.GetName()
+                print [x.GetName() for x in outfile.GetListOfKeys()]
             ##print 'integral before addition ', oldhist.Integral()
             oldhist.Add(hclone)
             ##print 'integral after addition ', oldhist.Integral()
-            oldhist.Write(oldhist.GetName(), ROOT.TH1F.kOverwrite)
+            #oldhist.Write(oldhist.GetName(), ROOT.TH1F.kOverwrite)
             #oldhist.Write()
         else:
             # store this histogram in the output file
