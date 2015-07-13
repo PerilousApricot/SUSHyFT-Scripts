@@ -191,7 +191,7 @@ def getTemplate(infile, config, section):
 # ------------
 inputFiles = {}
 outputFiles = {}
-
+outputHists = []
 # loop over sections (samples)
 for section in sorted(config.sections()):
     print '========================='
@@ -276,6 +276,7 @@ for section in sorted(config.sections()):
                     print x.GetName()
                 print [x.GetName() for x in outfile.GetListOfKeys()]
             ##print 'integral before addition ', oldhist.Integral()
+            #print "adding %s to %s" % (hclone.GetName(), oldhist.GetName())
             oldhist.Add(hclone)
             ##print 'integral after addition ', oldhist.Integral()
             #oldhist.Write(oldhist.GetName(), ROOT.TH1F.kOverwrite)
@@ -286,7 +287,11 @@ for section in sorted(config.sections()):
             hclone.SetDirectory(outdir)
             hclone.Write()
             existing_names.append(outhname)
+            outputHists.append(hclone)
     infile.Close()
+
+for outhist in outputHists:
+    outhist.Write()
 
 for outfile in outputFiles:
     #outputFiles[outfile].Write()
