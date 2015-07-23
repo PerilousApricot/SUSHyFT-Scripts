@@ -1,0 +1,47 @@
+# -*- conf -*-
+
+# names of templates
++ names = Data, Stop450, Top, Wbx, Wcx, Wqq, ZJets, QCD, DiBoson , SingleTop
+
+# binning of templates
+#+ binsPerGroup = 10, 10, 10, 10, 10, 240, 240, 240, 240, 240, 10, 10, 10, 10 
+
+# How to throw PEs
++ peNames  =    Top,   SingleTop,   Wbx,   Wcx,   Wqq,    QCD
++ peMeans  = 1.0,         1.0,   1.0,   1.0,   1.0,    1.0
++ peSigmas =  0.020,         0.1,   0.1,   0.1,   0.1,    0.2
+
++ colorNames = Data, Stop450, Top, Wbx, Wcx, Wqq, ZJets, QCD, DiBoson, SingleTop
++ colorValues =   1, 4,       633, 413, 411, 407, 400,     9, 403, 605
+
+# constraints
+#+ constraintNames = ZJets, DiBoson, Wbx, Wcx, Wqq, SingleTop
+#+ constraintValues =  0.05,    0.3, 1.0, 1.0, 1.0,       0.3
+#+ constraintNames  =    ZJets,  SingleTop, Wbx,  Wcx,  Wqq
+#+ constraintValues =    0.3,       0.30, 4.0,  2.0,  2.0
+
+# Ranges
++ rangeNames = Top, Wbx, Wcx, Wqq, ZJets, QCD, DiBoson
++ lowerRange =  -200000.,-200000.,-200000.,-200000.,-200000.,-200000.,-200000.
++ upperRange =   200000., 200000., 200000., 200000., 200000., 200000., 200000.
++ stepRange  =      0.1,    0.1,    0.1,    0.1,    0.1,    0.1,    0.1
++ rangeNames = SingleTop
++ lowerRange =  -200000
++ upperRange =   200000
++ stepRange  =      0.1
++ rangeNames =   Stop450
++ lowerRange =  -200000.
++ upperRange =   200000.
++ stepRange  =      0.1
+
+
+# legend coordiates
++ legendCoordinates = 0.285, 0.55, 0.365, 0.88
+
+# output file name
++ output = output/nominal_stripped_
+
+# turn on data error bars
++ dataErrorBars = 1
+
+#fixParameters=QCD
