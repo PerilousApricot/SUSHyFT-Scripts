@@ -1,13 +1,14 @@
-#include "TFile.h"
-#include "TH1.h"
-#include "TCanvas.h"
-#include "TLegend.h"
-#include "TStyle.h"
-#include "TROOT.h"
-#include "TTree.h"
-#include "TFile.h"
-#include "TBenchmark.h"
-#include "TRandom3.h"
+
+#include <TCanvas.h>
+#include <TFile.h>
+#include <TStyle.h>
+#include <TROOT.h>
+#include <TLine.h>
+#include <TText.h>
+#include <TTree.h>
+#include <THStack.h>
+#include <TLegend.h>
+#include <TRandom.h>
 
 #include "OptionUtils/interface/CommandLineParser.h"
 #include "OptionUtils/interface/dout.h"

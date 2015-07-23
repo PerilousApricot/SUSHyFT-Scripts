@@ -1665,6 +1665,10 @@ CLPTemplateFitter::_initializeMinuit()
    {
       double tempEvents = _eventsInRange( m_templateHPtrVec[tempIndex] );
       const StartStopStep  &sss = m_startStopStepVec.at(tempIndex);
+      if (tempEvents == 0) {
+        cerr << "Template " <<  m_templateNameVec[tempIndex] << " is empty!\n";
+        assert(0);
+      }
       assert(tempEvents > 0);
       int ierrflg = 0;
       m_minuitPtr->mnparm(tempIndex,

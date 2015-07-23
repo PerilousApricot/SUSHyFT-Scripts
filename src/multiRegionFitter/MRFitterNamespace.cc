@@ -9,16 +9,16 @@
 #include <cstdlib>
 #include <algorithm>
 
-#include "TCanvas.h"
-#include "TFile.h"
-#include "TStyle.h"
-#include "TROOT.h"
-#include "TLine.h"
-#include "TText.h"
-#include "TTree.h"
-#include "THStack.h"
-#include "TLegend.h"
-#include "TRandom.h"
+#include <TCanvas.h>
+#include <TFile.h>
+#include <TStyle.h>
+#include <TROOT.h>
+#include <TLine.h>
+#include <TText.h>
+#include <TTree.h>
+#include <THStack.h>
+#include <TLegend.h>
+#include <TRandom.h>
 
 #include "MRFitterNamespace.h"
 #include "OptionUtils/interface/dout.h"
@@ -664,9 +664,10 @@ void mrf::addToHistogram(TH1F *outputPtr, TH1F *inputPtr,
     } // for bin
 }
 
-std::string intVectorToJson(std::vector<int> in) {
+template<typename T, typename A>
+std::string vectorToJson(std::vector<T, A> in) {
     std::string retval = "[";
-    for (std::vector<int>::const_iterator i = in.begin(); i != in.end(); ) {
+    for (auto i = in.begin(); i != in.end(); ) {
         std::ostringstream os;
         os << *i;
         retval += os.str();
@@ -953,6 +954,7 @@ void mrf::MRFitter::saveCanvasResult(std::string outputName,
         const char * siText = "map<string, int>";
         const char * sdText = "map<string, double>";
         const char * ivecText = "vector<int>";
+        const char * dvecText = "vector<int>";
         // SDMap map<string, double>
         outFile << "{\n";
         filePtr->WriteObjectAny(&m_groupIndexMap, siText,  "groupIndexMap");
@@ -968,11 +970,14 @@ void mrf::MRFitter::saveCanvasResult(std::string outputName,
         filePtr->WriteObjectAny(&m_nameFitterIndexMap , siText, "nameFitterIndexMap");
         outFile << "\"nameFitterIndexMap\":" << stringIntMapToJson(m_nameFitterIndexMap) << ",\n";
         filePtr->WriteObjectAny(&m_numBinsVec , ivecText, "numBinsVec");
-        outFile << "\"numBinsVec\":" << intVectorToJson(m_numBinsVec) << ",\n"; 
+        outFile << "\"numBinsVec\":" << vectorToJson(m_numBinsVec) << ",\n"; 
         filePtr->WriteObjectAny(&m_lowerEdgeBinVec , ivecText, "lowerEdgeBinVec");
-        outFile << "\"lowerEdgeBinVec\":" << intVectorToJson(m_lowerEdgeBinVec) << ",\n";
+        outFile << "\"lowerEdgeBinVec\":" << vectorToJson(m_lowerEdgeBinVec) << ",\n";
         filePtr->WriteObjectAny(&m_upperEdgeBinVec , ivecText, "upperEdgeBinVec");
-        outFile << "\"upperEdgeBinVec\":" << intVectorToJson(m_upperEdgeBinVec) << "\n";
+        outFile << "\"upperEdgeBinVec\":" << vectorToJson(m_upperEdgeBinVec) << ",\n";
+        // dump out 
+        filePtr->WriteObjectAny(&m_binLowerEdges , dvecText, "binLowerEdges");
+        outFile << "\"binLowerEdges\":" << vectorToJson(m_binLowerEdges) << "\n";
         outFile << "}";
         //filePtr->WriteObjectAny(&m_XX , siText, "XX");
         filePtr->Close();
@@ -1293,6 +1298,10 @@ void mrf::MRFitter::_loadTemplates(const string &templateFilename)
             }
             assert(histPtr);
             int numBins = histPtr->GetNbinsX();
+            // ROOT is strangely not zero-based on the arrays?
+            for (int i = 1; i <= numBins; ++i) {
+                m_binLowerEdges.push_back( histPtr->GetBinLowEdge(i) );
+            }
             m_numBinsVec.push_back( numBins );
             m_lowerEdgeBinVec.push_back( m_totalBins + 1 );
             m_upperEdgeBinVec.push_back( m_totalBins + numBins );
