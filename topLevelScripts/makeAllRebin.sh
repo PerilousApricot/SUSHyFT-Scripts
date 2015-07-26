@@ -49,5 +49,5 @@ done < $SHYFT_BASE/config/$SHYFT_MODE/input_pat.txt
 echo "Executing ${#toProcess[@]} jobs"
 ( for ((i = 0; i < ${#toProcess[@]}; i++)); do
     echo "${toProcess[$i]}"
-done; )  | parallel -j $SHYFT_DOUBLE_CORE_COUNT --eta --progress
+done; )  | parallel -j $SHYFT_QUAD_CORE_COUNT --eta --progress
 

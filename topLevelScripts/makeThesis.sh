@@ -23,11 +23,10 @@ if [[ -d ${SHYFT_EDNTUPLE_PATH} ]]; then
     :
 fi
 if [[ -d ${SHYFT_COPYHIST_PATH} ]]; then
-    #makeAllQCDFits.sh
-    :
+    makeAllQCD.sh
 fi
 
-#makeAllSystematics.sh
+makeAllSystematics.sh
 
 # If you're not making the histograms, what's the point?
 makeAllFits.sh

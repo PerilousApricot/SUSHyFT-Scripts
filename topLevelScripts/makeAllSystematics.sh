@@ -8,15 +8,16 @@ fi
 
 # The big kahoona - runs the fits
 mkdir -p ${SHYFT_BASE}/state/${SHYFT_MODE}
-if [ $SHYFT_ENABLE_SYSTEMATICS -ne 0 ]; then
+SHYFT_ENABLE_SYSTEMATICS=1
+if [ "$SHYFT_ENABLE_SYSTEMATICS" -ne 0 ]; then
     # First, get the systematic variations
     # -unc=pol2 --name=BTag_PF --legend --samples=Top,SingleTop,Wbx,Wcx \
     runIfChanged.sh  ${SHYFT_BASE}/state/${SHYFT_MODE}/btag_sf.mrf  \
                      `which configFitVariations.py` \
-                     ${SHYFT_BASE}/config/${SHYFT_MODE}/fitConfigs/floatall.mrf \
+                     ${SHYFT_BASE}/config/${SHYFT_MODE}/fitConfigs/nominal.mrf \
                      ${SHYFT_COPYHIST_PATH}/${SHYFT_MODE}/central_{nom,BTag}* -- \
         configFitVariations.py \
-            ${SHYFT_BASE}/config/${SHYFT_MODE}/fitConfigs/floatall.mrf \
+            ${SHYFT_BASE}/config/${SHYFT_MODE}/fitConfigs/nominal.mrf \
             --func=pol2 --name=BTag_PF --legend --samples=Top,Wbx,Wcx \
             --writeConfig=${SHYFT_BASE}/state/${SHYFT_MODE}/btag_sf.mrf:btag,0,1 \
             ${SHYFT_COPYHIST_PATH}/${SHYFT_MODE}/central_nominal.root:0 \
