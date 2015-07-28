@@ -1,4 +1,6 @@
 nominal .* 1 nominal
+wmtup .* 1 --wMTCut=up
+wmtdown .* 1 --wMTCut=down
 noMET .* 1 --noMET
 flipIso .* 1 --invertTauCut
 qcdMode .* 1 --noMET --invertTauCut
