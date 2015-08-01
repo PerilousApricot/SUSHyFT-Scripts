@@ -92,7 +92,7 @@ def selectDirNames(names, hist_to_read, suffix):
     if suffix:
         valid = re.compile(hist_to_read+suffix+'$')
     else:
-        valid = re.compile(hist_to_read+"_[bcq]$")
+        valid = re.compile(hist_to_read)
     for n in names:
         if valid.search(n):
             filtered.append(n)
@@ -106,8 +106,8 @@ def getHist(tfile, root_dir, name):
     readname += name
     #print 'getting ',readname
     th1 = tfile.Get(readname)
-    if not th1 or th1.IsZombie():
-        print 'no such histogram: %s!' % readname
+    if th1.IsZombie():
+        print 'no such histogram!'
         return None
     return th1
 
@@ -191,7 +191,7 @@ def getTemplate(infile, config, section):
 # ------------
 inputFiles = {}
 outputFiles = {}
-outputHists = []
+
 # loop over sections (samples)
 for section in sorted(config.sections()):
     print '========================='
@@ -234,6 +234,9 @@ for section in sorted(config.sections()):
     template = getTemplate(infile, config, section)
 
     good_names = selectDirNames(th1s, config.get(section,'hist_to_read'), suffix)
+    if not good_names and not suffix:
+        # Try grabbing the other hists
+        good_names = selectDirNames(th1s, config.get(section,'hist_to_read'), '_[bcq]')
     # loop over histograms, read them, scale, save to the output file
     # ===========================================
     outfname = config.get(section,'output_folder') + '/' + outfile_prefix + root_dir + outfile_suffix + '.root'
@@ -243,7 +246,6 @@ for section in sorted(config.sections()):
     else:
         outfile = ROOT.TFile(outfname, 'RECREATE')
         outputFiles[outfname] = outfile
-        outfile.cd()
 
     outdir = outfile.GetDirectory('')
     hist_cache = {}
@@ -267,26 +269,39 @@ for section in sorted(config.sections()):
 
         if outhname in existing_names:
             # add new histogram to existing one
-            oldhist = hist_cache[outhname]
-            #oldhist = getHist(outfile, "", outhname)
-            #print "mixing %s with %s (existing %s)" % (hname, outhname, existing_names)
+            oldhist = getHist(outfile, "", outhname)
             ##print 'integral before addition ', oldhist.Integral()
-            #print "adding %s to %s" % (hclone.GetName(), oldhist.GetName())
             oldhist.Add(hclone)
             ##print 'integral after addition ', oldhist.Integral()
-            #oldhist.Write(oldhist.GetName(), ROOT.TH1F.kOverwrite)
+            oldhist.Write(oldhist.GetName(), ROOT.TH1F.kOverwrite)
             #oldhist.Write()
+            #print "Updating %s with %s" % (outhname, hclone.GetName())
         else:
             # store this histogram in the output file
+            #print "Initializing %s with %s" % (outhname, hclone.GetName())
             hclone.SetName(outhname)
             hclone.SetDirectory(outdir)
             existing_names.append(outhname)
-            hist_cache[outhname] = hclone
-            outputHists.append(hclone)
-    infile.Close()
 
-for outhist in outputHists:
-    outhist.Write(outhist.GetName(), ROOT.TH1F.kOverwrite)
+    infile.Close()
+    ROOT.gROOT.GetListOfFiles().Remove(infile)
+    print    ROOT.gROOT.GetListOfClasses().GetSize()
+    print    ROOT.gROOT.GetListOfColors().GetSize()
+    print    ROOT.gROOT.GetListOfTypes().GetSize()
+    print    ROOT.gROOT.GetListOfGlobals().GetSize()
+    print    ROOT.gROOT.GetListOfGlobalFunctions().GetSize()
+    print    ROOT.gROOT.GetListOfFiles().GetSize()
+    print    ROOT.gROOT.GetListOfMappedFiles().GetSize()
+    print    ROOT.gROOT.GetListOfSockets().GetSize()
+    print    ROOT.gROOT.GetListOfSecContexts().GetSize()
+    print    ROOT.gROOT.GetListOfCanvases().GetSize()
+    print    ROOT.gROOT.GetListOfStyles().GetSize()
+    print    ROOT.gROOT.GetListOfFunctions().GetSize()
+    print    ROOT.gROOT.GetListOfSpecials().GetSize()
+    print    ROOT.gROOT.GetListOfGeometries().GetSize()
+    print    ROOT.gROOT.GetListOfBrowsers().GetSize()
+    print    ROOT.gROOT.GetListOfCleanups().GetSize()
+    print    ROOT.gROOT.GetListOfMessageHandlers().GetSize()
 
 for outfile in outputFiles:
     #outputFiles[outfile].Write()

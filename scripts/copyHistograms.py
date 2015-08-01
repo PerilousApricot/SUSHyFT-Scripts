@@ -324,7 +324,6 @@ class FileObject(object):
         # loop over add commands
         commandOrder = []
         for addTup in FileObject.gAdd:
-            print "Processing %s" %(addTup, )
             target = addTup[0]
             sourceList = addTup[1]
             addDict = {}
@@ -333,7 +332,7 @@ class FileObject(object):
                 # print "  examining hist %s" % name
                 # loop over source pieces
                 for regex in sourceList:
-                    #print "  Examining regular expression %s against %s" %(regex.pattern, name)
+                    print "  Examining regular expression %s against %s" %(regex.pattern, name)
                     newName = regex.sub(target, name)
                     if newName != name:
                         #if regex.pattern == '^([Q|S|T|WJets|Z|D]\w+)_2j_2t' and name == 'Wcx_MET_2j_2t':
@@ -370,9 +369,6 @@ class FileObject(object):
                 commandOrder.append([name, addList])
                 #print "adding '%s'" % name
         #print '\n' * 10
-        print "Added histograms:"
-        for row in commandOrder:
-            print "Added to '%s': %s" %(row[0], ",".join(sorted(row[1])))
 
 
     @staticmethod
@@ -514,6 +510,7 @@ if __name__ == "__main__":
     FileObject.renormToHistograms(targetDict, options.noRenormWarnings)
     target = ROOT.TFile.Open(args[1], 'recreate')
     for name, hist in sorted(targetDict.iteritems()):
-        print "Integral of %s is %s" %(name, hist.Integral())
+        if options.verbose:
+            print "Integral of %s is %s" %(name, hist.Integral())
         hist.Write()
     target.Close()

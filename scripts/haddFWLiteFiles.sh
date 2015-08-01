@@ -7,7 +7,7 @@ OUTPUT=$1
 shift
 set -x
 [[ -e $OUTPUT ]] && rm -f $OUTPUT
-hadd $OUTPUT $@
+hadd -f9 $OUTPUT $@
 set +x
 EXIT_CODE=$?
 if [[ $EXIT_CODE -ne 0 ]]; then

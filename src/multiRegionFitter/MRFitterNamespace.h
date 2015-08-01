@@ -391,6 +391,7 @@ namespace mrf
          IVec        m_numBinsVec;
          IVec        m_lowerEdgeBinVec;
          IVec        m_upperEdgeBinVec;
+         DVec        m_binLowerEdges;
          int         m_totalBins;
 
          // other variables

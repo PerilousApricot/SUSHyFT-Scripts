@@ -1,1 +1,2 @@
 Store CMSSW checkouts here
+scram p -n a4analysis CMSSW CMSSW_7_3_2

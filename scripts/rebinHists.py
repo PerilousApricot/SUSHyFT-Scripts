@@ -204,10 +204,12 @@ def bin_onebin(inputTitle):
     matches = re.search(r"(.*)_(\d)j_(\d)b_(\d)t(_[bcq])?", inputTitle)
     if matches == None:
         return None
-    name, postfix = matches.group(1,5)
+    name, jets, postfix = matches.group(1,2,5)
+    if int(jets) == 0:
+        return None
     if not postfix:
         postfix = ""
-    result = ["%s_0j_0b_0t%s" % (name, postfix)]
+    result = ["%s_1j_0b_0t%s" % (name, postfix)]
     return result
 
 def getBinFunction(tagMode):
@@ -227,7 +229,7 @@ def getBinFunction(tagMode):
         return bin_st_gt1tau
     elif tagMode == 'st-nominal':
         return bin_st_nominal
-    elif tagMode == 'onebin':
+    elif tagMode in ('onebin', 'st-onebin'):
         return bin_onebin
     else:
         raise RuntimeError, "Unknown binning strategy, (%s)" % (tagMode)

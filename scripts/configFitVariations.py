@@ -207,7 +207,6 @@ if __name__ == "__main__":
             yAxis.SetTitle(options.Yaxis)
             graph.SetMinimum(options.Ymin)
             graph.SetMaximum(options.Ymax)
-            print options.Ymax
             if first:
                 graph.Draw("AP")
                 first = False

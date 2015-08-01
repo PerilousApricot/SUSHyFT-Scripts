@@ -33,61 +33,62 @@ if [[ "x$@" =~ nominal ]]; then
 else
     PRIORITY="+100"
 fi
+RETRYCOUNT=0
 COUNT=0
 SPLITCOUNT=0
-while [[ -e $WORKDIR/input_$COUNT.txt ]]; do
-    COUNT=$((COUNT + 1))
+while [[ -e $WORKDIR/input_${RETRYCOUNT}_0.txt ]]; do
+    RETRYCOUNT=$((RETRYCOUNT + 1))
 done
 while true; do
-    FILELIST=$( split_file.sh $USERSLIST 30 $SPLITCOUNT )
-    if [[ "X$FILELIST" = 'X' ]]; then
+    split_file.sh $USERSLIST 50 $SPLITCOUNT > $WORKDIR/input_${RETRYCOUNT}_$COUNT.txt
+    if [[ ! -s $WORKDIR/input_${RETRYCOUNT}_$COUNT.txt ]]; then
+        COUNT=$(( $COUNT - 1 ))
         break
     fi
-    echo "$FILELIST" > $WORKDIR/input_$COUNT.txt
-    cat << EOF > tempscript.pbs
+    touch $WORKDIR/marker_$RETRYCOUNT_$COUNT.txt
+    COUNT=$(( $COUNT + 1 ))
+    SPLITCOUNT=$(( SPLITCOUNT + 1 ))
+done
+
+sbatch -a 0-${COUNT} << EOF
 #!/bin/bash
-#PBS -M andrew.m.melo@vanderbilt.edu
-#PBS -l nodes=1:ppn=1
-#PBS -l mem=1900mb
-#PBS -l walltime=12:00:00
-#PBS -o $WORKDIR/stdout_$COUNT.txt
-#PBS -j oe
-#PBS -W group_list=jswhep
-#PBS -p $PRIORITY
+#SBATCH --mem 1900mb
+#SBATCH -t 12:00:00
+#SBATCH -o $WORKDIR/stdout_${RETRYCOUNT}_%a.txt
+#SBATCH -A jswhep
 if [[ ! -e $WORKDIR ]]; then
     mkdir -p $WORKDIR
 fi
 cd ~
 . set-analysis.sh
-echo "input list is $WORKDIR/input_$COUNT.txt"
-set -x
-if [[ -e $WORKDIR/output_$COUNT.root ]]; then
-    echo "FAILED OVERWRITE" >> $WORKDIR/FAILED.$COUNT
-    cat $WORKDIR/input_$COUNT.txt >> $WORKDIR/FAILED.$COUNT
+COUNT=\$SLURM_ARRAY_TASK_ID
+echo "input list is $WORKDIR/input_${RETRYCOUNT}_\$COUNT.txt"
+hostname
+set -fx
+if [[ -e $WORKDIR/output_${RETRYCOUNT}_\$COUNT.root ]]; then
+    echo "FAILED OVERWRITE" >> $WORKDIR/FAILED.${RETRYCOUNT}_\$COUNT
+    cat $WORKDIR/input_${RETRYCOUNT}_\$COUNT.txt >> $WORKDIR/FAILED.${RETRYCOUNT}_\$COUNT
     exit 1
 fi
-rm $WORKDIR/$COUNT.root
-echo "Started at \$(date)" >> $WORKDIR/FAILED.$COUNT
+rm $WORKDIR/${RETRYCOUNT}_\$COUNT.root
+echo "Started at \$(date)" >> $WORKDIR/FAILED.${RETRYCOUNT}_\$COUNT
 echo "At dir: \$(pwd)"
 ls -lah
-time python2.6 refactor_fwlite.py --inputListFile=$WORKDIR/input_$COUNT.txt $OURDATA --outname=$WORKDIR/$COUNT $@
+time python2.6 refactor_fwlite.py --inputListFile=$WORKDIR/input_${RETRYCOUNT}_\$COUNT.txt $OURDATA --outname=$WORKDIR/${RETRYCOUNT}_\$COUNT $@
 RETVAL=\$?
 ls -lah
 ls -lah $WORKDIR
-if [[ ! \$RETVAL -eq 0 || ! -e $WORKDIR/$COUNT.root ]]; then
-    echo "Failed" >> $WORKDIR/FAILED.$COUNT
-    cat \$INPUTLIST >> $WORKDIR/FAILED.$COUNT
+if [[ ! \$RETVAL -eq 0 || ! -e $WORKDIR/${RETRYCOUNT}_\$COUNT.root ]]; then
+    echo "Failed" >> $WORKDIR/FAILED.${RETRYCOUNT}_\$COUNT
+    cat \$INPUTLIST >> $WORKDIR/FAILED.${RETRYCOUNT}_\$COUNT
     # make later hadds bomb
-    rm $WORKDIR/$COUNT.root
-    mv $WORKDIR/input_$COUNT.txt $WORKDIR/failed_input_$COUNT.txt
+    rm $WORKDIR/${RETRYCOUNT}_\$COUNT.root
+    mv $WORKDIR/input_${RETRYCOUNT}_\$COUNT.txt $WORKDIR/failed_input_${RETRYCOUNT}_\$COUNT.txt
 else
-    mv $WORKDIR/$COUNT.root $WORKDIR/output_$COUNT.root
-    rm $WORKDIR/FAILED.$COUNT
+    mv $WORKDIR/${RETRYCOUNT}_\$COUNT.root $WORKDIR/output_${RETRYCOUNT}_\$COUNT.root
+    rm $WORKDIR/FAILED.${RETRYCOUNT}_\$COUNT
 fi
-rm $WORKDIR/marker_$COUNT.txt
+rm $WORKDIR/marker_${RETRYCOUNT}_\$COUNT.txt
 EOF
-    qsub tempscript.pbs | tee $WORKDIR/marker_$COUNT.txt
-    COUNT=$(( $COUNT + 1 ))
-    SPLITCOUNT=$(( SPLITCOUNT + 1 ))
-done
+
 rm $WORKDIR/makelock
