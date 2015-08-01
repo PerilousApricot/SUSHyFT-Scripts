@@ -1,0 +1,13 @@
+# names of the different groups
++ groupNames = _dPhi2JetMET_3j_0b_0t
++ groupNames = _stdt_3j_1b_0t
++ groupNames = _wMT_3j_2b_0t
++ groupNames = _dPhi2JetMET_3j_0b_1t
++ groupNames = _stdt_3j_1b_1t
++ groupNames = _wMT_3j_2b_1t
++ groupStrings = 3_Jets_0_B_0_Tau
++ groupStrings = 3_Jets_1_B_0_Tau
++ groupStrings = 3_Jets_2_B_0_Tau
++ groupStrings = 3_Jets_0_B_1_Tau
++ groupStrings = 3_Jets_1_B_1_Tau
++ groupStrings = 3_Jets_2_B_1_Tau
