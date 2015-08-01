@@ -2,7 +2,6 @@
 
 import sys
 import json
-import pprint
 if len(sys.argv) == 1:
     inputList = [sys.stdin]
 else:

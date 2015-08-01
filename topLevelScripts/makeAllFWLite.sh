@@ -24,6 +24,9 @@ if [[ ! -d $SHYFT_FWLITE_PATH ]]; then
 fi
 
 FWLITE_LOG=$SHYFT_BASE/output/$SHYFT_MODE/fwlite_summary.txt
+if [ ! -d $SHYFT_BASE/output/$SHYFT_MODE/ ]; then
+    mkdir -p $SHYFT_BASE/output/$SHYFT_MODE/
+fi
 if [ -e $FWLITE_LOG ]; then
     rm $FWLITE_LOG
 fi
@@ -177,6 +180,9 @@ while read DATASET; do
             echo -n "" > $SYSTEMATIC_PATH/processed.txt
         else
             # Attempt to clean out files that have failed
+            if [[ -e $SYSTEMATIC_PATH/processed.txt ]]; then
+                rm $SYSTEMATIC_PATH/processed.txt
+            fi
             for SYSTEMATIC_INPUT in $SYSTEMATIC_PATH/input_*.txt; do
                 SYSTEMATIC_COUNTER=$(echo -n $SYSTEMATIC_INPUT | sed 's/.*input_\(.*\).txt$/\1/')
                 SYSTEMATIC_OUTPUT=$SYSTEMATIC_PATH/output_${SYSTEMATIC_COUNTER}.root
@@ -210,7 +216,7 @@ while read DATASET; do
                 rm -f $SYSTEMATIC_INPUT $SYSTEMATIC_MARKER $SYSTEMATIC_STDOUT $SYSTEMATIC_OUTPUT $SYSTEMATIC_FAILED
             done
         fi
-        { rm $SYSTEMATIC_PATH/processed.txt && sort > $SYSTEMATIC_PATH/processed.txt; } < $SYSTEMATIC_PATH/processed.txt
+        { rm $SYSTEMATIC_PATH/processed.txt && sort | uniq > $SYSTEMATIC_PATH/processed.txt; } < $SYSTEMATIC_PATH/processed.txt
         # compare input and output files to see if we need to either add to fwlite or
         # blow away everything and start over
         if [[ ! -e $CURRENT_INPUT_SOURCE ]]; then
@@ -221,12 +227,12 @@ while read DATASET; do
             INPUT_MISSING=$( diff -- $SYSTEMATIC_PATH/processed.txt $CURRENT_INPUT_SOURCE  | egrep '^>' | perl -pe 's/^[<>] //' | egrep -v '^$')
             OUTPUT_INVALID=$( diff -- $SYSTEMATIC_PATH/processed.txt $CURRENT_INPUT_SOURCE  | egrep '^<' | perl -pe 's/^[<>] //' | egrep -v '^$')
         fi
-
+    
         if [[ ! -z $OUTPUT_INVALID ]]; then
             echo "Got an invalid file in the output, blow it all away"
             echo "Resetting $SYSTEMATIC_PATH"
             echo "compare $SYSTEMATIC_PATH/processed.txt $CURRENT_INPUT_SOURCE"
-            exit
+            echo "$OUTPUT_INVALID"
             rm -rf $SYSTEMATIC_PATH
             mkdir -p $SYSTEMATIC_PATH
             INPUT_MISSING=$CURRENT_INPUT

@@ -58,6 +58,7 @@ for LINE in "${DATASETS_TO_RUN[@]}"; do
     if [[ $LINE =~ "MET" || $LINE =~ "SingleMu" ]]; then
         USE_DATA=" useData=1"
         SHORTNAME=$(getDatasetShortname ${LINE})
+        PUBLINE=$(echo "_${LINE}" | tr '/' ' ' | awk '{ print $3 }' | sed 's/meloam-\(.*\)-[a-z0-9]*/\1/')
     else
         USE_DATA=" useData=0"
         SHORTNAME=$(getDatasetShortname ${LINE})
