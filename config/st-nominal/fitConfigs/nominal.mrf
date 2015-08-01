@@ -27,9 +27,9 @@
 #+ binsPerGroup = 10, 10, 10, 10, 10, 240, 240, 240, 240, 240, 10, 10, 10, 10 
 
 # How to throw PEs
-+ peNames  =    Top,   SingleTop,   Wbx,   Wcx,   Wqq,    QCD
-+ peMeans  = 1.0,         1.0,   1.0,   1.0,   1.0,    1.0
-+ peSigmas =  0.020,         0.1,   0.1,   0.1,   0.1,    0.2
++ peNames  = Stop450,   Top,   SingleTop,   Wbx,   Wcx,   Wqq,    QCD
++ peMeans  =     1.0,   1.0,         1.0,   1.0,   1.0,   1.0,    1.0
++ peSigmas =     0.1,  0.10,         0.1,   0.1,   0.1,   0.1,    0.2
 
 + colorNames = Data, Stop450, Top, Wbx, Wcx, Wqq, ZJets, QCD, DiBoson, SingleTop
 + colorValues =   1, 4,       633, 413, 411, 407, 400,     9, 403, 605

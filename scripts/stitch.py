@@ -246,6 +246,7 @@ for section in sorted(config.sections()):
         outfile.cd()
 
     outdir = outfile.GetDirectory('')
+    hist_cache = {}
     (existing_dirs,existing_names) = listDirsNames(outfile, '')
     for hname in good_names:
         hclone = getClone(infile, root_dir, hname)
@@ -266,15 +267,9 @@ for section in sorted(config.sections()):
 
         if outhname in existing_names:
             # add new histogram to existing one
-            oldhist = getHist(outfile, "", outhname)
+            oldhist = hist_cache[outhname]
+            #oldhist = getHist(outfile, "", outhname)
             #print "mixing %s with %s (existing %s)" % (hname, outhname, existing_names)
-            if not oldhist and not suffix:
-                break
-                # try loading the non-suffixed version
-                print outfile.GetListOfKeys()
-                for x in outfile.GetListOfKeys():
-                    print x.GetName()
-                print [x.GetName() for x in outfile.GetListOfKeys()]
             ##print 'integral before addition ', oldhist.Integral()
             #print "adding %s to %s" % (hclone.GetName(), oldhist.GetName())
             oldhist.Add(hclone)
@@ -285,13 +280,13 @@ for section in sorted(config.sections()):
             # store this histogram in the output file
             hclone.SetName(outhname)
             hclone.SetDirectory(outdir)
-            hclone.Write()
             existing_names.append(outhname)
+            hist_cache[outhname] = hclone
             outputHists.append(hclone)
     infile.Close()
 
 for outhist in outputHists:
-    outhist.Write()
+    outhist.Write(outhist.GetName(), ROOT.TH1F.kOverwrite)
 
 for outfile in outputFiles:
     #outputFiles[outfile].Write()
