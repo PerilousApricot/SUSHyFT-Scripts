@@ -10,6 +10,7 @@ import optparse
 parser = optparse.OptionParser()
 parser.add_option('-v', '--verbose',action='store_true')
 parser.add_option('-d', '--debug',action='store_true')
+parser.add_option('-r', '--raw', action='store_true')
 parser.add_option('--groupBy', action='append', default=[])
 (options, args) = parser.parse_args()
 verbose = options.verbose
@@ -50,6 +51,13 @@ maxKeyLen = 0
 for key, _ in plotsToPrint:
     maxKeyLen = max(maxKeyLen, len(key))
 
+
+def formatIntegral(integral, raw):
+    if raw:
+        return "{0:.2f}".format(integral)
+    else:
+        return "{0:.2E}".format(integral)
+
 for key, plot in plotsToPrint:
     spaces = " " * (maxKeyLen - len(key))
     integral = plot.Integral()
@@ -58,6 +66,6 @@ for key, plot in plotsToPrint:
         print "{0}: {1}{2:.2E}".format(key, spaces, integral)
 if verbose:
     print "=" * (maxKeyLen + 9)
-    print "Total: {0:.2E}".format(totalSum)
+    print "Total: " + formatIntegral(totalSum, options.raw)
 else:
-    print "{0:.2E}".format(totalSum)
+    print formatIntegral(totalSum, options.raw)

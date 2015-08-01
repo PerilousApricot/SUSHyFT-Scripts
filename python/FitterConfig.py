@@ -133,20 +133,20 @@ class FitterConfig:
             raise RuntimeError, "Strings and names lengths don't match strings %s != names %s" %(groupStrings, self.groupNames)
         for name, pretty in zip(self.groupNames, groupStrings):
             self.groupStrings[name] = FitterConfig.underRE.sub(' ', pretty)
-        if len(binStrings) != len (self.groupNames):
-            if self.ignoreBinString:
-                return
-            raise RuntimeError, "Bins(%s) and names (%s) are different lengtsh." \
-                    %(binStrings, self.groupNames)
-        start = 1
-        for name, bin in zip(self.groupNames, binStrings):
-            try:
-                intBin = int(bin)
-                self.groupBins[name] =(intBin, start, start + intBin - 1)
-                start += intBin
-            except:
-                raise RuntimeError, "Bin string '%s' is not an integer" % bin
-
+#        if len(binStrings) != len (self.groupNames):
+#            if self.ignoreBinString:
+#                return
+#            raise RuntimeError, "Bins(%s) and names (%s) are different lengtsh." \
+#                    %(binStrings, self.groupNames)
+#        start = 1
+#        for name, bin in zip(self.groupNames, binStrings):
+#            try:
+#                intBin = int(bin)
+#                self.groupBins[name] =(intBin, start, start + intBin - 1)
+#                start += intBin
+#            except:
+#                raise RuntimeError, "Bin string '%s' is not an integer" % bin
+#
         # now that we've read everything in, check to make sure
         # various things are kosher:
         for key in self.valueDict.keys():
@@ -246,23 +246,23 @@ class FitterConfig:
             self.fitterHists[sample] = hist
         hfile.Close()
 
-    def getNormsFromFitterOutput(self, filename):
-        """ """
-        self.loadHistogramsFromFitterOutput(filename)
-        samples = self.useSamples or self.sampleNames
-        groups  = self.useGroups  or self.groupNames
-        for sample in samples:
-            total = 0.
-            hist = self.fitterHists[sample]
-            for group in groups:
-                binTup = self.groupBins[group]
-                integral = hist.Integral(binTup[1], binTup[2])
-                self.intDict.setdefault( sample, {}).\
-                        setdefault(group, integral)
-                total += integral
-            self.totalDict[sample] = total
-        self._combineGroupsAndSections()
-
+#    def getNormsFromFitterOutput(self, filename):
+#        """ """
+#        self.loadHistogramsFromFitterOutput(filename)
+#        samples = self.useSamples or self.sampleNames
+#        groups  = self.useGroups  or self.groupNames
+#        for sample in samples:
+#            total = 0.
+#            hist = self.fitterHists[sample]
+#            for group in groups:
+#                binTup = self.groupBins[group]
+#                integral = hist.Integral(binTup[1], binTup[2])
+#                self.intDict.setdefault( sample, {}).\
+#                        setdefault(group, integral)
+#                total += integral
+#            self.totalDict[sample] = total
+#        self._combineGroupsAndSections()
+#
     def getNorms(self, hfile, value = None):
         """ """
         samples = self.useSamples or self.sampleNames

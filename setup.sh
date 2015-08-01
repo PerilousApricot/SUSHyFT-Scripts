@@ -81,6 +81,7 @@ export SHYFT_SCRATCH_PATH=$SHYFT_BASE/scratch
 export SHYFT_CORE_COUNT=$(grep -c ^processor /proc/cpuinfo 2>/dev/null || sysctl -n hw.ncpu)
 # We know some things will be very I/O bound
 export SHYFT_DOUBLE_CORE_COUNT=$(echo "${SHYFT_CORE_COUNT}*2" | bc)
+export SHYFT_QUAD_CORE_COUNT=$(echo "${SHYFT_CORE_COUNT}*4" | bc)
 
 # Convenient for syncing
 export SHYFT_REMOTE_PATH="vmplogin.accre.vanderbilt.edu:/scratch/meloam/SUSHyFT-Scripts"

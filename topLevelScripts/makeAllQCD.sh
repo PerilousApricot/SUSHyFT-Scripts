@@ -29,4 +29,4 @@ for m in "${!groupNames[@]}"; do
 done
 
 # Finally, generate the QCD .mrf
-qcdToMrf.sh > ${SHYFT_BASE}/state/${SHYFT_MODE}/qcd.mrf
+#qcdToMrf.sh > ${SHYFT_BASE}/state/${SHYFT_MODE}/qcd.mrf
