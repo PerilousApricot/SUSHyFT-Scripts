@@ -106,6 +106,8 @@ CLPTemplateFitter::addTemplate(const string &name, TH1F *tempHist,
    m_constraintMeanVec.push_back( mean     );
    m_constraintSigmaVec.push_back( sigma    );
    m_templateNameVec.push_back( name     );
+   m_constraintPenaltyVec.push_back( 0.0 );
+   m_likelihoodVec.push_back( 0.0 );
    if (start == stop)
    {
       // we need to make values for this.  Since we don't know that we
@@ -621,6 +623,61 @@ CLPTemplateFitter::fitEverythingBut(const string &name,
    return ln0;
 }
 
+TGraph *
+CLPTemplateFitter::plotContour(const string &name1, const string &name2, 
+                                const int numPoints, const int errdef)
+{
+    if (! m_minuitPtr)
+    {
+        _initializeMinuit();
+    }
+
+    int paramIndex1 = -1;
+    SIMapConstIter iter = m_templateIndexMap.find(name1);
+    if (m_templateIndexMap.end() != iter)
+    {
+        paramIndex1 = iter->second;
+    } else {
+        iter = m_binNormIndexMap.find(name1);
+        if (m_binNormIndexMap.end() != iter)
+        {
+            paramIndex1 = iter->second + m_numTemplates;
+        }
+    }
+    int paramIndex2 = -1;
+    iter = m_templateIndexMap.find(name2);
+    if (m_templateIndexMap.end() != iter)
+    {
+        paramIndex2 = iter->second;
+    } else {
+        iter = m_binNormIndexMap.find(name2);
+        if (m_binNormIndexMap.end() != iter)
+        {
+            paramIndex2 = iter->second + m_numTemplates;
+        }
+    }
+
+    if (-1 == paramIndex1)
+    {
+        cerr << "CLPTemplateFitter::plotContour() Error '"
+            << name1 << "' is not a valid name." << endl;
+        m_minuitPtr->SetErrorDef(1);
+        return NULL;
+    }
+
+    if (-1 == paramIndex2)
+    {
+        cerr << "CLPTemplateFitter::plotContour() Error '"
+            << name2 << "' is not a valid name." << endl;
+        m_minuitPtr->SetErrorDef(1);
+        return NULL;
+    }
+    m_minuitPtr->SetErrorDef(errdef);
+    TGraph * ret = (TGraph *) m_minuitPtr->Contour(numPoints, paramIndex1, paramIndex2);
+    m_minuitPtr->SetErrorDef(1);
+    return ret;
+}
+
 void
 CLPTemplateFitter::scanVariable(CLPTrapezoid::Vec &retval, const string &name,
                                  double lower, double upper, int numPoints)
@@ -898,9 +955,28 @@ CLPTemplateFitter::outputFitResults() const
       }
    }
    size += 1;
+   double totalLog;
+   DVec constraintLog;
+   DVec templateLog;
+   templateLog.resize(m_numMinuitParams + 1);
+   constraintLog.resize(m_numMinuitParams + 1);
+   _totalLogProb(true, &totalLog, &templateLog, &constraintLog);
+   cout << "Total Likelihood: " << Form("%.4e", -2 * totalLog) << endl;
    cout << "Fit Results:" << endl;
    for (int paramIndex = 0; paramIndex < m_numMinuitParams; ++paramIndex)
    {
+       double tempProb = 0.0;
+        for (BinNormClass::ISetConstIter iter = m_binsSet.begin();
+                m_binsSet.end() != iter;
+                ++iter)
+        {
+            // if set, we want to make sure that we don't go below the
+            // minimum expected bin content limit(if set)
+            tempProb += logPoisson(m_dataHPtr->GetBinContent(*iter),
+                                    std::max(_getBinContent(paramIndex,*iter),
+                                            m_minExpectedBinContent));
+        }
+
       cout << setw(2) << paramIndex << ") "
            << setw(size) << paramName(paramIndex) << " : "
            << Form("%12.4f", m_fitVec.at(paramIndex));
@@ -913,13 +989,19 @@ CLPTemplateFitter::outputFitResults() const
             cout << Form("    %-8s   %8.4f( %s )",
                           pos.c_str(),
                           m_negErrorVec.at(paramIndex),
-                          ave.c_str()) << endl;
+                          ave.c_str());
          } else {
             string ave = Form("+- %8.4f", m_errorVec.at(paramIndex));
-            cout << Form("   %s", ave.c_str()) << endl;
+            cout << Form("   %s", ave.c_str());
          }
       } else {
-         cout << setw(16) << "(fixed)" << endl;
+         cout << setw(16) << "(fixed)";
+      }
+      cout << " lnL " << Form("%.4e", -2 * tempProb) << " ";
+      if (constraintLog[paramIndex] != 0.0) {
+         cout << " cnstr " << Form("%.4e", constraintLog[paramIndex]) << endl;
+      } else {
+         cout << endl;
       }
    } // for paramIndex;
 }
@@ -1566,7 +1648,10 @@ CLPTemplateFitter::_paramIndex(const string& name,
 }
 
 double
-CLPTemplateFitter::_totalLogProb() const
+CLPTemplateFitter::_totalLogProb(bool extractDetails,
+                                 double * totalLog,
+                                 DVec * templateLog,
+                                 DVec * constraintLog) const
 {
    double logProb = 0.;
    ////////////////////////
@@ -1593,7 +1678,15 @@ CLPTemplateFitter::_totalLogProb() const
          double zScore =
 (m_arrayAddress[tempIndex] - m_constraintMeanVec[tempIndex]) /
             m_constraintSigmaVec[tempIndex];
-         logProb -= zScore * zScore / 2;
+         double zSquaredOverTwo = (zScore * zScore) / 2;
+         logProb -= zSquaredOverTwo;
+         if (unlikely(extractDetails)) {
+            (*constraintLog)[tempIndex] = zSquaredOverTwo;
+         }
+      } else {
+          if (unlikely(extractDetails)) {
+            (*constraintLog)[tempIndex] = 0.0;
+          }
       }
    } // for tempIndex
    // BinNorm Constraints
@@ -1609,6 +1702,9 @@ CLPTemplateFitter::_totalLogProb() const
          logProb -= zScore * zScore / 2;
       }
    } // for binNormIndex
+   if (unlikely(extractDetails)) {
+       *totalLog = logProb;
+   }
    return logProb;
 }
 

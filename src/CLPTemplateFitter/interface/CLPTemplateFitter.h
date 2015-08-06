@@ -18,6 +18,9 @@
 #include "CLPTemplateMorph/interface/CLPTemplateMorph.h"
 #include "CLPTemplateFitter/interface/BinsSumCont.h"
 
+#define likely(x)       __builtin_expect((x),1)
+#define unlikely(x)     __builtin_expect((x),0)
+
 class CLPTemplateFitter
 {
    public:
@@ -142,6 +145,9 @@ class CLPTemplateFitter
       // fits letting everything float except the variable given is
       // fixed to the value given.  Returns -2 * ln likelihood.
       double fitEverythingBut(const std::string &name, double value);
+
+      // plots the contour of two given variables
+      TGraph * plotContour(const std::string &name1, const std::string &name2, const int numPoints, const int errdef);
 
       // scans a variable in the given range.  Return value is a
       // DPairSet.
@@ -355,7 +361,10 @@ class CLPTemplateFitter
 
       // returns the probability of the data fluctuating to the
       // current templates
-      double _totalLogProb() const;
+      double _totalLogProb(bool extractDetails = false,
+                                 double * totalLog = NULL,
+                                 DVec * templateLog = NULL,
+                                 DVec * constraintLog = NULL) const;
 
       // destroys Minuit's variables
       void _destroyMinuit();
@@ -416,7 +425,10 @@ class CLPTemplateFitter
       double              m_minExpectedBinContent;
       // below here, all private member data work fine with their
       // default values
+      mutable double      m_totalLogLikelihood;
       TH1FPtrVec          m_templateHPtrVec;
+      mutable DVec        m_constraintPenaltyVec;
+      DVec                m_likelihoodVec;
       DVec                m_normVec;
       DVec                m_fitVec;
       DVec                m_errorVec;

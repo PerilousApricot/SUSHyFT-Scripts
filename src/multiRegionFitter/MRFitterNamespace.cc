@@ -382,6 +382,32 @@ void mrf::MRFitter::fit(bool verbose)
     {
         cout << endl;
     }
+    if (0)
+    //if (m_contourStructVec.size())
+    {
+    TCanvas * c2 = new TCanvas("c1", "c1",600,600);
+        TString temp = "ScanTime";
+        temp.Prepend("contour_");
+        temp.Append(".png");
+
+        int color = 2;
+        double initialErrDef = 1024.0;
+        for (double i = initialErrDef; i > 0.5; i = i / 2.0) {
+            cout << "Looking for errdef " << i << endl;
+            TGraph * gr2 = (TGraph *) m_fitter.plotContour("ZJets", "DiBoson",40,i);
+            c2->cd();
+            gr2->SetLineColor(color);
+            gr2->SetTitle("Likelihood scan");
+            if (i == initialErrDef) {
+                gr2->Draw("alp");
+            } else {
+                gr2->Draw("lp");
+            }
+            ++color;
+        }
+        c2->Print(temp);
+        delete c2;
+    }
     // Do we scan any variables?
     if (m_scanStructVec.size())
     {
@@ -413,26 +439,33 @@ void mrf::MRFitter::fit(bool verbose)
             }
             //Let's save this plot
             int counter = 0;
-            int npts = ssvIter->m_numSteps;
-            double x[npts], y[npts];
+            int npts = ssvIter->m_numSteps + 1;
+            double * x = (double *) malloc(sizeof(double) * npts);
+            double * y = (double *) malloc(sizeof(double) * npts);
+            assert(x);
+            assert(y);
             for (CLPTrapezoid::Vec::const_iterator vi = scan.begin(); vi<scan.end(); vi++){
                 x[counter] = vi->lowerX();
                 y[counter] = vi->lowerY();
                 counter++;
             }
             TCanvas * c1 = new TCanvas("c1", "c1",600,600);
-            TGraph * gr = new TGraph(npts,x,y);
+            TGraph * gr = new TGraph(counter,x,y);
             c1->cd();
-            gr->Draw("AC*");
             gr->SetTitle("Likelihood scan");
             gr->GetXaxis()->SetTitle((ssvIter->m_name).c_str());
+            gr->GetXaxis()->SetLimits(x[0],x[counter - 1]);
+            gr->Draw("AC*");
             TString temp =(ssvIter->m_name).c_str();
             temp.Prepend("scan_");
-            temp.Append(".png");
+            temp.Append(".");
+            temp.Append(stringValue("imageExtention"));
             c1->Print(temp);
             delete c1;
             delete gr;
-        } // for ssvIter
+            //free(x);
+            //free(y);
+        }
     } // if anything to scan
 }
 
@@ -1754,6 +1787,8 @@ void mrf::MRFitter::_hookupFitter()
         {
             const STH1FPtrPair &histPair = histVec.at(0);
             // Only one.  Just add it.
+            //
+            cerr << "Adding " << name << "1 size\n";
             m_nameTemplateIndexMap[name] =
                 m_fitter.addTemplate(histPair.first,
                         histPair.second,
@@ -1782,6 +1817,7 @@ void mrf::MRFitter::_hookupFitter()
                     0,
                     2,
                     0.001 );
+            cerr << "Adding " << name << "to bin norm\n";
             m_nameTemplateIndexMap[name] = templateIndex;
             templateSet.insert(templateIndex);
             // tell the fitter to fix this parameter
