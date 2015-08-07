@@ -252,7 +252,6 @@ for section in sorted(config.sections()):
         outputFiles[outfname] = outfile
 
     outdir = outfile.GetDirectory('')
-    hist_cache = {}
     (existing_dirs,existing_names) = listDirsNames(outfile, '')
     for hname in good_names:
         hclone = getClone(infile, root_dir, hname)
@@ -281,33 +280,15 @@ for section in sorted(config.sections()):
             ##print 'integral after addition ', oldhist.Integral()
             oldhist.Write(oldhist.GetName(), ROOT.TH1F.kOverwrite)
             #oldhist.Write()
-            #print "Updating %s with %s" % (outhname, hclone.GetName())
         else:
             # store this histogram in the output file
-            #print "Initializing %s with %s" % (outhname, hclone.GetName())
             hclone.SetName(outhname)
             hclone.SetDirectory(outdir)
+            hclone.Write()
             existing_names.append(outhname)
 
     infile.Close()
     ROOT.gROOT.GetListOfFiles().Remove(infile)
-    print    ROOT.gROOT.GetListOfClasses().GetSize()
-    print    ROOT.gROOT.GetListOfColors().GetSize()
-    print    ROOT.gROOT.GetListOfTypes().GetSize()
-    print    ROOT.gROOT.GetListOfGlobals().GetSize()
-    print    ROOT.gROOT.GetListOfGlobalFunctions().GetSize()
-    print    ROOT.gROOT.GetListOfFiles().GetSize()
-    print    ROOT.gROOT.GetListOfMappedFiles().GetSize()
-    print    ROOT.gROOT.GetListOfSockets().GetSize()
-    print    ROOT.gROOT.GetListOfSecContexts().GetSize()
-    print    ROOT.gROOT.GetListOfCanvases().GetSize()
-    print    ROOT.gROOT.GetListOfStyles().GetSize()
-    print    ROOT.gROOT.GetListOfFunctions().GetSize()
-    print    ROOT.gROOT.GetListOfSpecials().GetSize()
-    print    ROOT.gROOT.GetListOfGeometries().GetSize()
-    print    ROOT.gROOT.GetListOfBrowsers().GetSize()
-    print    ROOT.gROOT.GetListOfCleanups().GetSize()
-    print    ROOT.gROOT.GetListOfMessageHandlers().GetSize()
 
 for outfile in outputFiles:
     #outputFiles[outfile].Write()
