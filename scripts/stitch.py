@@ -106,8 +106,12 @@ def getHist(tfile, root_dir, name):
     readname += name
     #print 'getting ',readname
     th1 = tfile.Get(readname)
-    if th1.IsZombie():
-        print 'no such histogram!'
+    try:
+        if th1.IsZombie():
+            print 'no such histogram!'
+            return None
+    except ReferenceError, e:
+        print "Failed to read %s" % readname
         return None
     return th1
 
@@ -271,6 +275,8 @@ for section in sorted(config.sections()):
             # add new histogram to existing one
             oldhist = getHist(outfile, "", outhname)
             ##print 'integral before addition ', oldhist.Integral()
+            if not oldhist and outhname.endswith('0j_0b_0t'):
+                continue
             oldhist.Add(hclone)
             ##print 'integral after addition ', oldhist.Integral()
             oldhist.Write(oldhist.GetName(), ROOT.TH1F.kOverwrite)
