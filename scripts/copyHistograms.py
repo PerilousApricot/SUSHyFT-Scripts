@@ -15,7 +15,8 @@ nonSpaceRE   = re.compile(r'\S')
 spacesRE     = re.compile(r'\s+')
 filenameRE   = re.compile(r'^\s*(\S+)')
 doublePipeRE = re.compile(r'\|\|')
-rebinRE      = re.compile(r'(\S.+):(\d+),(\d+)')
+rebinRE      = re.compile(r'(\S.+):(\d+),(\d+)$')
+extraRebinRE = re.compile(r'(\S.+):(\d+),(\d+),(\d+)')
 renormRE     = re.compile(r'(\S.+):(\S+)')
 colonRE      = re.compile(r'\s*:\s*')
 commaRE      = re.compile(r'\s*,\s*')
@@ -25,17 +26,18 @@ parenRE      = re.compile(r'\((\S+?)\)')
 
 class RebinInfo(object):
 
-    def __init__(self, maxBin, rebin):
+    def __init__(self, maxBin, minBin, rebin):
         self.maxBin = maxBin
         self.rebin  = rebin
+        self.minBin = minBin
 
 
     def __str__(self):
-        return "max %d rebin %d" %(self.maxBin, self.rebin)
+        return "max %d rebin %d min %d" %(self.maxBin, self.rebin ,self.minBin)
 
 
     def copyAndModify(self, oldHist, newName):
-        if not self.maxBin:
+        if not self.maxBin and self.minBin == 1:
             # just rebin and nothing else
             oldHist.Rebin(self.rebin)
             # this isn't strictly necessary in this piece of code, but
@@ -43,6 +45,7 @@ class RebinInfo(object):
             # the new histogram has the new name.
             oldHist.SetName(newName)
             return oldHist
+        assert(self.minBin >= 1), "min bin has to be > 0. 0 is underflow"
         # move the old histogram out of the way in case the old
         # histogram and new histogram have the same name
         oldHist.SetName( oldHist.GetName() + '_oldpleaseignore' )
@@ -52,16 +55,28 @@ class RebinInfo(object):
                   %(oldBins, self.maxBin, oldHist.GetName())
         maximum = oldHist.GetBinLowEdge(self.maxBin) + \
                   oldHist.GetBinWidth  (self.maxBin)
-        minimum = oldHist.GetBinLowEdge(1)
-        newHist = ROOT.TH1F(newName, newName, self.maxBin, minimum, maximum)
-        for binIndex in range(0, self.maxBin): # 0 to maxBin - 1
-            newHist.SetBinContent( binIndex, oldHist.GetBinContent(binIndex) )
+        minimum = oldHist.GetBinLowEdge(self.minBin)
+        # For all histogram types: nbins, xlow, xup
+        # bin = 0;       underflow bin
+        # bin = 1;       first bin with low-edge xlow INCLUDED
+        # bin = nbins;   last bin with upper-edge xup EXCLUDED
+        # bin = nbins+1; overflow bin
+        #
+        newHist = ROOT.TH1F(newName, newName, self.maxBin - self.minBin + 1, minimum, maximum)
+        for oldBinIndex in range(self.minBin, self.maxBin + 1): # minBin to maxBin
+            newBinIndex = oldBinIndex - self.minBin + 1
+            newHist.SetBinContent( newBinIndex, oldHist.GetBinContent(oldBinIndex) )
         total = 0
         # overflow is oldBins + 1 and range is exclusive, so I need to add
         # another '1'
-        for binIndex in range(self.maxBin, oldBins + 1 + 1):
+        for binIndex in range(self.maxBin + 1, oldBins + 1 + 1):
             total += oldHist.GetBinContent(binIndex)
         newHist.SetBinContent(self.maxBin, total)
+        # underflow is 0 to minBin
+        total = 0
+        for binIndex in range(0, self.minBin):
+            total += oldHist.GetBinContent(binIndex)
+        newHist.SetBinContent(0, total)
         newHist.Rebin(self.rebin)
         return newHist
 
@@ -124,13 +139,27 @@ class FileObject(object):
         # rebin
         rebin = self.rebin
         self.rebin = []
+        toProcess = []
         for chunk in rebin:
             match = rebinRE.search(chunk)
-            if not match:
-                raise RuntimeError, "Rebin error '%s' does not match a rebin format." % chunk
-            self.rebin.append(( re.compile (match.group(1), re.IGNORECASE),
+            if match:
+                self.rebin.append(( re.compile (match.group(1), re.IGNORECASE),
                                  RebinInfo( int( match.group(2) ),
+                                            1, # min bin
                                             int( match.group(3) )) ) )
+            else:
+                toProcess.append(chunk)
+
+        for chunk in toProcess:
+            match = extraRebinRE.search(chunk)
+            if match:
+                self.rebin.append(( re.compile (match.group(1), re.IGNORECASE),
+                                RebinInfo( int( match.group(2) ),
+                                        int( match.group(3) ),
+                                        int( match.group(4) )) ) )
+            else:
+                raise RuntimeError, "Rebin error '%s' does not match a rebin format." % chunk
+
         # renorm
         renorm = self.renorm
         self.renorm = []
@@ -332,7 +361,7 @@ class FileObject(object):
                 # print "  examining hist %s" % name
                 # loop over source pieces
                 for regex in sourceList:
-                    print "  Examining regular expression %s against %s" %(regex.pattern, name)
+                    #print "  Examining regular expression %s against %s" %(regex.pattern, name)
                     newName = regex.sub(target, name)
                     if newName != name:
                         #if regex.pattern == '^([Q|S|T|WJets|Z|D]\w+)_2j_2t' and name == 'Wcx_MET_2j_2t':
