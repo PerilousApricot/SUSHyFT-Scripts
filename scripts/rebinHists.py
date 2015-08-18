@@ -247,8 +247,14 @@ if options.tagCheck:
 
 for oneFile in args:
     additionDict = {}
-    print "Processing %s" % oneFile
     inFile = ROOT.TFile(oneFile)
+    fileBase = oneFile.rstrip('.root')
+    fwliteProcessed = float(open(fileBase + '_fwlite.txt', 'r').read().rstrip())
+    edntupleStrs = open(fileBase + '_edntuple.txt', 'r').read().rstrip().split(' ')
+    edntupleProcessed = float(edntupleStrs[0])
+    edntuplePassing = float(edntupleStrs[1])
+    sf = edntuplePassing / edntupleProcessed / fwliteProcessed
+    print "Processing %s - ScaleFactor is %s" % (oneFile, sf)
     if not inFile or inFile.IsZombie():
         raise RuntimeError, "missing file"
     outFileName = os.path.join(options.outDir, os.path.basename(oneFile))
@@ -287,6 +293,7 @@ for oneFile in args:
             additionDict.setdefault(result, [])
             additionDict[result].append(keyString)
     for hist in histList:
+        hist.Scale(sf)
         hist.Write()
     outFile.Close()
     inFile.Close()
