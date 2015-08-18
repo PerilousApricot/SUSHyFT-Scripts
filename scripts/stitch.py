@@ -11,6 +11,7 @@
 import ConfigParser, re, sys
 
 from SHyFT.ROOTWrap import ROOT
+ROOT.TH1.AddDirectory(ROOT.kFALSE)
 
 inputFileMode = False
 if '--getInputFiles' in sys.argv:
@@ -119,6 +120,7 @@ def getHist(tfile, root_dir, name):
 def getClone(tfile, root_dir, name):
     th1 = getHist(tfile, root_dir, name)
     cloned = th1.Clone()
+    cloned.SetDirectory(0)
     cloned.Sumw2()
     return cloned
 
@@ -147,7 +149,7 @@ def getScaleHistogram(hclone, nEvents, config, section):
                  config.get(section, 'force_scale_qcd'))):
     #if 'Data' in section:
         # special treatment for data (do nothing)
-        histogramList[section] = {'xs':'n/a', 'globalSF':'n/a', 'lum':'n/a', 'n_gen':'n/a', 'scale':1}
+        histogramList[section] = {'xs':'n/a', 'globalSF':'n/a', 'lum':'n/a', 'n_gen':'n/a', 'scale':1, 'filterEff':'n/a'}
         pass
     else:
         xs = eval(config.get(section, 'xs'))
@@ -155,15 +157,14 @@ def getScaleHistogram(hclone, nEvents, config, section):
         #print 'xs ', xs
         globalSF = config.getfloat(section, 'globalSF')
         lum = config.getfloat(section, 'lum')
-        if config.has_option(section, 'n_gen'):
-            n_gen = config.getfloat(section, 'n_gen')
-        else:
-            n_gen = nEvents
+        filterEff = 1.0
+        if config.has_option(section, 'filter'):
+            filterEff = float(config.get(section, 'filter',1.0))
         #print 'SF ',globalSF, ',lum ', lum, ',n_gen' , n_gen
-        sf*=xs*globalSF*lum/n_gen
+        sf*=xs*globalSF*lum*filterEff
         #print "Scale factor for %s is %s" % (section, sf)
         #print " xs %s global sf %s lum %s n_gen %s" % (xs, globalSF, lum, n_gen)
-        histogramList[section] = {'xs':xs, 'globalSF': globalSF, 'lum': lum, 'n_gen': n_gen, 'scale':sf}
+        histogramList[section] = {'xs':xs, 'globalSF': globalSF, 'lum': lum, 'scale':sf,'filterEff':filterEff}
     return sf
 
 # extract template histogram if needed. normalize it to 1.0
@@ -267,6 +268,7 @@ for section in sorted(config.sections()):
         # here we should be able to use templates if needed
         if template != None:
             new_clone = template.Clone()
+            new_clone.SetDirectory(0)
             new_clone.Scale(hclone.Integral())
             hclone = new_clone
 
@@ -289,6 +291,7 @@ for section in sorted(config.sections()):
 
     infile.Close()
     ROOT.gROOT.GetListOfFiles().Remove(infile)
+    del infile
 
 for outfile in outputFiles:
     #outputFiles[outfile].Write()
@@ -298,5 +301,5 @@ for k in sorted(histogramList):
     currHist = histogramList[k]
     if currHist['scale'] == 1:
         continue
-    print "Scaled %s by %s (%.2f*%.2f*%.2f/%.2f)" % (k, currHist['scale'], currHist['xs'], currHist['globalSF'],currHist['lum'],currHist['n_gen'])
+    print "Scaled %s by %s (%.2f*%.2f*%.2f*%.2f)" % (k, currHist['scale'], currHist['xs'], currHist['globalSF'],currHist['lum'],currHist['filterEff'])
 

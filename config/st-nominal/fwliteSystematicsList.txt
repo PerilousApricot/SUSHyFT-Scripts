@@ -2,7 +2,7 @@ nominal .* 1 --wMTCut=up
 wmtfull .* 1 nominal
 wmtdown .* 1 --wMTCut=down
 noMET .* 1 --noMET
-flipIso .* 1 --invertTauCut
+noMETDownWMT .* 1 --noMET --wMTCut=down
 qcdMode .* 1 --noMET --invertTauCut
 qcdMode2 .* 1 --noMET --invertTauCut --wMTCut=down
 btag110 .* 0 --btagSys=up  --wMTCut=up
@@ -15,7 +15,7 @@ lftag090 .* 0 --lftagSys=down --wMTCut=up
 lftag080 .* 0 --lftagSys=down2 --wMTCut=up
 jec090 .* 0 --jecSys=down --wMTCut=up
 jec110 .* 0 --jecSys=up --wMTCut=up
-jes090 .* 1 --jesSys=0.90 --wMTCut=up
-jes095 .* 1 --jesSys=0.95 --wMTCut=up
-jes105 .* 1 --jesSys=1.05 --wMTCut=up
-jes110 .* 1 --jesSys=1.10 --wMTCut=up
+jes090 .* 0 --jesSys=0.90 --wMTCut=up
+jes095 .* 0 --jesSys=0.95 --wMTCut=up
+jes105 .* 0 --jesSys=1.05 --wMTCut=up
+jes110 .* 0 --jesSys=1.10 --wMTCut=up
