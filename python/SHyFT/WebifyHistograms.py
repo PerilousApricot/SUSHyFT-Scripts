@@ -24,13 +24,13 @@ def dumpOutput(filename, outputPrefix, usePreQCD = False, combineWJets = False):
     output = TFile(outputFile, "RECREATE")
     output.cd()
     meta = json.loads(open(metaFile).read())
-    dataHist = temp.Get('newdata')
+    dataHist = temp.Get('newdata;1')
     mcHists = {'Data':dataHist}
     for key in temp.GetListOfKeys():
         keyString = key.GetName()
         if keyString.endswith('_updated'):
             mcHists[keyString.split('_')[0]] = temp.Get(keyString)
-
+    
     reverseIndex = dict((v, k) for (k, v) in meta['groupIndexMap'].items())
     lowerEdgeIdx = 0
     for (binName, binIndex) in meta['groupIndexMap'].items():
@@ -112,11 +112,15 @@ def dumpOutput(filename, outputPrefix, usePreQCD = False, combineWJets = False):
         return itertools.product((0,1,2,3,4,5),(0,1,2),(0,1))
 
     integralLookup = []
+    inputKeyLookup = []
     for key in temp.GetListOfKeys():
         keyString = key.GetName()
-        integralLookup.append((keyString, temp.Get(keyString).Integral()))
+        if not keyString in inputKeyLookup:
+            inputKeyLookup.append(keyString)
+            integralLookup.append((keyString, temp.Get(keyString).Integral()))
     htmlTarget = "%s.html" % outputPrefix
     relBase = os.path.dirname(htmlTarget)
+    relSuffix = os.path.basename(outputPrefix)
     with open(htmlTarget,'w+') as idx:
         idx.write("<html><head><title>Fit Results</title></head><body><h1>SHyFT Fit Results</h1>")
         sampleCounts = {}
@@ -161,11 +165,11 @@ def dumpOutput(filename, outputPrefix, usePreQCD = False, combineWJets = False):
                 plot.xAxisTitle = xlabelsPerDisc[disc]
             plot.title = "%s (%sj, %sb, %st)" % (disc, njet, nbjet, ntau)
             if shouldSave:
-                target = os.path.join(relBase,'fit%s' % targetSuffix)
+                target = os.path.join(relBase,'%sfit%s' % (relSuffix, targetSuffix))
                 plot.draw(target + ".svg")
                 plot.draw(target + ".pdf")
                 plot.draw(target + ".png")
-                idx.write('<img src="fit%s.svg" alt="%s" />' % (targetSuffix, plot.title))
+                idx.write('<img src="%sfit%s.svg" alt="%s" />' % (relSuffix, targetSuffix, plot.title))
             
         idx.write('<table><tr><th>Bin</th><th>Data</th><th>Total Pred</th><th>SF</th>')
         headers = {}
