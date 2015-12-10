@@ -70,7 +70,9 @@ export SHYFT_COPYHIST_PATH=$SHYFT_DATA_BASE/auto_copyhist
 export SHYFT_STATE_PATH=$SHYFT_BASE/state
 
 # What are the versions of processing we'd like?
-export SHYFT_EDNTUPLE_VERSION="v7"
+if [[ -z "$SHYFT_EDNTUPLE_VERSION" ]]; then
+    export SHYFT_EDNTUPLE_VERSION="v7"
+fi
 export SHYFT_EDNTUPLE_CMSSW_BASE="$SHYFT_BASE/checkouts/analyzer"
 
 # Where to put CRAB scratch stuff
