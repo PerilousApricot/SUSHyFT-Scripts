@@ -79,6 +79,7 @@ def dumpOutput(filename, outputPrefix, usePreQCD = False, combineWJets = False):
                     'WZ' : ROOT.kYellow +3,
                     'WW' : ROOT.kYellow -6,
                     'DiBoson' : ROOT.kOrange,
+                    'EWK' : ROOT.kOrange,
                     'Top' : ROOT.kRed,
                     'Zinv' : ROOT.kBlue-3,
                     'ZJets' : ROOT.kBlue,
@@ -219,7 +220,10 @@ def dumpOutput(filename, outputPrefix, usePreQCD = False, combineWJets = False):
         idx.write('</tr></table>')
         idx.write("</body></html>")
 
-def dumpStitched(filename, outputPrefix, usePreQCD = False, combineWJets = None): 
+def dumpStitched(filename, outputPrefix, usePreQCD = False, combineWJets = None):
+    prefixDir = os.path.dirname(outputPrefix)
+    prefixBase = os.path.basename(outputPrefix)
+    os.makedirs(prefixDir)
     temp = TFile(filename)
     discList = []
     hasWJetsCombined = False
@@ -249,6 +253,7 @@ def dumpStitched(filename, outputPrefix, usePreQCD = False, combineWJets = None)
                     'Wbx' : ROOT.kGreen + 3,
                     'WZ' : ROOT.kYellow +3,
                     'WW' : ROOT.kYellow -6,
+                    'EWK' : ROOT.kOrange,
                     'DiBoson' : ROOT.kOrange,
                     'Top' : ROOT.kRed,
                     'Zinv' : ROOT.kBlue-3,
@@ -285,8 +290,11 @@ def dumpStitched(filename, outputPrefix, usePreQCD = False, combineWJets = None)
         keyString = key.GetName()
         integralLookup.append((keyString, temp.Get(keyString).Integral()))
 
-
-    with open("%s.html" % (outputPrefix),'w+') as idx:
+    if prefixBase:
+        htmlName = "%s.html" % outputPrefix
+    else:
+        htmlName = "%s/index.html" % prefixDir
+    with open(htmlName, 'w+') as idx:
         idx.write("<html><head><title>Stitched Results</title></head><body><h1>SHyFT stitched input (%s)</h1>" % os.path.basename(filename))
         for disc in discList:
             sampleCounts = {}
@@ -333,14 +341,18 @@ def dumpStitched(filename, outputPrefix, usePreQCD = False, combineWJets = None)
                                 temp.Get(keyString).Integral()
                 plot.title = "%s (%sj, %sb, %st)" % (disc, njet, nbjet, ntau)
                 if shouldSave:
-                    targetNorm = '%s_%s_norm' % (outputPrefix, targetSuffix)
-                    targetReal = '%s_%s' % (outputPrefix, targetSuffix)
+                    if prefixBase:
+                        targetReal = '%s_%s' % (outputPrefix, targetSuffix)
+                        targetNorm = '%s_norm' % (targetReal,)
+                    else:
+                        targetReal = '%s/%s' % (outputPrefix, targetSuffix)
+                        targetNorm = '%s_norm' % (targetReal,)
                     plot.draw(targetNorm + ".svg", nostack=True, dropPattern='QCD_')
                     plot.draw(targetNorm + ".png", nostack=True, dropPattern='QCD_')
                     plot.draw(targetReal + ".svg")
                     plot.draw(targetReal + ".png")
-                    idx.write('<img src="%s_%s.svg" alt="%s" />' % (os.path.basename(outputPrefix), targetSuffix, plot.title))
-                    idx.write('<img src="%s_%s_norm.svg" alt="%s" />' % (os.path.basename(outputPrefix), targetSuffix, plot.title))
+                    idx.write('<a href="%s.pdf"><img src="%s.svg" alt="%s" /></a>' % (targetReal, targetReal, plot.title))
+                    idx.write('<a href="%s.pdf"><img src="%s_norm.svg" alt="%s" /></a>' % (targetNorm, targetNorm, plot.title))
             idx.write('<table><tr><th>%s</th><th>Data</th><th>Total Pred</th><th>SF</th>' % disc)
             headers = {}
             totalPred = {}

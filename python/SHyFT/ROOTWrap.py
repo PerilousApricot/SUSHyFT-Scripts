@@ -10,6 +10,7 @@ if ROOT.gROOT.GetVersion() == '5.32/00' and sys.platform.startswith('darwin'):
     ROOT.gSystem.Load("libFWCoreFWLite")
 ROOT.gROOT.SetBatch(True)
 ROOT.gErrorIgnoreLevel=1001
+ROOT.gStyle.SetOptStat(111111)
 sys.argv = oldargs[:]
 
 __all__ = ['ROOT']
