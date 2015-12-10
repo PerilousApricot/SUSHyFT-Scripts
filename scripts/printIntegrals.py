@@ -54,7 +54,7 @@ for key, _ in plotsToPrint:
 
 def formatIntegral(integral, raw):
     if raw:
-        return "{0:.2f}".format(integral)
+        return "{0:f}".format(integral)
     else:
         return "{0:.2E}".format(integral)
 
@@ -63,7 +63,7 @@ for key, plot in plotsToPrint:
     integral = plot.Integral()
     totalSum += integral
     if verbose:
-        print "{0}: {1}{2:.2E}".format(key, spaces, integral)
+        print "{0}: {1}{2}".format(key, spaces, formatIntegral(integral, options.raw))
 if verbose:
     print "=" * (maxKeyLen + 9)
     print "Total: " + formatIntegral(totalSum, options.raw)
