@@ -12,5 +12,5 @@ multi.pl --match ${SHYFT_STITCHED_PATH}/${SHYFT_MODE}/%.root runIfChanged.sh ${S
 multi.pl --match ${SHYFT_COPYHIST_PATH}/${SHYFT_MODE}/preQCD/%.root runIfChanged.sh ${SHYFT_COPYHIST_PATH}/${SHYFT_MODE}/scaledQCD/%.root `which normalizeQCD.py` ${SHYFT_COPYHIST_PATH}/${SHYFT_MODE}/preQCD/%.root -- normalizeQCD.py ${SHYFT_COPYHIST_PATH}/${SHYFT_MODE}/preQCD/%.root ${SHYFT_COPYHIST_PATH}/${SHYFT_MODE}/scaledQCD/%.root
 
 # Scale the QCD contribution to the fit level
-extractQCD.sh > ${SHYFT_BASE}/state/${SHYFT_MODE}/qcd_scale.config
-multi.pl --match ${SHYFT_COPYHIST_PATH}/${SHYFT_MODE}/scaledQCD/%.root copyHistograms.py ${SHYFT_BASE}/state/${SHYFT_MODE}/qcd_scale.config ${SHYFT_COPYHIST_PATH}/${SHYFT_MODE}/%.root file=${SHYFT_COPYHIST_PATH}/${SHYFT_MODE}/scaledQCD/%.root
+#extractQCD.sh > ${SHYFT_BASE}/state/${SHYFT_MODE}/qcd_scale.config
+#multi.pl --match ${SHYFT_COPYHIST_PATH}/${SHYFT_MODE}/scaledQCD/%.root copyHistograms.py ${SHYFT_BASE}/state/${SHYFT_MODE}/qcd_scale.config ${SHYFT_COPYHIST_PATH}/${SHYFT_MODE}/%.root file=${SHYFT_COPYHIST_PATH}/${SHYFT_MODE}/scaledQCD/%.root
