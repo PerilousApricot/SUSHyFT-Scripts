@@ -1,4 +1,5 @@
 #!/bin/bash
+unset TERM
 
 # hadds all the fwlite files together in a sensible way
 source $SHYFT_BASE/scripts/functions.sh
@@ -39,19 +40,33 @@ while read DATASET; do
         DATASET_WCRAB=$( echo $DIR | tr '/' ' ' | awk '{ print $(NF-1) }' )
         DATASET=$( echo $DATASET_WCRAB | perl -pe 's|crab_.*?_(.*)|\1|' )
         SYSTEMATIC=$( echo $DIR | tr '/' ' ' | awk '{ print $(NF) }' )
-        toProcess+=("runIfChanged.sh $SHYFT_HADD_PATH/${SYSTEMATIC}_${DATASET}.root $DIR/*.root -- haddFWLiteFiles.sh $SHYFT_HADD_PATH/${SYSTEMATIC}_${DATASET}.root $DIR/*.root")
+        #toProcess+=("rm -f $SHYFT_HADD_PATH/${SYSTEMATIC}_${DATASET}_{edntuple,fwlite}.txt && printIntegrals.py -r $SHYFT_HADD_PATH/${SYSTEMATIC}_${DATASET}.root:^nEvents\$ > $SHYFT_HADD_PATH/${SYSTEMATIC}_${DATASET}_fwlite.txt ; cp $SHYFT_FWLITE_PATH/$BASEDIR/edntuple_events.txt $SHYFT_HADD_PATH/${SYSTEMATIC}_${DATASET}_edntuple.txt")
+        toProcess+=("rm -f $SHYFT_HADD_PATH/${SYSTEMATIC}_${DATASET}_{edntuple,fwlite}.txt $SHYFT_HADD_PATH/${SYSTEMATIC}_${DATASET}.root && haddFWLiteFiles.sh $SHYFT_HADD_PATH/${SYSTEMATIC}_${DATASET}.root $DIR/*.root ; printIntegrals.py -r $SHYFT_HADD_PATH/${SYSTEMATIC}_${DATASET}.root:^nEvents\$ > $SHYFT_HADD_PATH/${SYSTEMATIC}_${DATASET}_fwlite.txt ; cp $SHYFT_FWLITE_PATH/$BASEDIR/edntuple_events.txt $SHYFT_HADD_PATH/${SYSTEMATIC}_${DATASET}_edntuple.txt")
         toOutput+=($SHYFT_HADD_PATH/${SYSTEMATIC}_${DATASET}.root)
     done < $SHYFT_BASE/config/$SHYFT_MODE/fwliteSystematicsList.txt
 done < $SHYFT_BASE/config/$SHYFT_MODE/input_pat.txt
 echo "$toProcess" | grep 15
 echo "Executing ${#toProcess[@]} jobs"
-( for ((i = 0; i < ${#toProcess[@]}; i++)); do
-    echo "${toProcess[$i]}"
-done; ) | parallel -j $SHYFT_DOUBLE_CORE_COUNT --eta --progress
-
-# Check the files were successfully written
-for ((i = 0; i < ${#toOutput[@]}; i++)); do
-    if [ ! -e "${toOutput[$i]}" ]; then
-        echo ${toOutput[$i]} >> $SHYFT_BASE/output/$SHYFT_MODE/hadd_missing_output.txt
-    fi
+COMMANDS_TO_UNROLL=10
+COMMAND_TO_RUN='sbatch -A jswhep --time=60'
+( for ((i = 0; i < ${#toProcess[@]}; i += $COMMANDS_TO_UNROLL)); do
+    sleep 0.3
+    echo "#!/bin/bash
+#SBATCH --output=/dev/null
+#SBATCH --output=/dev/null
+#SBATCH --time=2:00:00
+cd /home/meloam
+source set-ntuple.sh
+unset TERM
+$(
+for IDX in $(seq $i $(($i + $COMMANDS_TO_UNROLL - 1))); do
+    echo "${toProcess[$IDX]}"
 done
+)" | eval $COMMAND_TO_RUN
+done; )
+# Check the files were successfully written
+#for ((i = 0; i < ${#toOutput[@]}; i++)); do
+#    if [ ! -e "${toOutput[$i]}" ]; then
+#        echo ${toOutput[$i]} >> $SHYFT_BASE/output/$SHYFT_MODE/hadd_missing_output.txt
+#    fi
+#done

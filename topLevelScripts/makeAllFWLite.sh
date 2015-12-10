@@ -255,6 +255,7 @@ while read DATASET; do
             if [ -e "/cms/$LINE" ];then
                 echo $LINE >> $SUBMIT_INPUT
             else
+                echo "An output is missing in LStore: $LINE"
                 echo "$DATASET - $OUTNAME - Replace $LINE" >> $FWLITE_LOG
             fi
         done < $SHYFT_FWLITE_PATH/$BASEDIR_OUT/tempinput_pre.txt
@@ -262,5 +263,6 @@ while read DATASET; do
         # This script hardcodes set-analysis.sh to find the python files. fix that.
         echo "DOING SUBMIT"
         submit_fwlite_dataset.sh $SUBMIT_INPUT $SYSTEMATIC_PATH $IS_DATA $SAMPLENAME $SYSTLINE
+        sleep 1
     done < $SHYFT_BASE/config/$SHYFT_MODE/fwliteSystematicsList.txt
 done < $SHYFT_BASE/config/$SHYFT_MODE/input_pat.txt

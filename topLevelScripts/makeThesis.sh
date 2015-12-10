@@ -18,14 +18,6 @@ plotStitched.py &
 if [[ -d ${SHYFT_STITCHED_PATH} ]]; then
     makeAllCopyHist.sh
 fi
-if [[ -d ${SHYFT_EDNTUPLE_PATH} ]]; then
-    #makeAllLumiCalc.sh
-    :
-fi
-if [[ -d ${SHYFT_COPYHIST_PATH} ]]; then
-    makeAllQCD.sh
-fi
-
 makeAllSystematics.sh
 
 # If you're not making the histograms, what's the point?

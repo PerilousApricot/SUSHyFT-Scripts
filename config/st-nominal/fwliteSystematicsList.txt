@@ -17,5 +17,7 @@ jec090 .* 0 --jecSys=down --wMTCut=up
 jec110 .* 0 --jecSys=up --wMTCut=up
 jes090 .* 0 --jesSys=0.90 --wMTCut=up
 jes095 .* 0 --jesSys=0.95 --wMTCut=up
+jes097 .* 0 --jesSys=0.975 --wMTCut=up
+jes102 .* 0 --jesSys=1.025 --wMTCut=up
 jes105 .* 0 --jesSys=1.05 --wMTCut=up
 jes110 .* 0 --jesSys=1.10 --wMTCut=up
