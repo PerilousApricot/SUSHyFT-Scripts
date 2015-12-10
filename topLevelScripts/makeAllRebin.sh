@@ -43,6 +43,9 @@ while read DATASET; do
         if [[ $SHORTNAME == QCD* ]]; then
             ADDITIONAL_ARGS=" --qcd"
         fi
+        if [[ $IS_DATA -eq 1 ]]; then
+            ADDITIONAL_ARGS="$ADDITIONAL_ARGS --isData"
+        fi
         toProcess+=("runIfChanged.sh $SHYFT_REBIN_PATH/${SHYFT_MODE}/${SYSTEMATIC}_${DATASET}.root $HADD_INPUT_FILE `which rebinHists.py` -- rebinHists.py --tagMode=${SHYFT_MODE} --outDir=$SHYFT_REBIN_PATH/${SHYFT_MODE} $ADDITIONAL_ARGS $HADD_INPUT_FILE")
     done < $SHYFT_BASE/config/$SHYFT_MODE/fwliteSystematicsList.txt
 done < $SHYFT_BASE/config/$SHYFT_MODE/input_pat.txt
