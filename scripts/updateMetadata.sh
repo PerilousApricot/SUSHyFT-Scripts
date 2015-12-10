@@ -1,5 +1,4 @@
-#!/bin/bash
-
+#!/usr/bin/env bash
 mkdir -p $SHYFT_BASE/state/$SHYFT_MODE
 
 getStitchedInfo.py $SHYFT_BASE/config/$SHYFT_MODE/stitchConfig.cfg > \
@@ -21,6 +20,6 @@ for SYST in $SYSTEMATIC_LIST; do
     echo -n "Processing $SYST: "
     mkdir -p $SHYFT_BASE/state/$SYST/{processed,raw}
     echo $SHYFT_BASE/data/auto_hadd/${SYST}_*.root | tr ' ' '\n' | \
-        xargs -I{} -n 1 -P 8 bash -c "process_file $SYST {}"
+        xargs -I{} -n 1 -P 8 ${BASH:-bash} -c "process_file $SYST {}"
     echo " - done."
 done

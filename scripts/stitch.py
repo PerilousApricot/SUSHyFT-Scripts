@@ -9,7 +9,8 @@
 # stitching
 
 import ConfigParser, re, sys
-
+import gc
+gc.disable()
 from SHyFT.ROOTWrap import ROOT
 ROOT.TH1.AddDirectory(ROOT.kFALSE)
 
@@ -114,6 +115,7 @@ def getHist(tfile, root_dir, name):
     except ReferenceError, e:
         print "Failed to read %s" % readname
         return None
+    ROOT.SetOwnership(th1, 1)
     return th1
 
 # get a clone of the histogram, considering its location
@@ -122,6 +124,7 @@ def getClone(tfile, root_dir, name):
     cloned = th1.Clone()
     cloned.SetDirectory(0)
     cloned.Sumw2()
+    ROOT.SetOwnership(cloned, 1)
     return cloned
 
 # substitute the leading part of the name (Top, WJets, etc) by user-defined prefix
@@ -277,6 +280,7 @@ for section in sorted(config.sections()):
             oldhist = getHist(outfile, "", outhname)
             ##print 'integral before addition ', oldhist.Integral()
             if not oldhist and outhname.endswith('0j_0b_0t'):
+                hclone.Delete()
                 continue
             oldhist.Add(hclone)
             ##print 'integral after addition ', oldhist.Integral()
@@ -288,10 +292,14 @@ for section in sorted(config.sections()):
             hclone.SetDirectory(outdir)
             hclone.Write()
             existing_names.append(outhname)
+        hclone.Delete()
 
     infile.Close()
     ROOT.gROOT.GetListOfFiles().Remove(infile)
+    infile.Delete()
     del infile
+    #gc.collect()
+    #print "GC Count: %s %s" % (len(gc.get_objects()),gc.get_count(),)
 
 for outfile in outputFiles:
     #outputFiles[outfile].Write()
@@ -302,4 +310,4 @@ for k in sorted(histogramList):
     if currHist['scale'] == 1:
         continue
     print "Scaled %s by %s (%.2f*%.2f*%.2f*%.2f)" % (k, currHist['scale'], currHist['xs'], currHist['globalSF'],currHist['lum'],currHist['filterEff'])
-
+gc.enable()

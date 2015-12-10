@@ -40,7 +40,7 @@ while [[ -e $WORKDIR/input_${RETRYCOUNT}_0.txt ]]; do
     RETRYCOUNT=$((RETRYCOUNT + 1))
 done
 while true; do
-    split_file.sh $USERSLIST 50 $SPLITCOUNT > $WORKDIR/input_${RETRYCOUNT}_$COUNT.txt
+    split_file.sh $USERSLIST 25 $SPLITCOUNT > $WORKDIR/input_${RETRYCOUNT}_$COUNT.txt
     if [[ ! -s $WORKDIR/input_${RETRYCOUNT}_$COUNT.txt ]]; then
         COUNT=$(( $COUNT - 1 ))
         break

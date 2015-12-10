@@ -6,8 +6,13 @@ echo "args $@"
 OUTPUT=$1
 shift
 set -x
+if [[ $# -eq 0 ]]; then
+    echo "No input files?"
+    rm -f $OUTPUT
+    exit 1
+fi
 [[ -e $OUTPUT ]] && rm -f $OUTPUT
-hadd -f9 $OUTPUT $@
+hadd -f0 $OUTPUT $@
 set +x
 EXIT_CODE=$?
 if [[ $EXIT_CODE -ne 0 ]]; then

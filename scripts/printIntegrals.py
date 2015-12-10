@@ -54,7 +54,7 @@ for key, _ in plotsToPrint:
 
 def formatIntegral(integral, raw):
     if raw:
-        return "{0:.2f}".format(integral)
+        return "{0:f}".format(integral)
     else:
         return "{0:.2E}".format(integral)
 
