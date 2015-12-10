@@ -47,7 +47,23 @@ while read DATASET; do
     done < $SHYFT_BASE/config/$SHYFT_MODE/fwliteSystematicsList.txt
 done < $SHYFT_BASE/config/$SHYFT_MODE/input_pat.txt
 echo "Executing ${#toProcess[@]} jobs"
-( for ((i = 0; i < ${#toProcess[@]}; i++)); do
-    echo "${toProcess[$i]}"
-done; )  | parallel -j $SHYFT_QUAD_CORE_COUNT --eta --progress
+COMMANDS_TO_UNROLL=10
+COMMAND_TO_RUN='sbatch -A jswhep --time=60'
+( for ((i = 0; i+$COMMANDS_TO_UNROLL < ${#toProcess[@]}; i += $COMMANDS_TO_UNROLL)); do
+    sleep 0.3
+    echo "#!/bin/bash
+#SBATCH --output=/dev/null
+#SBATCH --time=2:00:00
+cd /home/meloam
+source set-ntuple.sh
+unset TERM
+$(
+for IDX in $(seq $i $(($i + $COMMANDS_TO_UNROLL - 1))); do
+    echo "${toProcess[$IDX]}"
+done
+)" | eval $COMMAND_TO_RUN
+done; )
+#( for ((i = 0; i < ${#toProcess[@]}; i++)); do
+#    echo "${toProcess[$i]}"
+#done; )  | parallel -j $SHYFT_QUAD_CORE_COUNT --eta --progress
 
