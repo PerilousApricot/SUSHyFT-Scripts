@@ -20,6 +20,8 @@ parser.add_option('--outDir', metavar='F', type='string', action='store',
               help='What output directory should we use')
 parser.add_option('--qcd', action='store_true',
               help='Do pretagged QCD distributions too')
+parser.add_option('--isData', action='store_true',
+              help='Is this data or MC?')
 (options, args) = parser.parse_args()
 
 def bin_ttbar_notau(inputTitle):
@@ -293,7 +295,8 @@ for oneFile in args:
             additionDict.setdefault(result, [])
             additionDict[result].append(keyString)
     for hist in histList:
-        hist.Scale(sf)
+        if not options.isData:
+            hist.Scale(sf)
         hist.Write()
     outFile.Close()
     inFile.Close()
