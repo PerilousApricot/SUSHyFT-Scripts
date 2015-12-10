@@ -164,7 +164,8 @@ def getScaleHistogram(hclone, nEvents, config, section):
         sf*=xs*globalSF*lum*filterEff
         #print "Scale factor for %s is %s" % (section, sf)
         #print " xs %s global sf %s lum %s n_gen %s" % (xs, globalSF, lum, n_gen)
-        histogramList[section] = {'xs':xs, 'globalSF': globalSF, 'lum': lum, 'scale':sf,'filterEff':filterEff}
+        oldInt = hclone.Integral()
+        histogramList[section] = {'xs':xs, 'globalSF': globalSF, 'lum': lum, 'scale':sf,'filterEff':filterEff,'oldInt':oldInt}
     return sf
 
 # extract template histogram if needed. normalize it to 1.0
@@ -301,5 +302,5 @@ for k in sorted(histogramList):
     currHist = histogramList[k]
     if currHist['scale'] == 1:
         continue
-    print "Scaled %s by %s (%.2f*%.2f*%.2f*%.2f)" % (k, currHist['scale'], currHist['xs'], currHist['globalSF'],currHist['lum'],currHist['filterEff'])
+    print "Scaled %s by %s (%.2f*%.2f*%.2f*%.2f) old: %.2f" % (k, currHist['scale'], currHist['xs'], currHist['globalSF'],currHist['lum'],currHist['filterEff'],currHist['oldInt'])
 
