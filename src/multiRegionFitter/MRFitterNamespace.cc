@@ -1445,6 +1445,7 @@ void mrf::MRFitter::_loadTemplates(const string &templateFilename)
             m_morphMap[ fullName ] = kEmptyTMI;
             // unless overridden, the default name should be what it
             // would have been if there is no morphing.
+            cout << "morph1 " << fullName << endl;
             m_morphMap[ fullName ].m_defaultName = fullName;
         } // for groupIter
     } // for utmIter
@@ -1788,7 +1789,6 @@ void mrf::MRFitter::_hookupFitter()
             const STH1FPtrPair &histPair = histVec.at(0);
             // Only one.  Just add it.
             //
-            cerr << "Adding " << name << "1 size\n";
             m_nameTemplateIndexMap[name] =
                 m_fitter.addTemplate(histPair.first,
                         histPair.second,
@@ -1817,7 +1817,6 @@ void mrf::MRFitter::_hookupFitter()
                     0,
                     2,
                     0.001 );
-            cerr << "Adding " << name << "to bin norm\n";
             m_nameTemplateIndexMap[name] = templateIndex;
             templateSet.insert(templateIndex);
             // tell the fitter to fix this parameter

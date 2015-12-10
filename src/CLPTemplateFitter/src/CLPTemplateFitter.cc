@@ -972,9 +972,10 @@ CLPTemplateFitter::outputFitResults() const
         {
             // if set, we want to make sure that we don't go below the
             // minimum expected bin content limit(if set)
-            tempProb += logPoisson(m_dataHPtr->GetBinContent(*iter),
-                                    std::max(_getBinContent(paramIndex,*iter),
-                                            m_minExpectedBinContent));
+            //cout << "getting content for" << paramIndex << endl;
+            //tempProb += logPoisson(m_dataHPtr->GetBinContent(*iter),
+            //                        std::max(_getBinContent(paramIndex,*iter),
+         //                                   m_minExpectedBinContent));
         }
 
       cout << setw(2) << paramIndex << ") "
@@ -1654,6 +1655,7 @@ CLPTemplateFitter::_totalLogProb(bool extractDetails,
                                  DVec * constraintLog) const
 {
    double logProb = 0.;
+   const double sqrtTwoPi = 2.50599281723;
    ////////////////////////
    // Loop over all bins //
    ////////////////////////
@@ -1676,12 +1678,14 @@ CLPTemplateFitter::_totalLogProb(bool extractDetails,
       if (m_constraintSigmaVec[tempIndex] > 0)
       {
          double zScore =
-(m_arrayAddress[tempIndex] - m_constraintMeanVec[tempIndex]) /
-            m_constraintSigmaVec[tempIndex];
+                (m_arrayAddress[tempIndex] - m_constraintMeanVec[tempIndex]) /
+                    m_constraintSigmaVec[tempIndex];
          double zSquaredOverTwo = (zScore * zScore) / 2;
-         logProb -= zSquaredOverTwo;
+         double zNorm = -1 * log(sqrtTwoPi *  m_constraintSigmaVec[tempIndex]);
+         logProb -= zSquaredOverTwo + zNorm;
          if (unlikely(extractDetails)) {
-            (*constraintLog)[tempIndex] = zSquaredOverTwo;
+            //cout << "Got z^2 " << zSquaredOverTwo << " norm " << zNorm << endl; 
+            (*constraintLog)[tempIndex] = zSquaredOverTwo + zNorm;
          }
       } else {
           if (unlikely(extractDetails)) {
