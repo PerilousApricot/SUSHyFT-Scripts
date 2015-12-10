@@ -37,7 +37,7 @@ class RebinInfo(object):
 
 
     def copyAndModify(self, oldHist, newName):
-        if not self.maxBin and self.minBin == 1:
+        if not self.maxBin and not self.minBin:
             # just rebin and nothing else
             oldHist.Rebin(self.rebin)
             # this isn't strictly necessary in this piece of code, but
@@ -45,7 +45,6 @@ class RebinInfo(object):
             # the new histogram has the new name.
             oldHist.SetName(newName)
             return oldHist
-        assert(self.minBin >= 1), "min bin has to be > 0. 0 is underflow"
         # move the old histogram out of the way in case the old
         # histogram and new histogram have the same name
         oldHist.SetName( oldHist.GetName() + '_oldpleaseignore' )
@@ -62,21 +61,40 @@ class RebinInfo(object):
         # bin = nbins;   last bin with upper-edge xup EXCLUDED
         # bin = nbins+1; overflow bin
         #
-        newHist = ROOT.TH1F(newName, newName, self.maxBin - self.minBin + 1, minimum, maximum)
-        for oldBinIndex in range(self.minBin, self.maxBin + 1): # minBin to maxBin
-            newBinIndex = oldBinIndex - self.minBin + 1
+        nbins = self.maxBin - self.minBin
+        newHist = ROOT.TH1F(newName, newName, nbins, minimum, maximum)
+
+        # underflow is 0 to minBin + 1 (inclusive)
+        underflow = 0
+        underflowlist = []
+        for binIndex in range(0, self.minBin + 2):
+            underflowlist.append(binIndex)
+            underflow += oldHist.GetBinContent(binIndex)
+        newHist.SetBinContent(1, underflow)
+
+        oldbinlist = []
+        newbinlist = []
+        for oldBinIndex in range(self.minBin + 2, self.maxBin): # (minBin + 1) to (maxBin - 1) (inclusive)
+            newBinIndex = oldBinIndex - self.minBin
+            newbinlist.append(newBinIndex)
+            oldbinlist.append(oldBinIndex)
             newHist.SetBinContent( newBinIndex, oldHist.GetBinContent(oldBinIndex) )
-        total = 0
+
         # overflow is oldBins + 1 and range is exclusive, so I need to add
         # another '1'
-        for binIndex in range(self.maxBin + 1, oldBins + 1 + 1):
-            total += oldHist.GetBinContent(binIndex)
-        newHist.SetBinContent(self.maxBin, total)
-        # underflow is 0 to minBin
-        total = 0
-        for binIndex in range(0, self.minBin):
-            total += oldHist.GetBinContent(binIndex)
-        newHist.SetBinContent(0, total)
+        overflow = 0
+        overflowlist = []
+        # from maxBin to end
+        for oldBinIndex in range(self.maxBin, oldBins + 1 + 1):
+            overflowlist.append(oldBinIndex)
+            overflow += oldHist.GetBinContent(oldBinIndex)
+        newHist.SetBinContent(self.maxBin - self.minBin, overflow)
+        #print "Rebin oldBins:%s nbins:%s minBin:%s maxBin:%s minimum:%s maximum:%s underflow:(%s:%s:%s) overflow:(%s:%s:%s)" % (oldBins, nbins, self.minBin, self.maxBin, minimum, maximum, 0, underflow, newHist.GetBinContent(0), nbins + 1, overflow, newHist.GetBinContent(nbins))
+        #print "  newSelection: (%s) %s" % (len(newbinlist), newbinlist)
+        #print "  forUnderflow: (%s) %s" % (len(underflowlist), underflowlist)
+        #print "  oldSelection: (%s) %s" % (len(oldbinlist), oldbinlist)
+        #print "  forOverflow:  (%s) %s" % (len(overflowlist), overflowlist)
+
         newHist.Rebin(self.rebin)
         return newHist
 
@@ -145,7 +163,7 @@ class FileObject(object):
             if match:
                 self.rebin.append(( re.compile (match.group(1), re.IGNORECASE),
                                  RebinInfo( int( match.group(2) ),
-                                            1, # min bin
+                                            0, # min bin
                                             int( match.group(3) )) ) )
             else:
                 toProcess.append(chunk)
@@ -380,6 +398,8 @@ class FileObject(object):
                     if not noWarning:
                         print "Warning: %s is not the correct size %d !=(%s)" \
                               %(name, len (sourceList), len(combNames))
+                        if options.verbose:
+                            print "  %s fails %s = %s" % (name, [x.pattern for x in sourceList], combNames)
                 newHist = combList[0][1].Clone(name)
                 newHist.Reset()
                 addList = []

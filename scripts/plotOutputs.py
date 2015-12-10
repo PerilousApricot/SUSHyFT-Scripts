@@ -9,15 +9,21 @@ import sys
 from SHyFT.Plot import StackedPlot
 from SHyFT.ROOTWrap import ROOT
 TFile = ROOT.TFile
+ROOT.TH1.AddDirectory(False)
 
 # TODO fix this
 shyftBase = os.getenv('SHYFT_BASE')
 shyftMode = os.getenv('SHYFT_MODE')
-webPath = os.path.join(shyftBase, 'web', shyftMode)
+if len(sys.argv) > 1:
+    inputFile = sys.argv[1]
+    webPath = sys.argv[2]
+else:
+    webPath = os.path.join(shyftBase, 'web', shyftMode)
+    inputFile = os.path.join(shyftBase, 'output', shyftMode, 'central_nominal_lum1.0')
+
 if not os.path.exists(webPath):
     os.makedirs(webPath)
 
-inputFile = os.path.join(shyftBase, 'output', shyftMode, 'central_nominal_lum1.0')
 outputFile = "%s_split.root" % inputFile
 templateFile = inputFile + "_templates.root"
 metaFile = inputFile + "_meta.json"
@@ -36,19 +42,23 @@ reverseIndex = dict((v, k) for (k, v) in meta['groupIndexMap'].items())
 lowerEdgeIdx = 0
 for (binName, binIndex) in meta['groupIndexMap'].items():
     newBins = meta['numBinsVec'][binIndex]
-    lowerBin = meta['lowerEdgeBinVec'][binIndex]
-    upperBin = meta['upperEdgeBinVec'][binIndex]
-    binVec = [float(x) for x in meta['binLowerEdges'][lowerBin - 1:upperBin]]
+    lowerBin = meta['lowerEdgeBinVec'][binIndex] - 1
+    upperBin = meta['upperEdgeBinVec'][binIndex] - 1
+    binVec = [float(x) for x in meta['binLowerEdges'][lowerBin:upperBin + 1]]
+    binVec.append(float(binVec[-1] + meta['binLowerEdges'][lowerBin + 1] - meta['binLowerEdges'][lowerBin]))
     binArray = array.array('f', binVec)
     for mc in mcHists:
         newName = "%s%s" % (mc, binName)
         # TODO propagate xmin/xmax from the fit
-        newHist = ROOT.TH1F(newName, newName, newBins - 1, binArray)
+        newHist = ROOT.TH1F(newName, newName, newBins, binArray)
         for histIndex in range(newBins):
-            oldContent = mcHists[mc].GetBinContent(lowerBin + histIndex)
-            oldError = mcHists[mc].GetBinError(lowerBin + histIndex)
-            newHist.SetBinContent(histIndex, oldContent)
-            newHist.SetBinError(histIndex, oldError)
+            # Stupid zero-based indices
+            oldBin = lowerBin + histIndex + 1
+            newBin = histIndex + 1
+            oldContent = mcHists[mc].GetBinContent(oldBin)
+            oldError = mcHists[mc].GetBinError(oldBin)
+            newHist.SetBinContent(newBin, oldContent)
+            newHist.SetBinError(newBin, oldError)
         newHist.Write()
     lowerEdgeIdx += newBins
 output.Write()
@@ -73,6 +83,7 @@ defaultColors = {'SingleTop' : ROOT.kCyan,
                  'SingleTbarT' : ROOT.kCyan + 1,
                  'SingleTbarS' : ROOT.kCyan + 2,
                  'SingleTbarTW' : ROOT.kCyan + 3,
+                 'WJets' : ROOT.kGreen + 1,
                  'Wqq' : ROOT.kGreen + 1,
                  'Wcx' : ROOT.kGreen + 2,
                  'Wbx' : ROOT.kGreen + 3,
@@ -82,6 +93,7 @@ defaultColors = {'SingleTop' : ROOT.kCyan,
                  'Top' : ROOT.kRed,
                  'Zinv' : ROOT.kBlue-3,
                  'ZJets' : ROOT.kBlue,
+                 'EWK' : ROOT.kBlue,
                  'ZZ' : ROOT.kPink -6,
                  'Stop450' : ROOT.kYellow,
                  'QCDpre' : ROOT.kMagenta,
@@ -138,7 +150,7 @@ with open(os.path.join(webPath, "fitoutput.html"),'w+') as idx:
         def customCompare(val):
             return -1*val[1]
         foundBin = False
-        for keyString,_ in sorted(integralLookup, key=customCompare):
+        for keyString,_ in sorted(integralLookup, key=customCompare, reverse=True):
             sampleString = keyString.split('_')[0]
             if keyString.endswith(targetSuffix):
                 foundBin = True
@@ -154,7 +166,7 @@ with open(os.path.join(webPath, "fitoutput.html"),'w+') as idx:
                         temp.Get(keyString).Integral()
                 disc = keyString.split('_')[1]
         if not foundBin:
-            print "Got nothing for %s? (probably okay)" % targetSuffix
+            #print "Got nothing for %s? (probably okay)" % targetSuffix
             continue
         if disc in xlabelsPerDisc:
             plot.xAxisTitle = xlabelsPerDisc[disc]
