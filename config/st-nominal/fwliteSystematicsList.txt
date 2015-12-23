@@ -2,6 +2,7 @@ nominal .* 1 --wMTCut=up
 wmtfull .* 1 nominal
 wmtdown .* 1 --wMTCut=down
 noMET .* 1 --noMET
+lowMET .* 1 --lowMET --wMTCut=down
 noMETDownWMT .* 1 --noMET --wMTCut=down
 qcdMode .* 1 --noMET --invertTauCut
 qcdMode2 .* 1 --noMET --invertTauCut --wMTCut=down
